@@ -88,9 +88,9 @@ def generate_tabaxi_name(selected_clan):
     clan_info = next((c for c in tabaxi_clans if c["name"] == selected_clan), None)
     if clan_info:
         clan_desc = (
-            f"\n\n🏡 **Clan:** {clan_info['name']}\n"
-            f"• **Region:** {clan_info['region']}\n"
-            f"• **Traits:** {clan_info['traits']}\n"
+            f"\n\n🏡 **Clan:** {clan_info['name']}\n\n"
+            f"• **Region:** {clan_info['region']}\n\n"
+            f"• **Traits:** {clan_info['traits']}\n\n"
             f"• **Twist:** {clan_info['twist']}"
         )
     else:
@@ -98,7 +98,7 @@ def generate_tabaxi_name(selected_clan):
 
     return (
         f"🐾 **Name:** {full_name}\n\n"
-        + "\n".join(meaning_lines)
+        + "\n\n".join(meaning_lines)
         + f"\n\n➔ **Poetic Meaning:** {poetic}{clan_desc}"
     )
 
