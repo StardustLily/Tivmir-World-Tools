@@ -63,19 +63,7 @@ def generate_tabaxi_name(selected_clan):
     middles = ["rren", "mari", "luz", "zako", "mena", "halo"]
     suffixes = ["ara", "len", "ion", "ira", "oné", "anir"]
 
-    prefix = random.choice(prefixes)
-    middle = random.choice(middles)
-    suffix = random.choice(suffixes)
-
-    name = prefix + middle + suffix
-
-    # Breakdown pieces
-    name_breakdown = [
-        f"- **{prefix}** = (prefix meaning TBD)",
-        f"- **{middle}** = (middle meaning TBD)",
-        f"- **{suffix}** = (suffix meaning TBD)"
-    ]
-
+    name = random.choice(prefixes) + random.choice(middles) + random.choice(suffixes)
     poetic = random.choice([
         f"Voice of the dunes, child of the stars.",
         f"Shadowstep on silent paws.",
@@ -85,20 +73,15 @@ def generate_tabaxi_name(selected_clan):
     clan_info = next((c for c in tabaxi_clans if c["name"] == selected_clan), None)
     if clan_info:
         clan_desc = (
-            f"\n\n🏡 **Clan:** {clan_info['name']}\n\n"
-            f"- **Region:** {clan_info['region']}\n"
-            f"- **Traits:** {clan_info['traits']}\n"
-            f"- **Twist:** {clan_info['twist']}"
+            f"\n\n🏡 **Clan:** {clan_info['name']}\n"
+            f"• **Region:** {clan_info['region']}\n"
+            f"• **Traits:** {clan_info['traits']}\n"
+            f"• **Twist:** {clan_info['twist']}"
         )
     else:
         clan_desc = ""
 
-    return (
-        f"🐾 **Name:** {name}\n\n" +
-        "\n".join(name_breakdown) +
-        f"\n\n**Poetic Meaning:** {poetic}{clan_desc}"
-    )
-
+    return f"🐾 **Name:** {name}\n\n**Poetic Meaning:** {poetic}{clan_desc}"
 
 # === Generate Elven Name Function ===
 def generate_elven_name():
@@ -115,11 +98,7 @@ def generate_elven_name():
         parts += [suffix]
 
     full_name = "".join(p["text"] for p in parts)
-
-    # Make the breakdown a proper separate list
-    meanings = [f"- **{p['text']}** = {p['meaning']}" for p in parts]
-
-    # Poetic generation
+    meanings = [f"• {p['text']} = {p['meaning']}" for p in parts]
     keywords = [p["meaning"].split("/")[0].strip() for p in parts]
     glosses = [random.choice(elven_poetic_gloss.get(k, [k])) for k in keywords]
 
@@ -135,12 +114,7 @@ def generate_elven_name():
             f"A spirit shaped by {glosses[0]}, voice of {glosses[1]}, hand of {glosses[2]}"
         ])
 
-    return (
-        f"🌿 **Name:** {full_name}\n\n" +
-        "\n".join(meanings) +  # <--- now each syllable part is properly bullet-pointed
-        f"\n\n➔ **Poetic Meaning:** {poetic}"
-    )
-
+    return f"🌿 **Name:** {full_name}\n\n" + "\n".join(meanings) + f"\n\n➔ **Poetic Meaning:** {poetic}"
 
 # === UI ===
 st.title("🌸 Tivmir World Tools")
