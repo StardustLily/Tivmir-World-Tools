@@ -19,6 +19,9 @@ def load_json(filename):
 # === Load Data ===
 races = load_json("races.json")
 npc_attributes = load_json("npc_attributes.json")
+tabaxi_prefixes = load_json("tabaxi_prefixes.json")
+tabaxi_middles = load_json("tabaxi_middles.json")
+tabaxi_suffixes = load_json("tabaxi_suffixes.json")
 tabaxi_clans = load_json("tabaxi_clans.json")
 elven_prefixes = load_json("elven_prefixes.json")
 elven_middles = load_json("elven_middles.json")
@@ -59,22 +62,22 @@ def generate_npc():
 
 # === Generate Tabaxi Name Function ===
 def generate_tabaxi_name(selected_clan):
-    prefixes = ["Zaha", "Teli", "Ranu", "Ashi", "Xira", "Nalu", "Kael", "Jako"]
-    middles = ["rren", "mari", "luz", "zako", "mena", "halo"]
-    suffixes = ["ara", "len", "ion", "ira", "oné", "anir"]
+    use_middle = random.random() < 0.4
+    parts = []
 
-    prefix = random.choice(prefixes)
-    middle = random.choice(middles)
-    suffix = random.choice(suffixes)
+    prefix = random.choice(tabaxi_prefixes)
+    parts.append(prefix)
 
-    name = prefix + middle + suffix
+    if use_middle:
+        middle = random.choice(tabaxi_middles)
+        parts.append(middle)
 
-    # Breakdown pieces
-    name_breakdown = [
-        f"- **{prefix}** = (prefix meaning TBD)",
-        f"- **{middle}** = (middle meaning TBD)",
-        f"- **{suffix}** = (suffix meaning TBD)"
-    ]
+    suffix = random.choice(tabaxi_suffixes)
+    parts.append(suffix)
+
+    full_name = "".join(p["text"] for p in parts)
+
+    meaning_lines = [f"• {p['text']} = {p['meaning']}" for p in parts]
 
     poetic = random.choice([
         f"Voice of the dunes, child of the stars.",
@@ -85,20 +88,19 @@ def generate_tabaxi_name(selected_clan):
     clan_info = next((c for c in tabaxi_clans if c["name"] == selected_clan), None)
     if clan_info:
         clan_desc = (
-            f"\n\n🏡 **Clan:** {clan_info['name']}\n\n"
-            f"- **Region:** {clan_info['region']}\n"
-            f"- **Traits:** {clan_info['traits']}\n"
-            f"- **Twist:** {clan_info['twist']}"
+            f"\n\n🏡 **Clan:** {clan_info['name']}\n"
+            f"• **Region:** {clan_info['region']}\n"
+            f"• **Traits:** {clan_info['traits']}\n"
+            f"• **Twist:** {clan_info['twist']}"
         )
     else:
         clan_desc = ""
 
     return (
-        f"🐾 **Name:** {name}\n\n" +
-        "\n".join(name_breakdown) +
-        f"\n\n**Poetic Meaning:** {poetic}{clan_desc}"
+        f"🐾 **Name:** {full_name}\n\n"
+        + "\n".join(meaning_lines)
+        + f"\n\n➔ **Poetic Meaning:** {poetic}{clan_desc}"
     )
-
 
 # === Generate Elven Name Function ===
 def generate_elven_name():
