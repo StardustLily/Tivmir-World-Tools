@@ -1,0 +1,182 @@
+[
+  {
+    "name": "Aarakocra",
+    "rarity": "Common",
+    "region": "Múnlǔdì",
+    "description": "A proud warrior nation involved in most conflicts, often siding with those they deem 'virtuous'. Respected but seen as self-serving."
+  },
+  {
+    "name": "Drow",
+    "rarity": "Common",
+    "region": "Underdark and surface settlements",
+    "description": "Relatives of Elves, often mistrusted. Surface Drow are more mellow; Underdark Drow tend to remain guarded and harsh."
+  },
+  {
+    "name": "Elf",
+    "rarity": "Common",
+    "region": "Nomadic tribes or secluded groves",
+    "description": "Considered second-class due to a role in the Elven Cataclysm. Some seek integration, while many remain in seclusion."
+  },
+  {
+    "name": "Goblin",
+    "rarity": "Common",
+    "region": "Forests and jungles across Tivmir",
+    "description": "Tribal, reckless, and spirited. Their nature makes cohabitation with other races difficult."
+  },
+  {
+    "name": "Human",
+    "rarity": "Common",
+    "region": "Scattered evenly across Tivmir",
+    "description": "Formerly dominant, now integrated across the world. Adaptable and found in most societies."
+  },
+  {
+    "name": "Orc",
+    "rarity": "Common",
+    "region": "Kratoria",
+    "description": "Technologically advanced, proud, and philosophical. Orcish cities are hubs of innovation."
+  },
+  {
+    "name": "Tabaxi",
+    "rarity": "Common",
+    "region": "Hasar",
+    "description": "Desert and tundra dwellers, adaptable and politically influential through magic and royalty."
+  },
+  {
+    "name": "Goliath",
+    "rarity": "Uncommon",
+    "region": "Mountain peaks",
+    "description": "Competitive and physically formidable. Rarely leave their native peaks."
+  },
+  {
+    "name": "Halfling",
+    "rarity": "Uncommon",
+    "region": "Various rural villages",
+    "description": "Trustworthy and cozy folk, known for surviving among larger beings."
+  },
+  {
+    "name": "Half-Orc",
+    "rarity": "Uncommon",
+    "region": "Mixed settlements",
+    "description": "Walk the line between two heritages, often judged by both."
+  },
+  {
+    "name": "Kenku",
+    "rarity": "Uncommon",
+    "region": "Scattered in mimicry-suited roles",
+    "description": "Voiceless mimics with tribal roots. Found where mimicry is a benefit."
+  },
+  {
+    "name": "Leonin",
+    "rarity": "Uncommon",
+    "region": "Deserts of Foundland",
+    "description": "Muscular warriors, infrequently leave home. Noted for combat prowess."
+  },
+  {
+    "name": "Lizardfolk",
+    "rarity": "Uncommon",
+    "region": "Sabhaith",
+    "description": "Swamp dwellers. Often ignored, they thrive in political shadows."
+  },
+  {
+    "name": "Owlin",
+    "rarity": "Uncommon",
+    "region": "Vertical cities of Múnlǔdì",
+    "description": "Bookish and isolated, they delve into knowledge and introspection."
+  },
+  {
+    "name": "Tortle",
+    "rarity": "Uncommon",
+    "region": "Island continent of Katsa",
+    "description": "Slow-paced and seaside-dwelling. Calm demeanor with culinary renown."
+  },
+  {
+    "name": "Bugbear",
+    "rarity": "Rare",
+    "region": "Deep forests",
+    "description": "Giant goblinoids, elusive and rarely travel in groups."
+  },
+  {
+    "name": "Dragonborn",
+    "rarity": "Rare",
+    "region": "Kalheim",
+    "description": "Noble warriors, nearly extinct outside Kalheim. Known for protection and valor."
+  },
+  {
+    "name": "Half-Elf",
+    "rarity": "Rare",
+    "region": "Scattered",
+    "description": "Children of Elves and other races, often viewed with even more disdain than their Elven parents."
+  },
+  {
+    "name": "Harengon",
+    "rarity": "Rare",
+    "region": "Sonma-Tua",
+    "description": "Agile, dexterous jungle farmers with high metabolisms and boundless energy."
+  },
+  {
+    "name": "Loxodon",
+    "rarity": "Rare",
+    "region": "Sonma-Tua",
+    "description": "Massive nomads with merchant hearts and unmatched culinary skill."
+  },
+  {
+    "name": "Minotaur",
+    "rarity": "Rare",
+    "region": "Wilderness",
+    "description": "Boisterous but often misunderstood. Seen more as beasts than people."
+  },
+  {
+    "name": "Tiefling",
+    "rarity": "Rare",
+    "region": "Secretive enclaves",
+    "description": "Reviled and hunted, often live in disguise. Viewed as cursed or demonic."
+  },
+  {
+    "name": "Yuan-ti",
+    "rarity": "Rare",
+    "region": "Sonma-Tua, Convus, Sabhaith",
+    "description": "Serpentine and ritual-born. Struggle to integrate due to their eerie appearance."
+  },
+  {
+    "name": "Aasimar",
+    "rarity": "Very Rare",
+    "region": "Unknown",
+    "description": "Born of Elves or Drow with no clear pattern. Seen as divine omens."
+  },
+  {
+    "name": "Eladrin",
+    "rarity": "Very Rare",
+    "region": "Variable",
+    "description": "Fey-touched Elves with seasonal attunements. Born of high mana conditions."
+  },
+  {
+    "name": "Genasi",
+    "rarity": "Very Rare",
+    "region": "Elementally disturbed areas",
+    "description": "Born during planar turbulence, embody elemental aspects."
+  },
+  {
+    "name": "Githyanki",
+    "rarity": "Very Rare",
+    "region": "Planes unknown",
+    "description": "Planar travelers, possibly banished or extinct. Shrouded in myth."
+  },
+  {
+    "name": "Gnome",
+    "rarity": "Very Rare",
+    "region": "Unknown",
+    "description": "Playful and rare Feyfolk. Little is known; they may not have any homeland."
+  },
+  {
+    "name": "Shifter",
+    "rarity": "Very Rare",
+    "region": "Scattered",
+    "description": "Children of lycanthropes with bestial traits. Live in hiding or nomadic bands."
+  },
+  {
+    "name": "Triton",
+    "rarity": "Very Rare",
+    "region": "Ocean depths",
+    "description": "Aquatic beings rarely seen. Said to dwell in underwater cities and reefs."
+  }
+]

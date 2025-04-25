@@ -1,0 +1,62 @@
+[
+  {
+    "text": "\u00c9li",
+    "starts_vowel": true,
+    "ends_vowel": true,
+    "meaning": "star"
+  },
+  {
+    "text": "Syl",
+    "starts_vowel": false,
+    "ends_vowel": false,
+    "meaning": "forest"
+  },
+  {
+    "text": "Lumi",
+    "starts_vowel": true,
+    "ends_vowel": true,
+    "meaning": "light"
+  },
+  {
+    "text": "Aur\u00e9",
+    "starts_vowel": true,
+    "ends_vowel": true,
+    "meaning": "dawn"
+  },
+  {
+    "text": "Faye",
+    "starts_vowel": true,
+    "ends_vowel": true,
+    "meaning": "fae"
+  },
+  {
+    "text": "Th\u00e9o",
+    "starts_vowel": true,
+    "ends_vowel": true,
+    "meaning": "divine"
+  },
+  {
+    "text": "Eld",
+    "starts_vowel": false,
+    "ends_vowel": false,
+    "meaning": "elder"
+  },
+  {
+    "text": "Wil",
+    "starts_vowel": false,
+    "ends_vowel": false,
+    "meaning": "will"
+  },
+  {
+    "text": "Frey",
+    "starts_vowel": false,
+    "ends_vowel": false,
+    "meaning": "peace"
+  },
+  {
+    "text": "Ileth",
+    "starts_vowel": true,
+    "ends_vowel": false,
+    "meaning": "serenity"
+  }
+]

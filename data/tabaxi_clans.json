@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Noste",
+    "meaning": "To scent out / to track power",
+    "region": "Desert city-states and trade hubs",
+    "traits": "Rich, magically advanced, politically ruthless",
+    "twist": "Tied to ancient entities best left sleeping."
+  },
+  {
+    "name": "Tiyral",
+    "meaning": "Wind's murmur / whispers between dunes",
+    "region": "Cloud-banked mountain plateaus",
+    "traits": "Poetic, diplomatic, masters of breath-bound oaths",
+    "twist": "Spies and envoys are trained together, indistinguishable."
+  },
+  {
+    "name": "Vazhana",
+    "meaning": "Firekeeper / ash-blood",
+    "region": "Volcanic plains and obsidian cliffs",
+    "traits": "Passionate, smiths, battle poets",
+    "twist": "Worship a living flame relic that sings."
+  },
+  {
+    "name": "Lorimen",
+    "meaning": "Mist-veiled watchers",
+    "region": "Dense river jungles",
+    "traits": "Herbalists, poison-masters, isolationist",
+    "twist": "Speak to jungle spirits in an unknown tongue."
+  },
+  {
+    "name": "Eskaari",
+    "meaning": "Those of the broken moon",
+    "region": "Northern snowfields and tundras",
+    "traits": "Astrologers, ghostwalkers, secretive",
+    "twist": "Do not speak their birth names aloud."
+  },
+  {
+    "name": "Tashen",
+    "meaning": "Those who scatter seeds",
+    "region": "Nomadic, spread across many lands",
+    "traits": "Adaptive, multilingual traders",
+    "twist": "Keep sacred bracelets from their birth-tribe."
+  },
+  {
+    "name": "Dazhani",
+    "meaning": "Glasscat / Mirror-soul",
+    "region": "Coastal arcane cities and embassies",
+    "traits": "Elegant, scholarly, diplomatic",
+    "twist": "Reflections move a heartbeat behind them."
+  },
+  {
+    "name": "Yassura",
+    "meaning": "Daughter of dusk / soft-fanged",
+    "region": "Undercities and cliffside dwellings",
+    "traits": "Silver-tongued, elusive, superstition-bound",
+    "twist": "Born and raised in shadow."
+  }
+]
