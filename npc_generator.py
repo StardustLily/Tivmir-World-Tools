@@ -145,7 +145,7 @@ def generate_npc():
         elif race_name == "Lizardfolk":
               if lizardfolk_names: name_entry = random.choice(lizardfolk_names); npc_name = name_entry.get('text', '[Name Error]')
               else: npc_name = f"[{race_name} Name Data Missing] {race_name}"
-        elif race_name == "Yuan-Ti":
+        elif race_name == "Yuan-ti":
               if yuan_ti_names: name_entry = random.choice(yuan_ti_names); npc_name = name_entry.get('text', '[Name Error]')
               else: npc_name = f"[{race_name} Name Data Missing] {race_name}"
         elif race_name == "Goblin":
