@@ -2187,7 +2187,7 @@ def generate_shifter_name():
         f"*{name_meaning}*" # Add the meaning/description in italics
     )
 
-# === Generate Githyanki Name Function ===
+# === (Revised) Generate Githyanki Name Function ===
 def generate_githyanki_name(gender="Any"):
     """Generates a Githyanki name with meanings for the Name Generator tab."""
     race_key = "githyanki"
@@ -2198,17 +2198,18 @@ def generate_githyanki_name(gender="Any"):
     if data["error"]: return f"Error: {data['error']}"
     if not data["name"]: return "Error: Name generation failed silently."
 
-    # Meaning lines include Given + Title parts
+    # --- FIX: Explicitly build the output string components ---
+    name_line = f"⚔️ **Name:** {data['name']}"
+    # Create the block of meaning lines
     meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+    meanings_block = "\n".join(meaning_lines)
+    # Determine the poetic label
+    poetic_label = "Poetic Meaning:" # Githyanki names are Given + Title, so poetic meaning applies to both parts together
 
-    poetic_label = "Poetic Meaning:"
+    poetic_line = f"➔ **{poetic_label}** {data['poetic']}"
 
-    # Use a sword or galaxy emoji?
-    return (
-        f"⚔️ **Name:** {data['name']}\n\n" # Or 🌌
-        "\n".join(meaning_lines) +
-        f"\n\n➔ **{poetic_label}** {data['poetic']}"
-    )
+    # Combine components with double newlines for spacing
+    return f"{name_line}\n\n{meanings_block}\n\n{poetic_line}"
 
 # IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
 # Example for Half-Elf (Elven style):
