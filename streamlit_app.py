@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_clipboard import st_clipboard
 import random
 import json
 import os
@@ -412,10 +411,6 @@ with tabs[0]:
         st.markdown("---")
     with st.container(border=True):
         st.markdown(st.session_state.npc_output)
-        if CLIPBOARD_AVAILABLE:
-            st_clipboard(st.session_state.npc_output, label="📋 Copy NPC")
-        else:
-            st.warning("📋 Clipboard copy not available!")
 
 with tabs[1]:
     st.header("🔤 Name Generator")
