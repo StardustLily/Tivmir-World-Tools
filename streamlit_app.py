@@ -59,7 +59,13 @@ name_data = {
         "suffixes": load_json("drow_suffixes.json"),
         "gloss": load_json("drow_poetic_gloss.json"),
         "surnames": load_json("drow_surnames.json")
-}}
+},
+"draconic": {
+        "clans": load_json("draconic_clans.json"),
+        "prefixes": load_json("draconic_prefixes.json"),
+        "middles": load_json("draconic_middles.json"),
+        "suffixes": load_json("draconic_suffixes.json"),
+        "gloss": load_json("draconic_poetic_gloss.json")}
 
 # Emoji Icons (remains the same)
 icons = {
@@ -299,6 +305,60 @@ def _get_common_name_string(gender_filter="Any"):
 
     return f"{first_name_entry['text']} {surname_entry['text']}"
 
+# === NEW Helper Function for Dragonborn Names ===
+def _generate_dragonborn_name_data(race_data):
+    """
+    Internal helper to generate Dragonborn names (ClanName-k-PersonalName structure).
+    Accepts the draconic data dictionary.
+    Returns a dictionary containing 'name', 'parts', 'poetic', 'error'.
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    # --- Access data directly ---
+    clans = race_data.get("clans")
+    prefixes = race_data.get("prefixes")
+    middles = race_data.get("middles") # Might be missing
+    suffixes = race_data.get("suffixes")
+    gloss = race_data.get("gloss")
+
+    # --- Basic Data Validation ---
+    if not clans or not prefixes or not suffixes or not gloss:
+        error_msg = "Missing core Draconic data (clans, prefixes, suffixes, or gloss)."
+        st.error(error_msg)
+        result["error"] = error_msg
+        return result
+
+    # --- Select Clan Name ---
+    clan_part = random.choice(clans)
+    # Create a part dictionary for the clan name
+    clan_dict = {"text": clan_part["text"], "meaning": clan_part.get("meaning", "N/A")}
+    all_parts_for_meaning = [clan_dict] # Start list for poetic meaning
+
+    # --- Assemble Personal Name Parts (using existing helper) ---
+    # Dragonborn names are unisex, so use "Any" filter
+    personal_parts = _assemble_name_parts(prefixes, middles or [], suffixes, gender_filter="Any")
+    if not personal_parts:
+        error_msg = "Failed to assemble Draconic personal name parts."
+        st.warning(error_msg)
+        result["error"] = error_msg
+        # Still return the clan name at least
+        result["name"] = clan_dict["text"] + "-k-[Error]"
+        result["parts"] = [clan_dict]
+        return result
+
+    personal_name_str = "".join(p["text"] for p in personal_parts)
+    all_parts_for_meaning.extend(personal_parts) # Add personal parts for gloss lookup
+
+    # --- Combine into Full Name ---
+    full_name = f"{clan_dict['text']}-k-{personal_name_str}"
+    result["name"] = full_name
+    result["parts"] = all_parts_for_meaning # Store clan + personal parts
+
+    # --- Generate Poetic Meaning (based on clan + personal parts) ---
+    result["poetic"] = _generate_poetic_meaning(all_parts_for_meaning, gloss)
+
+    return result
+
 # === (Corrected) Generate NPC Function ===
 def generate_npc():
     if not races:
@@ -421,6 +481,18 @@ def generate_npc():
             name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
             if not name_data_result["error"] and name_data_result["name"]:
                 # Drow names don't have separate surnames in this setup
+                npc_name = name_data_result["name"]
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Dragonborn":
+        race_key = "draconic"
+        if race_key in name_data:
+            # Call the new Dragonborn helper
+            name_data_result = _generate_dragonborn_name_data(name_data[race_key])
+            if not name_data_result["error"] and name_data_result["name"]:
                 npc_name = name_data_result["name"]
             else:
                 npc_name = f"[{race_name} Name Error] {race_name}"
@@ -570,6 +642,31 @@ def generate_drow_name(gender="Any"):
         f"\n\n➔ **{poetic_label}** {data['poetic']}"
     )
 
+# === Generate Dragonborn Name Function ===
+def generate_dragonborn_name(): # No gender parameter needed
+    """Generates a Dragonborn name with meanings for the Name Generator tab."""
+    race_key = "draconic"
+    if race_key not in name_data: return "Error: Draconic name data not loaded."
+    # Pass the Draconic sub-dictionary to the new helper
+    data = _generate_dragonborn_name_data(name_data[race_key])
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include clan + personal parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    # Poetic meaning applies to the whole name construct
+    poetic_label = "Poetic Meaning:"
+
+    # Use a dragon emoji
+    return (
+        f"🐉 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
+
 # IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
 # Example for Half-Elf (Elven style):
 # Replace:
@@ -689,7 +786,7 @@ with tabs[1]:
     st.header("🔤 Name Generator")
     race = st.selectbox(
         "Choose a race:",
-        ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow"], # <-- Added Drow
+        ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow", "Dragonborn"]
         key="name_race"
     )
     if race == "Tabaxi":
@@ -744,6 +841,12 @@ with tabs[1]:
         if st.button("Generate Drow Name", key="drow_name_button"):
              # Pass the selected gender
              st.session_state.name_output = generate_drow_name(gender=gender)
+
+    elif race == "Dragonborn":
+        # NO gender selection needed for Dragonborn
+        if st.button("Generate Dragonborn Name", key="dragonborn_name_button"):
+             # Call the function without gender
+             st.session_state.name_output = generate_dragonborn_name()
 
     # Use elif for Elf now, not else, to be specific
     elif race == "Elf":

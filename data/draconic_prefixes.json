@@ -1,0 +1,9 @@
+[
+  { "text": "Ar", "starts_vowel": true, "ends_vowel": false, "meaning": "great high", "gender": "Unisex" },
+  { "text": "Ver", "starts_vowel": false, "ends_vowel": false, "meaning": "wise knowing", "gender": "Unisex" },
+  { "text": "Tor", "starts_vowel": false, "ends_vowel": false, "meaning": "strong mighty", "gender": "Unisex" },
+  { "text": "Jes", "starts_vowel": false, "ends_vowel": false, "meaning": "sharp keen", "gender": "Unisex" },
+  { "text": "Kon", "starts_vowel": false, "ends_vowel": false, "meaning": "guardian watcher", "gender": "Unisex" },
+  { "text": "Zha", "starts_vowel": false, "ends_vowel": true, "meaning": "ancient elder", "gender": "Unisex" },
+  { "text": "Kash", "starts_vowel": false, "ends_vowel": false, "meaning": "fierce bold", "gender": "Unisex" }
+]
