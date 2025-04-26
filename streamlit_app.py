@@ -418,7 +418,7 @@ def generate_npc():
         race_key = "drow"
         if race_key in name_data:
             # Pass the Drow sub-dictionary
-            name_data_result = _generate_structured_name__data(name_data[race_key], npc_gender)
+            name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
             if not name_data_result["error"] and name_data_result["name"]:
                 # Drow names don't have separate surnames in this setup
                 npc_name = name_data_result["name"]
