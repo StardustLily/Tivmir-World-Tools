@@ -50,7 +50,8 @@ name_data = {
         "prefixes": load_json("infernal_prefixes.json"),
         "middles": load_json("infernal_middles.json"),
         "suffixes": load_json("infernal_suffixes.json"),
-        "gloss": load_json("infernal_poetic_gloss.json")
+        "gloss": load_json("infernal_poetic_gloss.json"),
+        "surnames": load_json("infernal_surnames.json")
     },
     # Add new races here in the future
     # "dwarf": { ... }
@@ -264,40 +265,6 @@ def _generate_structured_name_data(race_data, gender="Any"): # Accepts the race'
 
     return result # Return early with error
 
-    # --- Assemble Parts ---
-    parts = _assemble_name_parts(prefixes, middles, suffixes, gender_filter=gender)
-    if not parts:
-        error_msg = f"Failed to assemble {race_key.capitalize()} name parts."
-        st.warning(error_msg)
-        result["error"] = error_msg
-        return result # Return early
-
-    result["parts"] = parts
-    first_name = "".join(p["text"] for p in parts) # First name generated from parts
-
-    # --- Handle Surnames (Orcish) ---
-    surname = ""
-    surname_part = None # Store surname details if applicable
-    if race_key == "orc" and surnames:
-        surname_entry = random.choice(surnames)
-        surname = surname_entry["text"]
-        # Create a pseudo-part for the surname to store its meaning
-        surname_part = {"text": surname, "meaning": surname_entry.get('meaning', 'N/A')}
-        full_name = f"{first_name} {surname}"
-    else:
-        full_name = first_name # Most races just use the generated name
-
-    result["name"] = full_name
-
-    # --- Poetic Meaning (based on generated parts, excluding surname for Orcs) ---
-    result["poetic"] = _generate_poetic_meaning(parts, gloss) # Pass the correct gloss
-
-    # Add surname part to parts list *after* poetic meaning generation if applicable
-    if surname_part:
-        result["parts"].append(surname_part)
-
-    return result # Return dictionary with name, parts, poetic meaning, and potential error
-
 # Helper specifically for Common names (returns only string)
 # Add gender_filter parameter
 def _get_common_name_string(gender_filter="Any"):
@@ -478,21 +445,27 @@ def generate_orc_name(gender="Any"):
         f"\n\n➔ **Poetic Meaning (First Name):** {data['poetic']}"
     )
 
-
+# === (Revised) Generate Infernal Name Function ===
 def generate_infernal_name(gender="Any"):
     race_key = "infernal"
     if race_key not in name_data: return "Error: Infernal name data not loaded."
-    data = _generate_structured_name_data(name_data[race_key], gender) # Pass sub-dictionary
-    # ... (rest of the function formatting remains the same) ...
+    # Pass the sub-dictionary to the helper
+    data = _generate_structured_name_data(name_data[race_key], gender)
+
     if data["error"]: return f"Error: {data['error']}"
     if not data["name"]: return "Error: Name generation failed silently."
-    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
-    return (
-        f"🔥 **Name:** {data['name']}\n\n" +
-        "\n".join(meaning_lines) +
-        f"\n\n➔ **Poetic Meaning:** {data['poetic']}"
-    )
 
+    # Meaning lines will include surname meaning if present, as helper adds it to 'parts'
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    # Clarify that poetic meaning applies to the name generated from parts (first name)
+    poetic_label = "Poetic Meaning (First Name):" if len(data["parts"]) > 1 and any(p for p in data["parts"] if p.get("text") == data["name"].split(" ")[-1]) else "Poetic Meaning:" # Crude check if surname seems present
+
+    return (
+        f"🔥 **Name:** {data['name']}\n\n" + # Full name includes surname now
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
 
 def generate_tabaxi_name(selected_clan):
     race_key = "tabaxi"
@@ -685,10 +658,16 @@ with tabs[1]:
              st.session_state.name_output = generate_orc_name(gender=gender)
 
     elif race == "Tiefling":
-        # NO gender selection shown here
+        # --- ADD Gender selection HERE for Tieflings ---
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="tiefling_gender_radio", # Use unique key
+            horizontal=True
+        )
+        # --- End ADD ---
         if st.button("Generate Infernal Name", key="tiefling_name_button"):
-             # Pass the selected gender
-             st.session_state.name_output = generate_infernal_name()
+             # --- Pass the selected gender ---
+             st.session_state.name_output = generate_infernal_name(gender=gender)
 
     # Use elif for Elf now, not else, to be specific
     elif race == "Elf":
