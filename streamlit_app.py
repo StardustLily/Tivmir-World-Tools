@@ -295,7 +295,7 @@ def _get_common_name_string(gender_filter="Any"):
 
     return f"{first_name_entry['text']} {surname_entry['text']}"
 
-# === (Revised) Generate NPC Function ===
+# === (Corrected) Generate NPC Function ===
 def generate_npc():
     if not races:
         st.error("Race data is missing or empty.")
@@ -310,90 +310,115 @@ def generate_npc():
     npc_name = f"Unnamed {race_name}" # Default placeholder
     clan_name = None # Initialize clan_name
 
-    # --- Generate Name based on Race ---
     # Use default "Any" gender for NPC generation for simplicity for now
-    # (Could add gender selection to NPC gen later if desired)
     npc_gender = "Any"
 
+    # --- Generate Name based on Race (Using Correct Data Structure) ---
+
     if race_name == "Elf":
-        # Call the simplified wrapper which uses the helper
-        name_data = _generate_structured_name_data("elf", npc_gender)
-        if not name_data["error"] and name_data["name"]:
-            npc_name = name_data["name"]
+        race_key = "elf"
+        if race_key in name_data:
+            # *** FIX: Pass the dictionary name_data[race_key] ***
+            name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"]
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
         else:
-            npc_name = f"[{race_name} Name Error] {race_name}"
+             npc_name = f"[{race_name} Name Data Missing] {race_name}"
 
     elif race_name == "Tabaxi":
-        # Get name part using the helper
-        name_data = _generate_structured_name_data("tabaxi", npc_gender)
-        if not name_data["error"] and name_data["name"]:
-            npc_first_name = name_data["name"]
-        else:
-            npc_first_name = f"[{race_name} Name Error]"
+        race_key = "tabaxi"
+        if race_key in name_data:
+            # *** FIX: Pass the dictionary name_data[race_key] ***
+            name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_first_name = name_data_result["name"]
+            else:
+                npc_first_name = f"[{race_name} Name Error]"
 
-        # Assign Clan Name (Logic remains similar)
-        if tabaxi_clans:
-             clan_entry = random.choice(tabaxi_clans)
-             clan_name = clan_entry['name'] # Store for details output
-             npc_name = f"{npc_first_name} of the {clan_name} Clan" # Construct display name
+            # Assign Clan Name (Access clans via name_data)
+            clan_list = name_data[race_key].get("clans", [])
+            if clan_list:
+                 clan_entry = random.choice(clan_list)
+                 clan_name = clan_entry['name'] # Store for details output
+                 npc_name = f"{npc_first_name} of the {clan_name} Clan" # Construct display name
+            else:
+                 npc_name = f"{npc_first_name} [Clan Data Missing]"
+                 clan_name = "[Clan Data Missing]" # Placeholder
         else:
-             npc_name = f"{npc_first_name} [Clan Data Missing]"
-             clan_name = "[Clan Data Missing]" # Placeholder
+            npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
 
     elif race_name == "Human":
-        # Common name logic remains the same
-        if common_first_names and common_surnames:
-             npc_name = _get_common_name_string(gender_filter=npc_gender)
-        else: npc_name = f"[Common Name Data Missing] {race_name}"
+        # Common name logic (already updated to use name_data)
+        npc_name = _get_common_name_string(gender_filter=npc_gender)
+
 
     elif race_name == "Half-Elf":
-        # Logic remains the same, but internal calls are now simpler
         chosen_style = random.choice(["Elven", "Common"])
         if chosen_style == "Elven":
-            name_data = _generate_structured_name_data("elf", npc_gender) # Use helper via race key
-            if not name_data["error"] and name_data["name"]: npc_name = name_data["name"]
-            else: npc_name = f"[Elven Name Error] Half-Elf"
+            race_key = "elf"
+            if race_key in name_data:
+                 # *** FIX: Pass the dictionary name_data[race_key] ***
+                name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
+                if not name_data_result["error"] and name_data_result["name"]: npc_name = name_data_result["name"]
+                else: npc_name = f"[Elven Name Error] Half-Elf"
+            else:
+                 npc_name = f"[Elven Name Data Missing] Half-Elf"
         else: # Common style
-            if common_first_names and common_surnames: npc_name = _get_common_name_string(gender_filter=npc_gender)
-            else: npc_name = f"[Common Name Data Missing] Half-Elf"
+            npc_name = _get_common_name_string(gender_filter=npc_gender)
+
 
     elif race_name == "Orc":
-        # Use helper via race key
-        name_data = _generate_structured_name_data("orc", npc_gender)
-        if not name_data["error"] and name_data["name"]:
-            npc_name = name_data["name"] # Helper now includes surname
+        race_key = "orc"
+        if race_key in name_data:
+            # *** FIX: Pass the dictionary name_data[race_key] ***
+            name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Helper now includes surname
+            else:
+                 npc_name = f"[{race_name} Name Error] {race_name}"
         else:
-             npc_name = f"[{race_name} Name Error] {race_name}"
+            npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
 
     elif race_name == "Half-Orc":
-        # Logic remains the same, calls are simpler
         chosen_style = random.choice(["Orc", "Common"])
         if chosen_style == "Orc":
-             name_data = _generate_structured_name_data("orc", npc_gender) # Use helper via race key
-             if not name_data["error"] and name_data["name"]: npc_name = name_data["name"]
-             else: npc_name = f"[Orcish Name Error] Half-Orc"
+             race_key = "orc"
+             if race_key in name_data:
+                 # *** FIX: Pass the dictionary name_data[race_key] ***
+                 name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
+                 if not name_data_result["error"] and name_data_result["name"]: npc_name = name_data_result["name"]
+                 else: npc_name = f"[Orcish Name Error] Half-Orc"
+             else:
+                 npc_name = f"[Orcish Name Data Missing] Half-Orc"
         else: # Common style
-             if common_first_names and common_surnames: npc_name = _get_common_name_string(gender_filter=npc_gender)
-             else: npc_name = f"[Common Name Data Missing] Half-Orc"
+             npc_name = _get_common_name_string(gender_filter=npc_gender)
+
 
     elif race_name == "Tiefling":
-         # Use helper via race key
-         name_data = _generate_structured_name_data("infernal", npc_gender)
-         if not name_data["error"] and name_data["name"]:
-             npc_name = name_data["name"]
+         race_key = "infernal" # Key used in name_data
+         if race_key in name_data:
+             # *** FIX: Pass the dictionary name_data[race_key] ***
+             name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
+             if not name_data_result["error"] and name_data_result["name"]:
+                 npc_name = name_data_result["name"] # Includes surname now
+             else:
+                 npc_name = f"[{race_name} Name Error] {race_name}"
          else:
-             npc_name = f"[{race_name} Name Error] {race_name}"
+            npc_name = f"[{race_name} Name Data Missing] {race_name}"
 
-    # --- Add more elif blocks here for future races using _generate_structured_name_data ---
 
-    # --- Assemble NPC Output ---
+    # --- Add more elif blocks here for future races ---
+
+    # --- Assemble NPC Output --- (Rest of the function remains the same)
     npc_lines = [f"👤 **Name:** {npc_name}"]
 
-    # Add Clan details if applicable (logic remains the same)
     if race_name == "Tabaxi" and clan_name and clan_name != "[Clan Data Missing]":
          npc_lines.append(f"🏡 **Clan:** {clan_name}")
 
-    # Add Separator and Basic Info Header (logic remains the same)
     npc_lines.extend([
         "---",
         "💼 **Basic Info**",
@@ -404,7 +429,6 @@ def generate_npc():
         "🎭 **Personality & Story**"
     ])
 
-    # Add attributes (logic remains the same)
     for category, options in npc_attributes.items():
         if not options: continue
         clean_category = category.strip()
