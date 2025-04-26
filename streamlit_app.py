@@ -691,7 +691,7 @@ with tabs[1]:
         "Choose a race:",
         ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow"], # <-- Added Drow
         key="name_race"
-
+    )
     if race == "Tabaxi":
         # NO gender selection shown here
         clan_names = [clan["name"] for clan in tabaxi_clans]
