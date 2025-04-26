@@ -7,6 +7,7 @@ import os
 st.set_page_config(page_title="Tivmir World Tools", layout="centered")
 
 # === Load Data Functions ===
+@st.cache_data #Caches JSON files
 def load_json(filename):
     try:
         path = os.path.join("data", filename)
@@ -160,21 +161,44 @@ def generate_elven_name():
 
 # === UI ===
 st.title("🌸 Tivmir World Tools")
+
+# Initialize session state variables if they don't exist
+if 'npc_output' not in st.session_state:
+    st.session_state.npc_output = ""
+if 'name_output' not in st.session_state:
+    st.session_state.name_output = ""
+# (Initialize others as needed, e.g., for selected clan state if desired)
+
 tabs = st.tabs(["🌿 NPC Generator", "🔤 Name Generator"])
 
 with tabs[0]:
     st.header("🌿 NPC Generator")
     if st.button("Generate NPC", key="npc_button"):
-        st.markdown(generate_npc())
+        # Store result in session state
+        st.session_state.npc_output = generate_npc()
+
+    # Always display from session state
+    if st.session_state.npc_output:
+        st.markdown("---") # Optional separator
+        st.markdown(st.session_state.npc_output)
+
 
 with tabs[1]:
     st.header("🔤 Name Generator")
     race = st.selectbox("Choose a race:", ["Elven", "Tabaxi"], key="name_race")
+
     if race == "Tabaxi":
         clan_names = [clan["name"] for clan in tabaxi_clans]
         selected_clan = st.selectbox("Choose a Tabaxi clan:", clan_names, key="tabaxi_clan")
         if st.button("Generate Tabaxi Name", key="tabaxi_name_button"):
-            st.markdown(generate_tabaxi_name(selected_clan))
-    else:
+            # Store result
+            st.session_state.name_output = generate_tabaxi_name(selected_clan)
+    else: # Elven
         if st.button("Generate Elven Name", key="elven_name_button"):
-            st.markdown(generate_elven_name())
+            # Store result
+            st.session_state.name_output = generate_elven_name()
+
+    # Always display name output from session state
+    if st.session_state.name_output:
+        st.markdown("---") # Optional separator
+        st.markdown(st.session_state.name_output)
