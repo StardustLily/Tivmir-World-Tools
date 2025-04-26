@@ -445,7 +445,7 @@ def _generate_owlin_name_data(race_data):
 
     # --- Combine into Full Name ---
     full_name = f"{personal_dict['text']}{descriptor_dict['text']}" # Combine directly, no space? Or add space? Let's add space.
-    full_name = f"{personal_dict['text']} {descriptor_dict['text']}"
+    full_name = f"{personal_dict['text']}{descriptor_dict['text']}"
     result["name"] = full_name
     result["parts"] = all_parts_for_meaning
 
