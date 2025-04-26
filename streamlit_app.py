@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_clipboard import st_clipboard
 import random
 import json
 import os
@@ -31,6 +32,10 @@ elven_suffixes = load_json("elven_suffixes.json")
 elven_poetic_gloss = load_json("elven_poetic_gloss.json")
 common_first_names = load_json("common_first_names.json")
 common_surnames = load_json("common_surnames.json")
+orcish_prefixes = load_json("orcish_prefixes.json")
+orcish_middles = load_json("orcish_middles.json")
+orcish_suffixes = load_json("orcish_suffixes.json")
+orcish_poetic_gloss = load_json("orcish_poetic_gloss.json")
 
 # === Emoji Icons ===
 icons = {
@@ -219,6 +224,13 @@ def generate_npc():
                 npc_name = _get_common_name_string()
             else: npc_name = f"[Common Name Data Missing] Half-Elf"
 
+    elif race_name == "Orc":
+        if all([orcish_prefixes, orcish_middles, orcish_suffixes]): # Check data exists
+             generated_parts = _assemble_name_parts(orcish_prefixes, orcish_middles, orcish_suffixes)
+             if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
+             else: npc_name = f"[Orcish Name Assembly Failed] {race_name}"
+        else: npc_name = f"[Orcish Name Data Missing] {race_name}"
+
     # --- Add more elif blocks here for future races ---
     # elif race_name == "Dwarf":
     #     if all ([dwarf_prefixes, ...]): # Load dwarf data first
@@ -341,6 +353,37 @@ def generate_common_name():
         "" # Or just return name and meanings
     )
 
+# === Generate Orcish Name Function (for Name Generator Tab) ===
+def generate_orc_name():
+    """Generates an Orcish name with meanings for the Name Generator tab."""
+    # Check required data is loaded
+    if not all([orcish_prefixes, orcish_middles, orcish_suffixes, orcish_poetic_gloss]):
+         st.error("Missing required Orcish name data.")
+         return "Error: Missing data."
+
+    # Assemble the parts using the main helper
+    parts = _assemble_name_parts(orcish_prefixes, orcish_middles, orcish_suffixes)
+    if not parts:
+        # Handle assembly failure if needed (though _assemble should usually return something)
+        st.warning("Name part assembly failed unexpectedly.")
+        return "Error: Failed to assemble name parts."
+
+    # Combine parts into the full name string
+    full_name = "".join(p["text"] for p in parts)
+
+    # Create the list of meaning lines
+    meaning_lines = [f"- **{p['text']}** = {p['meaning']}" for p in parts]
+
+    # Generate the poetic meaning using the specific Orcish gloss
+    poetic = _generate_poetic_meaning(parts, orcish_poetic_gloss)
+
+    # Return the formatted output string (using a gear or volcano emoji perhaps?)
+    return (
+        f"⚙️ **Name:** {full_name}\n\n" + # Or use 🌋
+        "\n".join(meaning_lines) + # Single newline for bullet points looks better here
+        f"\n\n➔ **Poetic Meaning:** {poetic}"
+    )
+
 # === UI ===
 st.title("🌸 Tivmir World Tools")
 
@@ -355,18 +398,25 @@ tabs = st.tabs(["🌿 NPC Generator", "🔤 Name Generator"])
 
 with tabs[0]:
     st.header("🌿 NPC Generator")
-    if st.button("Generate NPC", key="npc_button"):
-        # Store result in session state
-        st.session_state.npc_output = generate_npc()
+    col1, col2 = st.columns([1, 1]) # Put buttons side-by-side
+    with col1:
+        if st.button("Generate NPC", key="npc_button"):
+            st.session_state.npc_output = generate_npc()
+    with col2:
+        # Add this button
+        if st.button("Clear Output", key="npc_clear"):
+            st.session_state.npc_output = "" # Clear the state
 
     # Always display from session state
     if st.session_state.npc_output:
-        st.markdown("---") # Optional separator
+    st.markdown("---") # Or st.divider()
+    with st.container(border=True): # Add a border around the output
         st.markdown(st.session_state.npc_output)
+        st_clipboard(st.session_state.npc_output, label="📋 Copy NPC", key="npc_copy_button")
 
 with tabs[1]:
     st.header("🔤 Name Generator")
-    race = st.selectbox("Choose a race:", ["Elven", "Tabaxi", "Human"], key="name_race")
+    race = st.selectbox("Choose a race:", ["Elven", "Tabaxi", "Human", "Orc"], key="name_race")
 
     if race == "Tabaxi":
         clan_names = [clan["name"] for clan in tabaxi_clans]
@@ -377,6 +427,10 @@ with tabs[1]:
     elif race == "Human":
          if st.button("Generate Common Name", key="common_name_button"):
               st.session_state.name_output = generate_common_name()
+    elif race == "Orc":
+         if st.button("Generate Orcish Name", key="orc_name_button"):
+              # Call the function we will create in the next step
+              st.session_state.name_output = generate_orc_name()
     else: # Elven
         if st.button("Generate Elven Name", key="elven_name_button"):
             # Store result
