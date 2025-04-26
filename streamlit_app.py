@@ -1,30 +1,11 @@
 import streamlit as st
+from streamlit_clipboard import st_clipboard
 import random
 import json
 import os
 
-try:
-    from streamlit_clipboard import st_clipboard
-    CLIPBOARD_AVAILABLE = True
-except ImportError:
-    CLIPBOARD_AVAILABLE = False
-
 # Set page config first!
 st.set_page_config(page_title="Tivmir World Tools", layout="centered")
-
-import subprocess
-
-installed_packages = subprocess.check_output(["pip", "freeze"]).decode("utf-8")
-st.text(installed_packages)
-
-try:
-    import streamlit_clipboard
-    st.success("✅ streamlit-clipboard was installed!")
-except ImportError:
-    st.error("❌ streamlit-clipboard NOT installed")
-
-import subprocess
-st.code(subprocess.check_output(["pip", "freeze"]).decode())
 
 # === Load Data Functions ===
 @st.cache_data #Caches JSON files
@@ -462,6 +443,3 @@ with tabs[1]:
     if st.session_state.name_output:
         st.markdown("---") # Optional separator
         st.markdown(st.session_state.name_output)
-
-if not CLIPBOARD_AVAILABLE:
-    st.warning("📋 Clipboard feature not available. Install with `pip install streamlit-clipboard`")
