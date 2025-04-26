@@ -118,22 +118,39 @@ def _assemble_name_parts(prefixes, middles, suffixes):
     if not middles: middles_list = [] # Handle empty list
     else: middles_list = middles
 
-    use_middle = random.random() < 0.4 and bool(middles_list)
+    use_middle = random.random() < 0.3 and bool(middles_list)
     chosen_parts = []
 
     prefix = random.choice(prefixes)
     chosen_parts.append(prefix)
     last_part_ends_vowel = prefix["ends_vowel"]
+    last_part_text = prefix["text"] # Store last part text
 
     if use_middle:
         middle = _pick_smooth_part(middles_list, last_part_ends_vowel)
         if middle:
-            chosen_parts.append(middle)
-            last_part_ends_vowel = middle["ends_vowel"]
+            # Simple check: If middle starts like prefix ends, try picking ONE more time
+            if len(last_part_text) > 1 and len(middle["text"]) > 1 and \
+               last_part_text.endswith(middle["text"][0]): # Basic check
+                # print(f"Avoiding simple repeat: {last_part_text} + {middle['text']}") # Debug print
+                middle = _pick_smooth_part(middles_list, last_part_ends_vowel) # Try again
+
+            if middle: # Check again after the potential re-pick
+                chosen_parts.append(middle)
+                last_part_ends_vowel = middle["ends_vowel"]
+                last_part_text = middle["text"] # Update last part text
 
     suffix = _pick_smooth_part(suffixes, last_part_ends_vowel)
     if suffix:
-        chosen_parts.append(suffix)
+         # Simple check: If suffix starts like last part ends, try picking ONE more time
+        if len(last_part_text) > 1 and len(suffix["text"]) > 1 and \
+           last_part_text.endswith(suffix["text"][0]):
+            # print(f"Avoiding simple repeat: {last_part_text} + {suffix['text']}") # Debug print
+            suffix = _pick_smooth_part(suffixes, last_part_ends_vowel) # Try again
+
+        if suffix: # Check again after potential re-pick
+            chosen_parts.append(suffix)
+            # No need to update last_part variables here
 
     return chosen_parts # Return the list of chosen part dictionaries
 
@@ -183,6 +200,24 @@ def generate_npc():
         if common_first_names and common_surnames: # Check data exists
              npc_name = _get_common_name_string() # Call the simple helper
         else: npc_name = f"[Common Name Data Missing] {race_name}"
+
+    elif race_name == "Half-Elf":
+        # Randomly choose which heritage name style to use
+        chosen_style = random.choice(["Elven", "Common"])
+
+        if chosen_style == "Elven":
+            st.info("Generating Elven-style name for Half-Elf...") # Optional debug info
+            if all([elven_prefixes, elven_middles, elven_suffixes]):
+                generated_parts = _assemble_name_parts(elven_prefixes, elven_middles, elven_suffixes)
+                if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
+                else: npc_name = f"[Elven Name Assembly Failed] Half-Elf"
+            else: npc_name = f"[Elven Name Data Missing] Half-Elf"
+
+        else: # Chosen style is "Common"
+            st.info("Generating Common-style name for Half-Elf...") # Optional debug info
+            if common_first_names and common_surnames:
+                npc_name = _get_common_name_string()
+            else: npc_name = f"[Common Name Data Missing] Half-Elf"
 
     # --- Add more elif blocks here for future races ---
     # elif race_name == "Dwarf":
@@ -328,7 +363,6 @@ with tabs[0]:
     if st.session_state.npc_output:
         st.markdown("---") # Optional separator
         st.markdown(st.session_state.npc_output)
-
 
 with tabs[1]:
     st.header("🔤 Name Generator")

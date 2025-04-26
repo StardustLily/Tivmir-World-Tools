@@ -42,15 +42,33 @@
     "meaning": "sea"
   },
   {
-    "text": "phin",
-    "starts_vowel": false,
+    "text": "al",
+    "starts_vowel": true,
     "ends_vowel": false,
-    "meaning": "singer"
+    "meaning": "noble"
   },
   {
-    "text": "lind",
-    "starts_vowel": false,
+    "text": "an",
+    "starts_vowel": true,
     "ends_vowel": false,
-    "meaning": "melody"
+    "meaning": "grace"
+  },
+  {
+    "text": "or",
+    "starts_vowel": true,
+    "ends_vowel": false,
+    "meaning": "gold"
+  },
+  {
+    "text": "es",
+    "starts_vowel": true,
+    "ends_vowel": false,
+    "meaning": "hearth"
+  },
+  {
+    "text": "ain",
+    "starts_vowel": true,
+    "ends_vowel": false,
+    "meaning": "flowing"
   }
 ]

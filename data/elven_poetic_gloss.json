@@ -131,5 +131,27 @@
     "melody",
     "chorus",
     "hymn"
-  ]
+  ],
+  "laurel": ["victor's leaf", "symbol of peace", "honored brow"],
+  "lily": ["pure bloom", "graceful flower", "symbol of light"],
+  "sky": ["heavenly expanse", "celestial vault", "watcher above"],
+  "famous": ["well-known soul", "sung in tales", "renowned spirit"],
+  "sun": ["day's fire", "golden orb", "light's source"],
+  "valor": ["brave heart", "courageous soul", "spirit of defiance"],
+  "ardor": ["burning passion", "fierce desire", "inner fire"],
+  "air": ["breath of the world", "unseen current", "whisperwind"],
+  "noble": ["high spirit", "honored blood", "of the elite"],
+  "grace": ["gentle step", "flowing ease", "blessed presence"],
+  "gold": ["precious gleam", "treasure's light", "sun's metal"],
+  "hearth": ["home's heart", "center of warmth", "place of belonging"],
+  "flowing": ["river's course", "moving stream", "constant motion"],
+  "oath": ["sworn vow", "binding promise", "word of honor"],
+  "truth": ["unvarnished core", "clarity's edge", "reality's heart"],
+  "land": ["ancestral soil", "earthly realm", "domain"],
+  "ancient": ["of old times", "before memory", "ageless"],
+  "echo": ["lingering sound", "repeated call", "memory's whisper"],
+  "bridge": ["connector of paths", "way across", "joining point"],
+  "wave": ["ocean's pulse", "moving water", "tidal force"],
+  "shimmer": ["flickering light", "gleaming surface", "subtle shine"],
+  "mist": ["veiling cloud", "obscuring haze", "damp whisper"]
 }
