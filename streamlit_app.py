@@ -66,6 +66,7 @@ name_data = {
         "middles": load_json("draconic_middles.json"),
         "suffixes": load_json("draconic_suffixes.json"),
         "gloss": load_json("draconic_poetic_gloss.json")}
+}
 
 # Emoji Icons (remains the same)
 icons = {
