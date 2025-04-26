@@ -17,6 +17,15 @@ import subprocess
 installed_packages = subprocess.check_output(["pip", "freeze"]).decode("utf-8")
 st.text(installed_packages)
 
+try:
+    import streamlit_clipboard
+    st.success("✅ streamlit-clipboard was installed!")
+except ImportError:
+    st.error("❌ streamlit-clipboard NOT installed")
+
+import subprocess
+st.code(subprocess.check_output(["pip", "freeze"]).decode())
+
 # === Load Data Functions ===
 @st.cache_data #Caches JSON files
 def load_json(filename):
