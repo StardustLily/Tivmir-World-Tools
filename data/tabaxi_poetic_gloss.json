@@ -1,0 +1,22 @@
+{
+  "desert": ["sun-worn", "dune-born", "enduring flame"],
+  "wind": ["sky singer", "traveler's breath", "whisper on the cliffs"],
+  "snow": ["crystal soul", "frost-born", "silent drift"],
+  "flame": ["ember heart", "wildfire's child", "spark of dawn"],
+  "cunning": ["sharp eye", "hidden step", "whispered paw"],
+  "moon": ["moonlit soul", "tide-weaver", "silver shadow"],
+  "noble": ["lion-blooded", "high-born spirit", "graced heir"],
+  "hunter": ["pathfinder", "arrow soul", "stalker's grace"],
+  "strength": ["unyielding stone", "pillar of resolve", "iron heartbeat"],
+  "grace": ["gifted step", "glimmer in shade", "soft song"],
+  "light": ["radiance bearer", "morning gleam", "golden gaze"],
+  "whisper": ["shade-singer", "hushed tone", "veilvoice"],
+  "trade": ["coinwise", "market whisperer", "goldtongue"],
+  "aura": ["haloed one", "spirit guide", "bright presence"],
+  "essence": ["core spirit", "heart untouched", "true self"],
+  "frost": ["still touch", "ice-born", "winter's grace"],
+  "sun": ["goldflame", "dawnfire soul", "bright roar"],
+  "wisdom": ["sage-borne", "spirit-thought", "old knowing"],
+  "blessed": ["spirit-kissed", "favored soul", "light-touched"],
+  "breath": ["soft wind", "lifebreath", "sigh of stars"]
+}

@@ -22,6 +22,7 @@ npc_attributes = load_json("npc_attributes.json")
 tabaxi_prefixes = load_json("tabaxi_prefixes.json")
 tabaxi_middles = load_json("tabaxi_middles.json")
 tabaxi_suffixes = load_json("tabaxi_suffixes.json")
+tabaxi_poetic_gloss = load_json("tabaxi_poetic_gloss.json")
 tabaxi_clans = load_json("tabaxi_clans.json")
 elven_prefixes = load_json("elven_prefixes.json")
 elven_middles = load_json("elven_middles.json")
@@ -77,13 +78,26 @@ def generate_tabaxi_name(selected_clan):
 
     full_name = "".join(p["text"] for p in parts)
 
-    meaning_lines = [f"• {p['text']} = {p['meaning']}" for p in parts]
+    meaning_lines = [f"- **{p['text']}** = {p['meaning']}" for p in parts]
 
-    poetic = random.choice([
-        f"Voice of the dunes, child of the stars.",
-        f"Shadowstep on silent paws.",
-        f"Born under a moon that never wanes."
-    ])
+
+    # Poetic generation
+    keywords = [p["meaning"].split("/")[0].strip() for p in parts]
+    glosses = [random.choice(tabaxi_poetic_gloss.get(k, [k])) for k in keywords]
+
+    if len(glosses) == 2:
+        poetic = random.choice([
+            f"{glosses[0].title()} of {glosses[1]}",
+            f"Voice of the {glosses[1]}, born from {glosses[0]}",
+            f"Walker of {glosses[0]} and {glosses[1]}"
+        ])
+    else:
+        poetic = random.choice([
+            f"Child of {glosses[0]}, gifted by {glosses[1]}, soul of {glosses[2]}",
+            f"{glosses[2].title()} made flesh, carved from {glosses[0]} and {glosses[1]}",
+            f"Spirit shaped by {glosses[0]}, voice of {glosses[1]}, heart of {glosses[2]}"
+        ])
+
 
     clan_info = next((c for c in tabaxi_clans if c["name"] == selected_clan), None)
     if clan_info:
