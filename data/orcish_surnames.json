@@ -20,24 +20,23 @@
     "meaning": "Mana Conduit Specialist / Storm Warrior"
   },
   {
-    "text": "Ashfall", // Location/Event?
+    "text": "Ashfall",
     "meaning": "Survivor of the Ashfall / From the Ash Region"
   },
   {
-    "text": "Kazgradian", // Affiliation (City/Stronghold)
+    "text": "Kazgradian",
     "meaning": "Of the Kazgrad Stronghold"
   },
   {
-    "text": "Kratosborn", // Affiliation (Group/Philosophy?)
+    "text": "Kratosborn",
     "meaning": "Follower of the Power Doctrine / State Educated"
   },
   {
-    "text": "Shield-Oath", // Title/Deed
+    "text": "Shield-Oath",
     "meaning": "Bound by a Defender's Vow"
   },
   {
-    "text": "Logic-Core", // Title/Descriptor
+    "text": "Logic-Core",
     "meaning": "Driven by Pure Reason / Master Analyst"
   }
-  // Add many more! Mix descriptors, titles, affiliations
 ]
