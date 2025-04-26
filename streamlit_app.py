@@ -921,7 +921,7 @@ def generate_npc():
         else:
             npc_name = f"[{race_name} Name Data Missing] {race_name}"
 
-    elif race_name == "Yuan-Ti":
+    elif race_name == "Yuan-ti":
         if yuan_ti_names: # Check if the list was loaded
              name_entry = random.choice(yuan_ti_names)
              npc_name = name_entry.get('text', '[Name Error]')
