@@ -31,6 +31,7 @@ lizardfolk_names = load_json("lizardfolk_names.json")
 yuan_ti_names = load_json("yuan-ti_names.json")
 goblin_names = load_json("goblin_names.json")
 gnomish_gloss = load_json("gnomish_poetic_gloss.json")
+halfling_gloss = load_json("halfling_poetic_gloss.json")
 name_data = {
     "tabaxi": {
         "prefixes": load_json("tabaxi_prefixes.json"),
@@ -124,7 +125,12 @@ name_data = {
         "female_first": load_json("gnome_female_first.json"),
         "clans": load_json("gnome_clans.json"),
         "descriptors": load_json("gnome_descriptors.json"),
-        "gloss": gnomish_gloss}
+        "gloss": gnomish_gloss},
+    "halfling": {
+        "male_first": load_json("halfling_male_first.json"),
+        "female_first": load_json("halfling_female_first.json"),
+        "family": load_json("halfling_family.json"),
+        "gloss": halfling_gloss}
 }
 
 # Emoji Icons (remains the same)
@@ -658,6 +664,57 @@ def _generate_gnome_name_data(race_data, gender="Any"):
 
     return result
 
+# === NEW Helper Function for Halfling Names ===
+def _generate_halfling_name_data(race_data, gender="Any"):
+    """
+    Internal helper for Halfling names (Given + Family Name structure).
+    Accepts the halfling data dictionary and gender.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    male_first = race_data.get("male_first")
+    female_first = race_data.get("female_first")
+    family_names = race_data.get("family")
+    gloss = race_data.get("gloss")
+
+    if not male_first or not female_first or not family_names or not gloss:
+        error_msg = "Missing core Halfling data (first names, family names, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Gendered) ---
+    given_part = None
+    if gender == "Male":
+        given_part = random.choice(male_first)
+    elif gender == "Female":
+        given_part = random.choice(female_first)
+    else: # Gender is "Any"
+        chosen_list = random.choice([male_first, female_first])
+        given_part = random.choice(chosen_list)
+
+    if not given_part:
+         error_msg = "Failed to select Halfling given name."; st.error(error_msg)
+         result["error"] = error_msg; return result
+
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+    all_parts = [given_dict]
+
+    # --- Select Family Name (Unisex) ---
+    family_part = random.choice(family_names)
+    family_dict = {"text": family_part["text"], "meaning": family_part.get("meaning", "N/A")}
+    all_parts.append(family_dict)
+
+    # --- Combine into Full Name (Space separated) ---
+    full_name = f"{given_dict['text']} {family_dict['text']}"
+    result["name"] = full_name
+    result["parts"] = all_parts
+
+    # --- Generate Poetic Meaning (based on all parts) ---
+    # Poetic meaning might focus more on the family name for flavor
+    result["poetic"] = _generate_poetic_meaning(all_parts, gloss)
+
+    return result
+
 # === (Corrected) Generate NPC Function ===
 def generate_npc():
     if not races:
@@ -942,6 +999,18 @@ def generate_npc():
             name_data_result = _generate_gnome_name_data(name_data[race_key], gender="Any")
             if not name_data_result["error"] and name_data_result["name"]:
                 npc_name = name_data_result["name"] # Full G+C+D name
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Halfling":
+        race_key = "halfling"
+        if race_key in name_data:
+            # Use "Any" gender for NPC gen default (helper handles random M/F pick)
+            name_data_result = _generate_halfling_name_data(name_data[race_key], gender="Any")
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Given + Family name
             else:
                 npc_name = f"[{race_name} Name Error] {race_name}"
         else:
@@ -1417,6 +1486,29 @@ def generate_gnome_name(gender="Any"):
         f"\n\n➔ **{poetic_label}** {data['poetic']}"
     )
 
+# === Generate Halfling Name Function ===
+def generate_halfling_name(gender="Any"):
+    """Generates a Halfling name with meanings for the Name Generator tab."""
+    race_key = "halfling"
+    if race_key not in name_data: return "Error: Halfling name data not loaded."
+    # Pass the Halfling sub-dictionary and gender to the new helper
+    data = _generate_halfling_name_data(name_data[race_key], gender)
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include Given + Family parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    poetic_label = "Poetic Meaning:"
+
+    # Use a simple person or maybe home emoji?
+    return (
+        f"🧑‍🌾 **Name:** {data['name']}\n\n" + # Or 🏠
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
 # IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
 # Example for Half-Elf (Elven style):
 # Replace:
@@ -1535,10 +1627,10 @@ with tabs[0]:
 # --- Start Corrected Name Generator Tab UI ---
 with tabs[1]:
     st.header("🔤 Name Generator")
-    race_options = ["Elf", "Eladrin", "Tabaxi", "Human", "Orc", "Tiefling",
-                    "Drow", "Dragonborn", "Aarakocra", "Owlin", "Tortle",
-                    "Triton", "Genasi", "Kenku", "Lizardfolk", "Yuan-Ti",
-                    "Goblin", "Gnome"]
+    race_options = ["Elf", "Eladrin", "Tabaxi", "Human", "Halfling", "Orc", # <-- Added Halfling
+                    "Tiefling", "Drow", "Dragonborn", "Aarakocra", "Owlin",
+                    "Tortle", "Triton", "Genasi", "Kenku", "Lizardfolk",
+                    "Yuan-Ti", "Goblin", "Gnome"]
     race = st.selectbox(
         "Choose a race:",
         race_options,
@@ -1562,6 +1654,17 @@ with tabs[1]:
         if st.button("Generate Common Name", key="common_name_button"):
              # Pass the selected gender
              st.session_state.name_output = generate_common_name(gender=gender)
+
+    elif race == "Halfling":
+        # Gender selection needed for Halfling
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="halfling_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Halfling Name", key="halfling_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_halfling_name(gender=gender)
 
     elif race == "Orc":
         # Gender selection shown HERE for Orcs

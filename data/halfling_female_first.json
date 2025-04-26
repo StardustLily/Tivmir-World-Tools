@@ -1,0 +1,12 @@
+[
+  { "text": "Posy", "meaning": "small flower", "gender": "Female" },
+  { "text": "Briar", "meaning": "thorny shrub", "gender": "Female" },
+  { "text": "Elanor", "meaning": "star sun", "gender": "Female" },
+  { "text": "Marigold", "meaning": "golden flower", "gender": "Female" },
+  { "text": "Cora", "meaning": "maiden heart", "gender": "Female" },
+  { "text": "Lily", "meaning": "pure flower", "gender": "Female" },
+  { "text": "Eimear", "meaning": "swift quick", "gender": "Female" },
+  { "text": "Primula", "meaning": "first rose", "gender": "Female" },
+  { "text": "Willow", "meaning": "graceful tree", "gender": "Female" },
+  { "text": "Ruby", "meaning": "red gemstone", "gender": "Female" }
+]
