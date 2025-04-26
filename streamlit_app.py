@@ -1291,8 +1291,7 @@ with tabs[1]:
     race = st.selectbox(
         "Choose a race:",
         ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow", "Dragonborn",
-         "Aarakocra", "Owlin", "Tortle", "Triton",
-         "Fire Genasi", "Earth Genasi", "Air Genasi", "Water Genasi"],
+        "Aarakocra", "Owlin", "Tortle", "Triton", "Genasi"],
         key="name_race"
     )
     if race == "Tabaxi":
