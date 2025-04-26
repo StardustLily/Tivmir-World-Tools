@@ -2,10 +2,6 @@ import streamlit as st
 import random
 import json
 import os
-import subprocess
-
-installed_packages = subprocess.check_output(["pip", "freeze"]).decode("utf-8")
-st.text(installed_packages)
 
 try:
     from streamlit_clipboard import st_clipboard
@@ -15,6 +11,11 @@ except ImportError:
 
 # Set page config first!
 st.set_page_config(page_title="Tivmir World Tools", layout="centered")
+
+import subprocess
+
+installed_packages = subprocess.check_output(["pip", "freeze"]).decode("utf-8")
+st.text(installed_packages)
 
 # === Load Data Functions ===
 @st.cache_data #Caches JSON files
