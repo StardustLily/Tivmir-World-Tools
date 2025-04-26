@@ -1388,25 +1388,27 @@ with tabs[1]:
              # Call the function without gender
              st.session_state.name_output = generate_triton_name()
 
-    elif race == "Fire Genasi":
-        # NO gender selection needed
-        if st.button("Generate Fire Genasi Name", key="fire_genasi_name_button"):
-             st.session_state.name_output = generate_fire_genasi_name()
+    elif race == "Genasi":
+        st.markdown("---") # Optional separator
+        # Add secondary selection for element type
+        element = st.radio(
+            "Select Element:",
+            ["Air", "Water", "Fire", "Earth"],
+            key="genasi_element_radio",
+            horizontal=True
+        )
 
-    elif race == "Earth Genasi":
-        # NO gender selection needed
-        if st.button("Generate Earth Genasi Name", key="earth_genasi_name_button"):
-             st.session_state.name_output = generate_earth_genasi_name()
-
-    elif race == "Air Genasi":
-        # NO gender selection needed
-        if st.button("Generate Air Genasi Name", key="air_genasi_name_button"):
-             st.session_state.name_output = generate_air_genasi_name()
-
-    elif race == "Water Genasi":
-        # NO gender selection needed
-        if st.button("Generate Water Genasi Name", key="water_genasi_name_button"):
-             st.session_state.name_output = generate_water_genasi_name()
+        # Single button for all Genasi types
+        if st.button("Generate Genasi Name", key="genasi_name_button"):
+            # Call the correct function based on the selected element
+            if element == "Air":
+                st.session_state.name_output = generate_air_genasi_name()
+            elif element == "Water":
+                st.session_state.name_output = generate_water_genasi_name()
+            elif element == "Fire":
+                st.session_state.name_output = generate_fire_genasi_name()
+            elif element == "Earth":
+                st.session_state.name_output = generate_earth_genasi_name()
 
     # Use elif for Elf now, not else, to be specific
     elif race == "Elf":
