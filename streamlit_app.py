@@ -606,12 +606,8 @@ with tabs[1]:
              st.session_state.name_output = generate_orc_name(gender=gender)
 
     elif race == "Tiefling":
-        # Gender selection shown HERE for Tieflings (assuming they use it based on suffix tags)
+        # NO gender selection shown here
         gender = st.radio(
-            "Select Gender:", ["Any", "Male", "Female"],
-            key="tiefling_gender_radio", # Use unique key
-            horizontal=True
-        )
         if st.button("Generate Infernal Name", key="tiefling_name_button"):
              # Pass the selected gender
              st.session_state.name_output = generate_infernal_name(gender=gender) # Ensure this function exists and accepts gender
