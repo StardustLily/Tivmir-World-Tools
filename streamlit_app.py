@@ -20,6 +20,7 @@ def load_json(filename):
 # === (Revised) Load Data ===
 races = load_json("races.json")
 npc_attributes = load_json("npc_attributes.json")
+kenku_names = load_json("kenku_names.json")
 # Consolidate name data into a dictionary
 auran_gloss = load_json("auran_poetic_gloss.json")
 aquan_gloss = load_json("aquan_poetic_gloss.json")
@@ -834,6 +835,14 @@ def generate_npc():
         else:
            npc_name = f"[{race_name} Name Data Missing] {race_name}"
 
+    elif race_name == "Kenku":
+        if kenku_names: # Check if the list was loaded
+             # generate_kenku_name now returns the formatted string, we need just the name text
+             name_entry = random.choice(kenku_names)
+             npc_name = name_entry.get('text', '[Name Error]')
+        else:
+            npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
     # --- Add more elif blocks here for future races ---
 
     # --- Assemble NPC Output --- (Rest of the function remains the same)
@@ -1210,6 +1219,25 @@ def generate_eladrin_name(): # Unisex
         f"\n\n➔ **{poetic_label}** {data['poetic']}"
     )
 
+# === Generate Kenku Name Function ===
+def generate_kenku_name():
+    """Generates a Kenku name for the Name Generator tab."""
+    if not kenku_names: # Check if data loaded correctly
+        st.error("Kenku name data is missing or empty.")
+        return "Error: Missing Kenku data."
+
+    # Select a random name entry
+    name_entry = random.choice(kenku_names)
+    name_text = name_entry.get('text', '[Name Error]')
+    name_meaning = name_entry.get('meaning', 'No description available.')
+
+    # Return a simple formatted string directly
+    # Using a black bird emoji
+    return (
+        f"🐦‍⬛ **Name:** {name_text}\n\n"
+        f"*{name_meaning}*" # Add the meaning/description in italics
+    )
+
 # IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
 # Example for Half-Elf (Elven style):
 # Replace:
@@ -1328,11 +1356,12 @@ with tabs[0]:
 # --- Start Corrected Name Generator Tab UI ---
 with tabs[1]:
     st.header("🔤 Name Generator")
+    race_options = ["Elf", "Eladrin", "Tabaxi", "Human", "Orc", "Tiefling",
+                    "Drow", "Dragonborn", "Aarakocra", "Owlin", "Tortle",
+                    "Triton", "Genasi", "Kenku"]
     race = st.selectbox(
         "Choose a race:",
-        ["Elf", "Eladrin", "Tabaxi", "Human", "Orc", "Tiefling",
-        "Drow", "Dragonborn", "Aarakocra", "Owlin", "Tortle",
-        "Triton", "Genasi"],
+        race_options,
         key="name_race"
     )
     if race == "Tabaxi":
@@ -1449,6 +1478,12 @@ with tabs[1]:
                 st.session_state.name_output = generate_fire_genasi_name()
             elif element == "Earth":
                 st.session_state.name_output = generate_earth_genasi_name()
+
+    elif race == "Kenku":
+        # NO gender selection needed
+        if st.button("Generate Kenku Name", key="kenku_name_button"):
+             # The function returns the fully formatted string
+             st.session_state.name_output = generate_kenku_name()
 
     elif race == "Eladrin":
         # NO gender selection needed
