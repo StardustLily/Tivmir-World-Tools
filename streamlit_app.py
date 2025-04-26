@@ -21,6 +21,7 @@ def load_json(filename):
 races = load_json("races.json")
 npc_attributes = load_json("npc_attributes.json")
 # Consolidate name data into a dictionary
+auran_gloss = load_json("auran_poetic_gloss.json")
 name_data = {
     "tabaxi": {
         "prefixes": load_json("tabaxi_prefixes.json"),
@@ -65,7 +66,17 @@ name_data = {
         "prefixes": load_json("draconic_prefixes.json"),
         "middles": load_json("draconic_middles.json"),
         "suffixes": load_json("draconic_suffixes.json"),
-        "gloss": load_json("draconic_poetic_gloss.json")}
+        "gloss": load_json("draconic_poetic_gloss.json")},
+"aarakocra": {
+        "lineages": load_json("aarakocra_lineages.json"),
+        "prefixes": load_json("aarakocra_prefixes.json"),
+        "middles": load_json("aarakocra_middles.json"),
+        "suffixes": load_json("aarakocra_suffixes.json"),
+        "gloss": auran_gloss},
+"owlin": {
+        "personal": load_json("owlin_personal.json"),
+        "descriptors": load_json("owlin_descriptors.json"),
+        "gloss": auran_gloss}
 }
 
 # Emoji Icons (remains the same)
@@ -360,6 +371,89 @@ def _generate_dragonborn_name_data(race_data):
 
     return result
 
+# === NEW Helper Function for Aarakocra Names ===
+def _generate_aarakocra_name_data(race_data, gender="Any"):
+    """
+    Internal helper for Aarakocra names (Lineage + Personal(P+M+S) structure).
+    Accepts the aarakocra data dictionary and gender.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    lineages = race_data.get("lineages")
+    prefixes = race_data.get("prefixes")
+    middles = race_data.get("middles")
+    suffixes = race_data.get("suffixes")
+    gloss = race_data.get("gloss")
+
+    if not lineages or not prefixes or not suffixes or not gloss:
+        error_msg = "Missing core Aarakocra data (lineages, prefixes, suffixes, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Lineage Name ---
+    lineage_part = random.choice(lineages)
+    lineage_dict = {"text": lineage_part["text"], "meaning": lineage_part.get("meaning", "N/A")}
+    all_parts_for_meaning = [lineage_dict]
+
+    # --- Assemble Personal Name Parts ---
+    personal_parts = _assemble_name_parts(prefixes, middles or [], suffixes, gender_filter=gender)
+    if not personal_parts:
+        error_msg = "Failed to assemble Aarakocra personal name parts."
+        st.warning(error_msg); result["error"] = error_msg
+        result["name"] = lineage_dict["text"] + " [Error]"
+        result["parts"] = [lineage_dict]; return result
+
+    personal_name_str = "".join(p["text"] for p in personal_parts)
+    all_parts_for_meaning.extend(personal_parts)
+
+    # --- Combine into Full Name ---
+    full_name = f"{lineage_dict['text']} {personal_name_str}" # Space between lineage and personal
+    result["name"] = full_name
+    result["parts"] = all_parts_for_meaning
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts_for_meaning, gloss)
+
+    return result
+
+# === NEW Helper Function for Owlin Names ===
+def _generate_owlin_name_data(race_data):
+    """
+    Internal helper for Owlin names (Personal + Descriptor structure).
+    Accepts the owlin data dictionary. Gender is always Unisex.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    personal_roots = race_data.get("personal")
+    descriptors = race_data.get("descriptors")
+    gloss = race_data.get("gloss")
+
+    if not personal_roots or not descriptors or not gloss:
+        error_msg = "Missing core Owlin data (personal, descriptors, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Personal Name Root ---
+    personal_part = random.choice(personal_roots)
+    personal_dict = {"text": personal_part["text"], "meaning": personal_part.get("meaning", "N/A")}
+
+    # --- Select Descriptor ---
+    descriptor_part = random.choice(descriptors)
+    descriptor_dict = {"text": descriptor_part["text"], "meaning": descriptor_part.get("meaning", "N/A")}
+
+    all_parts_for_meaning = [personal_dict, descriptor_dict]
+
+    # --- Combine into Full Name ---
+    full_name = f"{personal_dict['text']}{descriptor_dict['text']}" # Combine directly, no space? Or add space? Let's add space.
+    full_name = f"{personal_dict['text']} {descriptor_dict['text']}"
+    result["name"] = full_name
+    result["parts"] = all_parts_for_meaning
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts_for_meaning, gloss)
+
+    return result
+
 # === (Corrected) Generate NPC Function ===
 def generate_npc():
     if not races:
@@ -493,6 +587,30 @@ def generate_npc():
         if race_key in name_data:
             # Call the new Dragonborn helper
             name_data_result = _generate_dragonborn_name_data(name_data[race_key])
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"]
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Aarakocra":
+        race_key = "aarakocra"
+        if race_key in name_data:
+            # Use "Any" gender for NPC gen default
+            name_data_result = _generate_aarakocra_name_data(name_data[race_key], gender="Any")
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"]
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Owlin":
+        race_key = "owlin"
+        if race_key in name_data:
+            # Owlin names are unisex, no gender needed
+            name_data_result = _generate_owlin_name_data(name_data[race_key])
             if not name_data_result["error"] and name_data_result["name"]:
                 npc_name = name_data_result["name"]
             else:
@@ -667,6 +785,53 @@ def generate_dragonborn_name(): # No gender parameter needed
         f"\n\n➔ **{poetic_label}** {data['poetic']}"
     )
 
+# === Generate Aarakocra Name Function ===
+def generate_aarakocra_name(gender="Any"):
+    """Generates an Aarakocra name with meanings for the Name Generator tab."""
+    race_key = "aarakocra"
+    if race_key not in name_data: return "Error: Aarakocra name data not loaded."
+    # Pass the Aarakocra sub-dictionary and gender to the helper
+    data = _generate_aarakocra_name_data(name_data[race_key], gender)
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include lineage + personal parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    # Poetic meaning applies to the whole name construct
+    poetic_label = "Poetic Meaning:"
+
+    # Use a bird emoji?
+    return (
+        f"🐦 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
+# === Generate Owlin Name Function ===
+def generate_owlin_name(): # No gender parameter
+    """Generates an Owlin name with meanings for the Name Generator tab."""
+    race_key = "owlin"
+    if race_key not in name_data: return "Error: Owlin name data not loaded."
+    # Pass the Owlin sub-dictionary to the helper
+    data = _generate_owlin_name_data(name_data[race_key])
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include personal + descriptor parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    # Poetic meaning applies to the whole name construct
+    poetic_label = "Poetic Meaning:"
+
+    # Use an owl emoji?
+    return (
+        f"🦉 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
 
 # IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
 # Example for Half-Elf (Elven style):
@@ -753,6 +918,7 @@ def generate_common_name(gender="Any"): # Add gender parameter
         ""
     )
 
+
 # === UI ===
 st.title("🌸 Tivmir World Tools")
 
@@ -787,7 +953,7 @@ with tabs[1]:
     st.header("🔤 Name Generator")
     race = st.selectbox(
         "Choose a race:",
-        ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow", "Dragonborn"],
+        ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow", "Dragonborn", "Aarakocra", "Owlin"],
         key="name_race"
     )
     if race == "Tabaxi":
@@ -848,6 +1014,23 @@ with tabs[1]:
         if st.button("Generate Dragonborn Name", key="dragonborn_name_button"):
              # Call the function without gender
              st.session_state.name_output = generate_dragonborn_name()
+
+    elif race == "Aarakocra":
+        # Gender selection needed for Aarakocra
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="aarakocra_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Aarakocra Name", key="aarakocra_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_aarakocra_name(gender=gender)
+
+    elif race == "Owlin":
+        # NO gender selection needed for Owlin
+        if st.button("Generate Owlin Name", key="owlin_name_button"):
+             # Call the function without gender
+             st.session_state.name_output = generate_owlin_name()
 
     # Use elif for Elf now, not else, to be specific
     elif race == "Elf":

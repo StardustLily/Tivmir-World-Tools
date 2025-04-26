@@ -1,0 +1,10 @@
+[
+  { "text": "Xue", "starts_vowel": false, "ends_vowel": true, "meaning": "study lore" },
+  { "text": "Mör", "starts_vowel": false, "ends_vowel": false, "meaning": "dark shadow" },
+  { "text": "Si", "starts_vowel": false, "ends_vowel": true, "meaning": "thought insight" },
+  { "text": "Natt", "starts_vowel": false, "ends_vowel": false, "meaning": "night star" },
+  { "text": "Tyst", "starts_vowel": false, "ends_vowel": false, "meaning": "silent quiet" },
+  { "text": "Lugn", "starts_vowel": false, "ends_vowel": false, "meaning": "calm patient" },
+  { "text": "Wen", "starts_vowel": false, "ends_vowel": false, "meaning": "ask listen" },
+  { "text": "Ljus", "starts_vowel": false, "ends_vowel": false, "meaning": "light bright" }
+]

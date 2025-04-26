@@ -1,0 +1,13 @@
+[
+  { "text": "ya", "starts_vowel": false, "ends_vowel": true, "meaning": "feminine grace", "gender": "Female" },
+  { "text": "lien", "starts_vowel": false, "ends_vowel": false, "meaning": "noble daughter", "gender": "Female" },
+  { "text": "shje", "starts_vowel": false, "ends_vowel": true, "meaning": "gentle wind", "gender": "Female" },
+  { "text": "fen", "starts_vowel": false, "ends_vowel": false, "meaning": "virtuous spirit", "gender": "Female" },
+  { "text": "or", "starts_vowel": true, "ends_vowel": false, "meaning": "masculine strength", "gender": "Male" },
+  { "text": "skan", "starts_vowel": false, "ends_vowel": false, "meaning": "warrior's edge", "gender": "Male" },
+  { "text": "hong", "starts_vowel": false, "ends_vowel": false, "meaning": "resonant call", "gender": "Male" },
+  { "text": "jur", "starts_vowel": false, "ends_vowel": false, "meaning": "bold hunter", "gender": "Male" },
+  { "text": "a", "starts_vowel": true, "ends_vowel": true, "meaning": "person being", "gender": "Unisex" },
+  { "text": "en", "starts_vowel": true, "ends_vowel": false, "meaning": "kin one", "gender": "Unisex" },
+  { "text": "is", "starts_vowel": true, "ends_vowel": false, "meaning": "focused watcher", "gender": "Unisex" }
+]

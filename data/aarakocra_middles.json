@@ -1,0 +1,8 @@
+[
+  { "text": "chi", "starts_vowel": false, "ends_vowel": true, "meaning": "wing soaring", "gender": "Unisex" },
+  { "text": "yun", "starts_vowel": false, "ends_vowel": false, "meaning": "cloud mist", "gender": "Unisex" },
+  { "text": "väd", "starts_vowel": false, "ends_vowel": false, "meaning": "storm weather", "gender": "Unisex" },
+  { "text": "sol", "starts_vowel": false, "ends_vowel": false, "meaning": "sun light", "gender": "Unisex" },
+  { "text": "feng", "starts_vowel": false, "ends_vowel": false, "meaning": "peak sharp", "gender": "Unisex" },
+  { "text": "sten", "starts_vowel": false, "ends_vowel": false, "meaning": "stone heart", "gender": "Unisex" }
+]
