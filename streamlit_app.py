@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config(page_title="Tivmir World Tools", layout="centered") 
 try:
     from streamlit_clipboard import st_clipboard
     st.write("streamlit_clipboard is installed correctly.")
