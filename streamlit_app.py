@@ -53,9 +53,13 @@ name_data = {
         "gloss": load_json("infernal_poetic_gloss.json"),
         "surnames": load_json("infernal_surnames.json")
     },
-    # Add new races here in the future
-    # "dwarf": { ... }
-}
+    "drow": {
+        "prefixes": load_json("drow_prefixes.json"),
+        "middles": load_json("drow_middles.json"),
+        "suffixes": load_json("drow_suffixes.json"),
+        "gloss": load_json("drow_poetic_gloss.json"),
+        "surnames": load_json("drow_surnames.json")
+}}
 
 # Emoji Icons (remains the same)
 icons = {
@@ -410,6 +414,18 @@ def generate_npc():
          else:
             npc_name = f"[{race_name} Name Data Missing] {race_name}"
 
+    elif race_name == "Drow":
+        race_key = "drow"
+        if race_key in name_data:
+            # Pass the Drow sub-dictionary
+            name_data_result = _generate_structured_name__data(name_data[race_key], npc_gender)
+            if not name_data_result["error"] and name_data_result["name"]:
+                # Drow names don't have separate surnames in this setup
+                npc_name = name_data_result["name"]
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
 
     # --- Add more elif blocks here for future races ---
 
@@ -529,6 +545,31 @@ def generate_tabaxi_name(selected_clan):
         + f"\n\n➔ **Poetic Meaning:** {poetic}{clan_desc}"
     )
 
+def generate_drow_name(gender="Any"):
+    """Generates a Drow name with meanings for the Name Generator tab."""
+    race_key = "drow"
+    if race_key not in name_data: return "Error: Drow name data not loaded."
+    # Pass the Drow sub-dictionary to the helper
+    data = _generate_structured_name_data(name_data[race_key], gender)
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines will include surname (House Name) meaning, as helper adds it to 'parts'
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    # Clarify that poetic meaning applies to the first name parts
+    # Use a slightly more robust check for surname presence
+    is_surname_present = len(data["parts"]) > 1 and "surnames" in name_data.get(race_key, {})
+    poetic_label = "Poetic Meaning (First Name):" if is_surname_present else "Poetic Meaning:"
+
+    # Use a spider emoji for Drow
+    return (
+        f"🕷️ **Name:** {data['name']}\n\n" + # Full name includes House Name now
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
 # IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
 # Example for Half-Elf (Elven style):
 # Replace:
@@ -646,10 +687,10 @@ with tabs[0]:
 # --- Start Corrected Name Generator Tab UI ---
 with tabs[1]:
     st.header("🔤 Name Generator")
-    # Race selection stays at the top
-    race = st.selectbox("Choose a race:", ["Elf", "Tabaxi", "Human", "Orc", "Tiefling"], key="name_race") # Added Tiefling based on previous steps
-
-    # --- Gender selection is now INSIDE the relevant blocks ---
+    race = st.selectbox(
+        "Choose a race:",
+        ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow"], # <-- Added Drow
+        key="name_race"
 
     if race == "Tabaxi":
         # NO gender selection shown here
@@ -692,6 +733,17 @@ with tabs[1]:
         if st.button("Generate Infernal Name", key="tiefling_name_button"):
              # --- Pass the selected gender ---
              st.session_state.name_output = generate_infernal_name(gender=gender)
+
+    elif race == "Drow":
+        # Gender selection shown HERE for Drow
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="drow_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Drow Name", key="drow_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_drow_name(gender=gender)
 
     # Use elif for Elf now, not else, to be specific
     elif race == "Elf":

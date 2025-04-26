@@ -1,0 +1,20 @@
+[
+  { "text": "ess", "starts_vowel": true, "ends_vowel": false, "meaning": "matron mistress", "gender": "Female" },
+  { "text": "in", "starts_vowel": true, "ends_vowel": false, "meaning": "priestess chosen", "gender": "Female" },
+  { "text": "ae", "starts_vowel": true, "ends_vowel": true, "meaning": "noble daughter", "gender": "Female" },
+  { "text": "ia", "starts_vowel": true, "ends_vowel": true, "meaning": "feminine grace", "gender": "Female" },
+  { "text": "yl", "starts_vowel": false, "ends_vowel": false, "meaning": "favored sister", "gender": "Female" },
+  { "text": "ice", "starts_vowel": true, "ends_vowel": true, "meaning": "scheming shadow", "gender": "Female" },
+  { "text": "uk", "starts_vowel": true, "ends_vowel": false, "meaning": "patron brother", "gender": "Male" },
+  { "text": "or", "starts_vowel": true, "ends_vowel": false, "meaning": "warrior blade", "gender": "Male" },
+  { "text": "os", "starts_vowel": true, "ends_vowel": false, "meaning": "consort sharp", "gender": "Male" },
+  { "text": "imar", "starts_vowel": true, "ends_vowel": false, "meaning": "masculine strength", "gender": "Male" },
+  { "text": "agh", "starts_vowel": true, "ends_vowel": false, "meaning": "house guard", "gender": "Male" },
+  { "text": "lyn", "starts_vowel": false, "ends_vowel": false, "meaning": "person being", "gender": "Unisex" },
+  { "text": "ys", "starts_vowel": false, "ends_vowel": false, "meaning": "state quality", "gender": "Unisex" },
+  { "text": "nar", "starts_vowel": false, "ends_vowel": false, "meaning": "place belonging", "gender": "Unisex" },
+  { "text": "da", "starts_vowel": false, "ends_vowel": true, "meaning": "agent action", "gender": "Unisex" },
+  { "text": "on", "starts_vowel": true, "ends_vowel": false, "meaning": "group collective", "gender": "Unisex" },
+  { "text": "ath", "starts_vowel": true, "ends_vowel": false, "meaning": "dark path", "gender": "Unisex" },
+  { "text": "ryn", "starts_vowel": false, "ends_vowel": false, "meaning": "sworn shadow", "gender": "Unisex" }
+]

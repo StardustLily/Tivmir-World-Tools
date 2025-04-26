@@ -1,0 +1,20 @@
+[
+  { "text": "vel", "starts_vowel": false, "ends_vowel": false, "meaning": "hidden shadow", "gender": "Unisex" },
+  { "text": "yath", "starts_vowel": false, "ends_vowel": false, "meaning": "temple sworn", "gender": "Unisex" },
+  { "text": "quell", "starts_vowel": false, "ends_vowel": false, "meaning": "noble house", "gender": "Unisex" },
+  { "text": "ssin", "starts_vowel": false, "ends_vowel": false, "meaning": "passion beauty", "gender": "Unisex" },
+  { "text": "zress", "starts_vowel": false, "ends_vowel": false, "meaning": "power will", "gender": "Unisex" },
+  { "text": "oloth", "starts_vowel": true, "ends_vowel": false, "meaning": "darkness deep", "gender": "Unisex" },
+  { "text": "sarg", "starts_vowel": false, "ends_vowel": false, "meaning": "warrior skill", "gender": "Unisex" },
+  { "text": "faer", "starts_vowel": false, "ends_vowel": false, "meaning": "magic touch", "gender": "Unisex" },
+  { "text": "kyorl", "starts_vowel": false, "ends_vowel": false, "meaning": "watchful guard", "gender": "Unisex" },
+  { "text": "araj", "starts_vowel": true, "ends_vowel": false, "meaning": "vengeance vow", "gender": "Unisex" },
+  { "text": "harl", "starts_vowel": false, "ends_vowel": false, "meaning": "underdeep below", "gender": "Unisex" },
+  { "text": "myr", "starts_vowel": false, "ends_vowel": false, "meaning": "soul web", "gender": "Unisex" },
+  { "text": "kyn", "starts_vowel": false, "ends_vowel": false, "meaning": "hidden unseen", "gender": "Unisex" },
+  { "text": "tlin", "starts_vowel": false, "ends_vowel": false, "meaning": "warrior drow", "gender": "Unisex" },
+  { "text": "dra", "starts_vowel": false, "ends_vowel": true, "meaning": "spider aspect", "gender": "Unisex" },
+  { "text": "nae", "starts_vowel": false, "ends_vowel": true, "meaning": "kin group", "gender": "Unisex" },
+  { "text": "elgg", "starts_vowel": true, "ends_vowel": false, "meaning": "death slayer", "gender": "Unisex" },
+  { "text": "phindar", "starts_vowel": false, "ends_vowel": false, "meaning": "monster beast", "gender": "Unisex" }
+]
