@@ -36,6 +36,10 @@ orcish_middles = load_json("orcish_middles.json")
 orcish_suffixes = load_json("orcish_suffixes.json")
 orcish_poetic_gloss = load_json("orcish_poetic_gloss.json")
 orcish_surnames = load_json("orcish_surnames.json")
+infernal_prefixes = load_json("infernal_prefixes.json")
+infernal_middles = load_json("infernal_middles.json")
+infernal_suffixes = load_json("infernal_suffixes.json")
+infernal_poetic_gloss = load_json("infernal_poetic_gloss.json")
 
 # === Emoji Icons ===
 icons = {
@@ -313,6 +317,20 @@ def generate_npc():
                 npc_name = _get_common_name_string()
             else: npc_name = f"[Common Name Data Missing] Half-Orc"
 
+    elif race_name == "Tiefling":
+        # Check if Tiefling-specific name data is loaded
+        if all([infernal_prefixes, infernal_middles, infernal_suffixes]):
+             # Generate name parts (using "Any" gender for NPC gen for now)
+             generated_parts = _assemble_name_parts(infernal_prefixes, infernal_middles, infernal_suffixes, gender_filter="Any")
+             if generated_parts:
+                 # Assuming Tieflings use a single generated name (no surname)
+                 npc_name = "".join(p["text"] for p in generated_parts)
+             else:
+                 npc_name = f"[Infernal Name Assembly Failed] {race_name}"
+        else:
+            # Handle case where data files are missing/empty
+            npc_name = f"[Infernal Name Data Missing] {race_name}"
+
     # --- Add more elif blocks here for future races ---
     # elif race_name == "Dwarf":
     #     if all ([dwarf_prefixes, ...]): # Load dwarf data first
@@ -488,6 +506,38 @@ def generate_orc_name(gender="Any"): # Accept gender parameter
         f"\n\n➔ **Poetic Meaning (First Name):** {poetic}" # Clarify poetic applies to first name
     )
 
+# === Generate Infernal Name Function (for Name Generator Tab) ===
+def generate_infernal_name(gender="Any"): # Accept gender parameter
+    """Generates an Infernal name with meanings for the Name Generator tab."""
+    # Check required data is loaded
+    # Note: Not checking for surnames here, assuming Tieflings use single name from parts
+    if not all([infernal_prefixes, infernal_middles, infernal_suffixes, infernal_poetic_gloss]):
+         st.error("Missing required Infernal name data.")
+         return "Error: Missing data."
+
+    # Assemble the name parts using the main helper, passing gender
+    # Assuming Tiefling names are generated from parts similar to Elves/Orcs
+    parts = _assemble_name_parts(infernal_prefixes, infernal_middles, infernal_suffixes, gender_filter=gender)
+    if not parts:
+         st.warning("Infernal name part assembly failed unexpectedly.")
+         return "Error: Failed to assemble name parts."
+
+    # Combine parts into the full name string
+    full_name = "".join(p["text"] for p in parts)
+
+    # Create the list of meaning lines from the parts
+    meaning_lines = [f"- **{p['text']}** = {p['meaning']}" for p in parts]
+
+    # Generate the poetic meaning using the specific Infernal gloss
+    poetic = _generate_poetic_meaning(parts, infernal_poetic_gloss)
+
+    # Return the formatted output string (using a fire or devil emoji perhaps?)
+    return (
+        f"🔥 **Name:** {full_name}\n\n" + # Or use 😈
+        "\n".join(meaning_lines) + # Single newline for bullet points
+        f"\n\n➔ **Poetic Meaning:** {poetic}"
+    )
+
 # === UI ===
 st.title("🌸 Tivmir World Tools")
 
@@ -519,7 +569,7 @@ with tabs[0]:
 
 with tabs[1]:
     st.header("🔤 Name Generator")
-    race = st.selectbox("Choose a race:", ["Elven", "Tabaxi", "Human", "Orc"], key="name_race")
+    race = st.selectbox("Choose a race:", ["Elven", "Tabaxi", "Human", "Orc", "Tiefling"], key="name_race")
     gender = st.radio(
         "Select Gender:",
         ["Any", "Male", "Female"], # Options
@@ -541,6 +591,10 @@ with tabs[1]:
          if st.button("Generate Orcish Name", key="orc_name_button"):
               # Pass the selected gender
               st.session_state.name_output = generate_orc_name(gender=gender) # Pass gender
+    elif race == "Tiefling":
+         if st.button("Generate Infernal Name", key="tiefling_name_button"):
+              # Call the new function, passing the selected gender
+              st.session_state.name_output = generate_infernal_name(gender=gender)
     else: # Elven
         if st.button("Generate Elven Name", key="elven_name_button"):
             # Pass gender - Note: generate_elven_name needs modification
