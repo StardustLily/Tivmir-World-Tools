@@ -421,11 +421,6 @@ def generate_common_name(gender="Any"): # Add gender parameter
     else:
          meaning_lines.append(f"- **{surname_entry['text']}**")
 
-    # Optional flavor text (remains the same)
-    flavor_text = random.choice([
-        # ... your flavor texts ...
-    ])
-
     return (
         f"👤 **Name:** {full_name}\n\n" +
         "\n".join(meaning_lines) +
@@ -507,7 +502,7 @@ with tabs[1]:
         key="name_gender",
         horizontal=True # Display options side-by-side
     )
-    
+
     if race == "Tabaxi":
         clan_names = [clan["name"] for clan in tabaxi_clans]
         selected_clan = st.selectbox("Choose a Tabaxi clan:", clan_names, key="tabaxi_clan")
