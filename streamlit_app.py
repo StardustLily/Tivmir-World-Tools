@@ -174,14 +174,33 @@ def _assemble_name_parts(prefixes, middles, suffixes, gender_filter="Any"): # Ad
 
     return chosen_parts # Return the list of chosen part dictionaries
 
-# NEW helper specifically for Common names (returns only string)
-def _get_common_name_string():
-    """Generates a Common first name + surname string."""
+# Helper specifically for Common names (returns only string)
+# Add gender_filter parameter
+def _get_common_name_string(gender_filter="Any"):
+    """Generates a Common first name + surname string, optionally filtered by gender."""
     if not common_first_names or not common_surnames:
         return "[Common Name Data Missing]"
 
-    first_name_entry = random.choice(common_first_names)
-    surname_entry = random.choice(common_surnames)
+    # --- Filter first names based on gender ---
+    possible_first_names = common_first_names
+    if gender_filter != "Any":
+        # Select names matching the filter OR Unisex names
+        filtered_names = [
+            name_entry for name_entry in common_first_names
+            if name_entry.get("gender") == gender_filter or name_entry.get("gender") == "Unisex"
+        ]
+        if filtered_names: # Only use filter if results were found
+            possible_first_names = filtered_names
+        else:
+            st.warning(f"No '{gender_filter}' or 'Unisex' first names found, using any.")
+            # Fallback to using all names if filter yields no results
+    # --- End Filtering ---
+
+    if not possible_first_names: # Should not happen if fallback works, but safety check
+        return "[Error: No suitable first names]"
+
+    first_name_entry = random.choice(possible_first_names)
+    surname_entry = random.choice(common_surnames) # Surnames are not filtered by gender here
 
     return f"{first_name_entry['text']} {surname_entry['text']}"
 
@@ -216,9 +235,10 @@ def generate_npc():
              if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
         else: npc_name = f"[Tabaxi Name Data Missing] {race_name}"
 
-    elif race_name == "Human": # Or maybe check a list: if race_name in ["Human", "Halfling"]:
-        if common_first_names and common_surnames: # Check data exists
-             npc_name = _get_common_name_string() # Call the simple helper
+    elif race_name == "Human":
+        if common_first_names and common_surnames:
+             # Pass the default "Any" gender filter
+             npc_name = _get_common_name_string(gender_filter="Any")
         else: npc_name = f"[Common Name Data Missing] {race_name}"
 
     elif race_name == "Half-Elf":
@@ -364,38 +384,53 @@ def generate_elven_name():
     )
 
 # === Generate Common Name Function (for Name Generator Tab) ===
-def generate_common_name():
+def generate_common_name(gender="Any"): # Add gender parameter
     """Generates a Common name with meanings for the Name Generator tab."""
     if not common_first_names or not common_surnames:
         st.error("Missing required Common name data.")
         return "Error: Missing data."
 
-    first_name_entry = random.choice(common_first_names)
+    # --- Filter first names based on gender ---
+    possible_first_names = common_first_names
+    if gender != "Any":
+        filtered_names = [
+            name_entry for name_entry in common_first_names
+            if name_entry.get("gender") == gender or name_entry.get("gender") == "Unisex"
+        ]
+        if filtered_names:
+            possible_first_names = filtered_names
+        else:
+            st.warning(f"No '{gender}' or 'Unisex' first names found, using any.")
+            # Fallback to using all names
+
+    if not possible_first_names:
+        return "[Error: No suitable first names]"
+    # --- End Filtering ---
+
+    first_name_entry = random.choice(possible_first_names)
+    # Choose surname (no gender filter applied)
     surname_entry = random.choice(common_surnames)
 
     full_name = f"{first_name_entry['text']} {surname_entry['text']}"
 
-    # Prepare meaning lines
+    # Prepare meaning lines (remains the same)
     meaning_lines = []
     meaning_lines.append(f"- **{first_name_entry['text']}** = {first_name_entry.get('meaning', 'N/A')}")
-    if 'meaning' in surname_entry: # Check if surname meaning exists
+    if 'meaning' in surname_entry:
          meaning_lines.append(f"- **{surname_entry['text']}** = {surname_entry['meaning']}")
     else:
-         meaning_lines.append(f"- **{surname_entry['text']}**") # Just list surname if no meaning
+         meaning_lines.append(f"- **{surname_entry['text']}**")
 
-    # Optional: Add generic flavor text instead of poetic meaning, or skip
+    # Optional flavor text (remains the same)
     flavor_text = random.choice([
-        "A sturdy name heard throughout the central valleys.",
-        "Commonly found among merchants and town guards.",
-        "A name that carries the weight of ordinary folk doing their best.",
-        "Simple, reliable, like good leather.",
+        # ... your flavor texts ...
     ])
 
     return (
         f"👤 **Name:** {full_name}\n\n" +
         "\n".join(meaning_lines) +
-        #f"\n\n📜 **Notes:** {flavor_text}" # Uncomment or modify if I want flavor text
-        "" # Or just return name and meanings
+        #f"\n\n📜 **Notes:** {flavor_text}"
+        ""
     )
 
 # === Generate Orcish Name Function (for Name Generator Tab) ===
@@ -466,9 +501,13 @@ with tabs[0]:
 with tabs[1]:
     st.header("🔤 Name Generator")
     race = st.selectbox("Choose a race:", ["Elven", "Tabaxi", "Human", "Orc"], key="name_race")
-    #Gender Selection -- Will add in non-binary later
-    gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="name_gender", horizontal=True)
-
+    gender = st.radio(
+        "Select Gender:",
+        ["Any", "Male", "Female"], # Options
+        key="name_gender",
+        horizontal=True # Display options side-by-side
+    )
+    
     if race == "Tabaxi":
         clan_names = [clan["name"] for clan in tabaxi_clans]
         selected_clan = st.selectbox("Choose a Tabaxi clan:", clan_names, key="tabaxi_clan")
@@ -477,12 +516,12 @@ with tabs[1]:
             st.session_state.name_output = generate_tabaxi_name(selected_clan) # Modify generate_tabaxi_name similarly if desired
     elif race == "Human":
          if st.button("Generate Common Name", key="common_name_button"):
-              # Pass gender - Note: generate_common_name needs modification
-              st.session_state.name_output = generate_common_name() # Modify generate_common_name similarly if desired
+              # Pass the selected gender
+              st.session_state.name_output = generate_common_name(gender=gender) # Pass gender
     elif race == "Orc":
          if st.button("Generate Orcish Name", key="orc_name_button"):
-              # Pass the selected gender to the function
-              st.session_state.name_output = generate_orc_name(gender=gender)
+              # Pass the selected gender
+              st.session_state.name_output = generate_orc_name(gender=gender) # Pass gender
     else: # Elven
         if st.button("Generate Elven Name", key="elven_name_button"):
             # Pass gender - Note: generate_elven_name needs modification
