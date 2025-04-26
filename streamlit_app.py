@@ -1,14 +1,9 @@
-# streamlit_app.py
 import streamlit as st
-st.set_page_config(page_title="Tivmir World Tools", layout="centered")
 # Import necessary data and TOP-LEVEL generator functions
-from data_loader import name_data # Keep name_data for Tabaxi clan lookup? Or pass it? Pass it maybe.
-# Let's try importing only the necessary top-level things
-from data_loader import icons # icons are used directly in UI? No, only NPC gen. Remove import.
-# We need the list of race options for the selectbox
-from data_loader import name_data # Need this to get keys for options, and Tabaxi clans
+from data_loader import name_data # Keep name_data for Tabaxi clan lookup
 from npc_generator import generate_npc
 # Import all the generate_X_name functions needed by the UI buttons
+# (Ensure ALL needed functions are listed here)
 from name_generators import (
     generate_elven_name, generate_orc_name, generate_infernal_name,
     generate_tabaxi_name, generate_drow_name, generate_dragonborn_name,
@@ -20,8 +15,47 @@ from name_generators import (
     generate_goliath_name, generate_minotaur_name, generate_bugbear_name,
     generate_harengon_name, generate_leonin_name, generate_loxodon_name,
     generate_aasimar_name, generate_shifter_name, generate_githyanki_name,
-    generate_common_name
+    generate_common_name # Used for Human
 )
+
+# Set page config first!
+st.set_page_config(page_title="Tivmir World Tools", layout="centered")
+
+# --- Define the Name Generator Map ---
+# Maps Race Name -> { func: generator_function, needs_gender: bool, needs_clan: bool, needs_element: bool }
+# Use generate_common_name for Human
+# Use None for func if special handling is needed (like Genasi composite)
+NAME_GENERATOR_MAP = {
+    "Elf": {"func": generate_elven_name, "needs_gender": False},
+    "Eladrin": {"func": generate_eladrin_name, "needs_gender": False},
+    "Tabaxi": {"func": generate_tabaxi_name, "needs_gender": False, "needs_clan": True},
+    "Human": {"func": generate_common_name, "needs_gender": True},
+    "Halfling": {"func": generate_halfling_name, "needs_gender": True},
+    "Orc": {"func": generate_orc_name, "needs_gender": True},
+    "Tiefling": {"func": generate_infernal_name, "needs_gender": True},
+    "Drow": {"func": generate_drow_name, "needs_gender": True},
+    "Dragonborn": {"func": generate_dragonborn_name, "needs_gender": False},
+    "Aarakocra": {"func": generate_aarakocra_name, "needs_gender": True},
+    "Owlin": {"func": generate_owlin_name, "needs_gender": False},
+    "Tortle": {"func": generate_tortle_name, "needs_gender": True},
+    "Triton": {"func": generate_triton_name, "needs_gender": False},
+    "Genasi": {"func": None, "needs_gender": False, "needs_element": True}, # Special case
+    "Kenku": {"func": generate_kenku_name, "needs_gender": False},
+    "Lizardfolk": {"func": generate_lizardfolk_name, "needs_gender": False},
+    "Yuan-Ti": {"func": generate_yuan_ti_name, "needs_gender": False},
+    "Goblin": {"func": generate_goblin_name, "needs_gender": False},
+    "Bugbear": {"func": generate_bugbear_name, "needs_gender": False},
+    "Gnome": {"func": generate_gnome_name, "needs_gender": True},
+    "Goliath": {"func": generate_goliath_name, "needs_gender": False},
+    "Minotaur": {"func": generate_minotaur_name, "needs_gender": True},
+    "Harengon": {"func": generate_harengon_name, "needs_gender": False},
+    "Leonin": {"func": generate_leonin_name, "needs_gender": True},
+    "Loxodon": {"func": generate_loxodon_name, "needs_gender": True},
+    "Aasimar": {"func": generate_aasimar_name, "needs_gender": False},
+    "Shifter": {"func": generate_shifter_name, "needs_gender": False},
+    "Githyanki": {"func": generate_githyanki_name, "needs_gender": True},
+}
+# Make sure all races from race_options are keys in the map above
 
 # === UI ===
 st.title("🌸 Tivmir World Tools")
@@ -31,6 +65,10 @@ if 'npc_output' not in st.session_state:
     st.session_state.npc_output = ""
 if 'name_output' not in st.session_state:
     st.session_state.name_output = ""
+# Keep track of selected race for the name generator tab
+if 'name_race' not in st.session_state:
+     st.session_state.name_race = list(NAME_GENERATOR_MAP.keys())[0] # Default to first race
+
 
 tabs = st.tabs(["🌿 NPC Generator", "🔤 Name Generator"])
 
@@ -56,136 +94,90 @@ with tabs[0]:
          else:
               st.markdown("*Click 'Generate NPC' to create a character...*")
 
-# --- Name Generator Tab ---
+# --- Refactored Name Generator Tab ---
 with tabs[1]:
     st.header("🔤 Name Generator")
 
-    # Define race options (can keep manual list for order/display)
-    race_options = ["Elf", "Eladrin", "Tabaxi", "Human", "Halfling", "Orc",
-                    "Tiefling", "Drow", "Dragonborn", "Aarakocra", "Owlin",
-                    "Tortle", "Triton", "Genasi", "Kenku", "Lizardfolk",
-                    "Yuan-Ti", "Goblin", "Bugbear", "Gnome", "Goliath",
-                    "Minotaur", "Harengon", "Leonin", "Loxodon",
-                    "Aasimar", "Shifter", "Githyanki"]
-    race = st.selectbox("Choose a race:", race_options, key="name_race")
+    # Use the keys from the map as options
+    race_options = list(NAME_GENERATOR_MAP.keys())
+    # Use session state for the selectbox value persistence
+    st.selectbox(
+        "Choose a race:",
+        race_options,
+        key="name_race" # Use session state key
+    )
+    # Get the current selected race from session state
+    race = st.session_state.name_race
 
-    # UI Blocks for each race - simplified, calling imported functions
-    if race == "Tabaxi":
-        tabaxi_data = name_data.get("tabaxi", {})
-        clan_list = tabaxi_data.get("clans", [])
-        if clan_list and isinstance(clan_list, list):
-             clan_names = [c["name"] for c in clan_list if isinstance(c, dict) and "name" in c]
-             if clan_names:
-                 selected_clan = st.selectbox("Choose a Tabaxi clan:", clan_names, key="tabaxi_clan")
-                 if st.button("Generate Tabaxi Name", key="tabaxi_name_button"):
-                     st.session_state.name_output = generate_tabaxi_name(selected_clan) # Imported func
-             else: st.warning("No valid clan names found.")
-        else: st.warning("Tabaxi clan data not found or invalid.")
+    race_config = NAME_GENERATOR_MAP.get(race)
 
-    elif race == "Human":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="human_gender", horizontal=True)
-        if st.button("Generate Common Name", key="common_name_button"): st.session_state.name_output = generate_common_name(gender=gender) # Imported func
+    # Store widget values temporarily
+    selected_gender = "Any"
+    selected_element = None
+    selected_clan = None
+    kwargs_for_func = {} # Arguments to pass to the generator function
 
-    elif race == "Halfling":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="halfling_gender", horizontal=True)
-        if st.button("Generate Halfling Name", key="halfling_name_button"): st.session_state.name_output = generate_halfling_name(gender=gender) # Imported func
+    if race_config:
+        # --- Display relevant widgets ---
+        if race_config.get("needs_gender"):
+            selected_gender = st.radio(
+                "Select Gender:", ["Any", "Male", "Female"],
+                key=f"{race}_gender_ng", # Unique key per race for name gen tab
+                horizontal=True
+            )
+            kwargs_for_func["gender"] = selected_gender
 
-    elif race == "Orc":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="orc_gender", horizontal=True)
-        if st.button("Generate Orcish Name", key="orc_name_button"): st.session_state.name_output = generate_orc_name(gender=gender) # Imported func
+        if race_config.get("needs_element"): # Special case for Genasi
+            selected_element = st.radio(
+                "Select Element:", ["Air", "Water", "Fire", "Earth"],
+                key=f"{race}_element_ng",
+                horizontal=True
+            )
+            # The actual function call is handled below for Genasi
 
-    elif race == "Tiefling":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="tiefling_gender", horizontal=True)
-        if st.button("Generate Infernal Name", key="tiefling_name_button"): st.session_state.name_output = generate_infernal_name(gender=gender) # Imported func
+        if race_config.get("needs_clan"): # Special case for Tabaxi
+            tabaxi_data = name_data.get("tabaxi", {})
+            clan_list = tabaxi_data.get("clans", [])
+            if clan_list and isinstance(clan_list, list):
+                 clan_names = [c["name"] for c in clan_list if isinstance(c, dict) and "name" in c]
+                 if clan_names:
+                     selected_clan = st.selectbox("Choose a Tabaxi clan:", clan_names, key="tabaxi_clan_ng")
+                     kwargs_for_func["selected_clan"] = selected_clan # Pass clan name
+                 else: st.warning("No valid clan names found.")
+            else: st.warning("Tabaxi clan data not found or invalid.")
 
-    elif race == "Drow":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="drow_gender", horizontal=True)
-        if st.button("Generate Drow Name", key="drow_name_button"): st.session_state.name_output = generate_drow_name(gender=gender) # Imported func
+        # --- Generate Button and Function Call ---
+        generate_button = st.button(f"Generate {race} Name", key=f"{race}_button_ng")
 
-    elif race == "Dragonborn":
-        if st.button("Generate Dragonborn Name", key="dragonborn_name_button"): st.session_state.name_output = generate_dragonborn_name() # Imported func
+        if generate_button:
+            generator_func = race_config["func"]
 
-    elif race == "Aarakocra":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="aarakocra_gender", horizontal=True)
-        if st.button("Generate Aarakocra Name", key="aarakocra_name_button"): st.session_state.name_output = generate_aarakocra_name(gender=gender) # Imported func
-
-    elif race == "Owlin":
-        if st.button("Generate Owlin Name", key="owlin_name_button"): st.session_state.name_output = generate_owlin_name() # Imported func
-
-    elif race == "Tortle":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="tortle_gender", horizontal=True)
-        if st.button("Generate Tortle Name", key="tortle_name_button"): st.session_state.name_output = generate_tortle_name(gender=gender) # Imported func
-
-    elif race == "Triton":
-        if st.button("Generate Triton Name", key="triton_name_button"): st.session_state.name_output = generate_triton_name() # Imported func
-
-    elif race == "Genasi":
-        st.markdown("---")
-        element = st.radio("Select Element:", ["Air", "Water", "Fire", "Earth"], key="genasi_element", horizontal=True)
-        if st.button("Generate Genasi Name", key="genasi_name_button"):
-            if element == "Air": st.session_state.name_output = generate_air_genasi_name() # Imported func
-            elif element == "Water": st.session_state.name_output = generate_water_genasi_name() # Imported func
-            elif element == "Fire": st.session_state.name_output = generate_fire_genasi_name() # Imported func
-            elif element == "Earth": st.session_state.name_output = generate_earth_genasi_name() # Imported func
-
-    elif race == "Kenku":
-        if st.button("Generate Kenku Name", key="kenku_name_button"): st.session_state.name_output = generate_kenku_name() # Imported func
-
-    elif race == "Lizardfolk":
-        if st.button("Generate Lizardfolk Name", key="lizardfolk_name_button"): st.session_state.name_output = generate_lizardfolk_name() # Imported func
-
-    elif race == "Yuan-Ti":
-        if st.button("Generate Yuan-Ti Name", key="yuan_ti_name_button"): st.session_state.name_output = generate_yuan_ti_name() # Imported func
-
-    elif race == "Goblin":
-        if st.button("Generate Goblin Name", key="goblin_name_button"): st.session_state.name_output = generate_goblin_name() # Imported func
-
-    elif race == "Bugbear":
-        if st.button("Generate Bugbear Name", key="bugbear_name_button"): st.session_state.name_output = generate_bugbear_name() # Imported func
-
-    elif race == "Gnome":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="gnome_gender", horizontal=True)
-        if st.button("Generate Gnome Name", key="gnome_name_button"): st.session_state.name_output = generate_gnome_name(gender=gender) # Imported func
-
-    elif race == "Harengon":
-        if st.button("Generate Harengon Name", key="harengon_name_button"): st.session_state.name_output = generate_harengon_name() # Imported func
-
-    elif race == "Leonin":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="leonin_gender", horizontal=True)
-        if st.button("Generate Leonin Name", key="leonin_name_button"): st.session_state.name_output = generate_leonin_name(gender=gender) # Imported func
-
-    elif race == "Loxodon":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="loxodon_gender", horizontal=True)
-        if st.button("Generate Loxodon Name", key="loxodon_name_button"): st.session_state.name_output = generate_loxodon_name(gender=gender) # Imported func
-
-    elif race == "Githyanki":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="githyanki_gender", horizontal=True)
-        if st.button("Generate Githyanki Name", key="githyanki_name_button"): st.session_state.name_output = generate_githyanki_name(gender=gender) # Imported func
-
-    elif race == "Aasimar":
-        if st.button("Generate Aasimar Name", key="aasimar_name_button"): st.session_state.name_output = generate_aasimar_name() # Imported func
-
-    elif race == "Shifter":
-        if st.button("Generate Shifter Name", key="shifter_name_button"): st.session_state.name_output = generate_shifter_name() # Imported func
-
-    elif race == "Eladrin":
-        if st.button("Generate Eladrin Name", key="eladrin_name_button"): st.session_state.name_output = generate_eladrin_name() # Imported func
-
-    elif race == "Goliath":
-        if st.button("Generate Goliath Name", key="goliath_name_button"): st.session_state.name_output = generate_goliath_name() # Imported func
-
-    elif race == "Minotaur":
-        gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="minotaur_gender", horizontal=True)
-        if st.button("Generate Minotaur Name", key="minotaur_name_button"): st.session_state.name_output = generate_minotaur_name(gender=gender) # Imported func
-
-    elif race == "Elf":
-        if st.button("Generate Elven Name", key="elven_name_button"): st.session_state.name_output = generate_elven_name() # Imported func
+            if race == "Genasi": # Handle Genasi separately
+                if selected_element == "Air": st.session_state.name_output = generate_air_genasi_name()
+                elif selected_element == "Water": st.session_state.name_output = generate_water_genasi_name()
+                elif selected_element == "Fire": st.session_state.name_output = generate_fire_genasi_name()
+                elif selected_element == "Earth": st.session_state.name_output = generate_earth_genasi_name()
+            elif race == "Tabaxi": # Handle Tabaxi separately
+                 if selected_clan:
+                     st.session_state.name_output = generator_func(selected_clan)
+                 else:
+                      st.warning("Please select a Tabaxi clan.")
+                      st.session_state.name_output = "" # Clear output if no clan
+            elif generator_func: # Handle all other standard races
+                try:
+                    st.session_state.name_output = generator_func(**kwargs_for_func)
+                except Exception as e:
+                    st.error(f"Error calling {generator_func.__name__}: {e}")
+                    st.session_state.name_output = "Error generating name."
+            else:
+                 st.warning(f"No generator function configured for {race}.")
+                 st.session_state.name_output = "" # Clear output
 
     else:
-        st.write(f"Select a race to generate a name.") # Fallback
+        st.write(f"Configuration missing for race: {race}") # Should not happen if map is complete
 
 
-    # Display Name Generator output
+    # Display Name Generator output (Remains the same)
     if st.session_state.name_output:
         st.markdown("---")
         if "Error:" in st.session_state.name_output:

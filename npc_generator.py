@@ -1,22 +1,44 @@
 import random
 import streamlit as st
-# Import necessary data and generator functions
-from data_loader import races, npc_attributes, name_data, icons, kenku_names, lizardfolk_names, yuan_ti_names, goblin_names, shifter_names
-# Import the specific helper functions needed by generate_npc
-# Note: It's generally cleaner if generate_npc calls the main generate_X_name wrappers,
-# but based on current structure, it calls helpers directly. Let's keep that for now.
-# If refactoring further (Step 2), we'd change this.
+import re # Import regular expressions for parsing
+
+# Import necessary data
+# Import TOP-LEVEL generator functions ONLY
+from data_loader import races, npc_attributes, icons, name_data # name_data needed for Tabaxi clan lookup
 from name_generators import (
-    _generate_structured_name_data, generate_common_name,
-    _generate_dragonborn_name_data, _generate_aarakocra_name_data,
-    _generate_owlin_name_data, _generate_tortle_name_data,
-    _generate_triton_name_data, _generate_gnome_name_data,
-    _generate_halfling_name_data, _generate_goliath_name_data,
-    _generate_minotaur_name_data, _generate_bugbear_name_data,
-    _generate_harengon_name_data, _generate_leonin_name_data,
-    _generate_loxodon_name_data, _generate_aasimar_name_data,
-    _generate_githyanki_name_data
+    generate_elven_name, generate_orc_name, generate_infernal_name,
+    generate_tabaxi_name, generate_drow_name, generate_dragonborn_name,
+    generate_aarakocra_name, generate_owlin_name, generate_tortle_name,
+    generate_triton_name, generate_fire_genasi_name, generate_earth_genasi_name,
+    generate_air_genasi_name, generate_water_genasi_name, generate_eladrin_name,
+    generate_kenku_name, generate_lizardfolk_name, generate_yuan_ti_name,
+    generate_goblin_name, generate_gnome_name, generate_halfling_name,
+    generate_goliath_name, generate_minotaur_name, generate_bugbear_name,
+    generate_harengon_name, generate_leonin_name, generate_loxodon_name,
+    generate_aasimar_name, generate_shifter_name, generate_githyanki_name,
+    generate_common_name # Keep this for Human, Half-Elf, Half-Orc common style
 )
+
+# --- Helper function to parse name from Markdown ---
+def _parse_name_from_markdown(markdown_string, race_name_for_error="Unknown"):
+    """Extracts the name after ':** ' from the markdown string."""
+    if not isinstance(markdown_string, str) or "Error:" in markdown_string:
+        return f"[{race_name_for_error} Name Error]" # Return error if input is bad
+
+    # Regex to find ': ** ' followed by the name until the end of the line or newline
+    # Handles potential variations in emoji/bolding
+    match = re.search(r":\s*\**\s*(.*?)\s*(\\n|\n|$)", markdown_string)
+    if match:
+        return match.group(1).strip()
+    else:
+        # Fallback if regex fails (maybe log this)
+        st.warning(f"Could not parse name using regex from: {markdown_string}")
+        # Simple split as fallback, might be fragile
+        parts = markdown_string.split(":**")
+        if len(parts) > 1:
+             return parts[1].split("\\n")[0].strip()
+        return f"[{race_name_for_error} Parse Error]"
+
 
 def generate_npc():
     """Generates a full NPC description string."""
@@ -38,173 +60,117 @@ def generate_npc():
     except Exception as e:
          st.error(f"Error selecting race: {e}"); return "Error during race selection."
 
-
     npc_name = f"Unnamed {race_name}" # Default placeholder
     clan_name = None # Initialize clan_name
     npc_gender = "Any" # Default gender for NPC gen
 
-    # --- Generate Name based on Race ---
-    name_data_result = None # To store results from helpers
+    # --- Generate Name based on Race using Top-Level Functions ---
     try:
-        # --- Handle name generation based on race_name ---
-        if race_name == "Elf":
-            race_key = "elf"
-            if race_key in name_data: name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
-            else: npc_name = f"[{race_name} Name Data Missing] {race_name}"
-        elif race_name == "Tabaxi":
-            race_key = "tabaxi"
-            if race_key in name_data:
-                name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
-                if name_data_result and not name_data_result["error"]:
-                     npc_first_name = name_data_result["name"]
-                     clan_list = name_data[race_key].get("clans", [])
-                     if clan_list: clan_entry = random.choice(clan_list); clan_name = clan_entry['name']; npc_name = f"{npc_first_name} of the {clan_name} Clan"
-                     else: npc_name = f"{npc_first_name} [Clan Data Missing]"; clan_name = "[Clan Data Missing]"
-                else: npc_name = f"[{race_name} Name Error] {race_name}" # Error from helper
-            else: npc_name = f"[{race_name} Name Data Missing] {race_name}"
-            # Skip setting npc_name directly from name_data_result here as it's handled above
-            name_data_result = None # Prevent reprocessing below
-        elif race_name == "Human":
-            # Ensure the argument is 'gender', NOT 'gender_filter'
-            npc_name_result = generate_common_name(gender=npc_gender) # CORRECTED
-            # ... (parsing logic as before) ...
-            if isinstance(npc_name_result, str) and "**Name:**" in npc_name_result:
-                npc_name = npc_name_result.split("**Name:**")[1].split("\\n")[0].strip()
-            elif not isinstance(npc_name_result, str) or "Error:" in npc_name_result:
-                npc_name = f"[{race_name} Name Error] {race_name}"
-            else:
-                npc_name = npc_name_result
-        elif race_name == "Half-Elf":
+        name_markdown = "" # Store the markdown output from generator functions
+
+        # Create a mapping similar to the UI, but simpler for NPC gen
+        # We only need the function, and maybe gender arg if applicable
+        # Note: 'Any' gender is often the default in the functions themselves now
+        NPC_NAME_FUNC_MAP = {
+            "Elf": generate_elven_name,
+            "Eladrin": generate_eladrin_name,
+            "Tabaxi": generate_tabaxi_name, # Requires special handling for clan
+            "Human": generate_common_name,
+            "Halfling": generate_halfling_name,
+            "Orc": generate_orc_name,
+            "Tiefling": generate_infernal_name,
+            "Drow": generate_drow_name,
+            "Dragonborn": generate_dragonborn_name,
+            "Aarakocra": generate_aarakocra_name,
+            "Owlin": generate_owlin_name,
+            "Tortle": generate_tortle_name,
+            "Triton": generate_triton_name,
+            # Genasi needs special handling
+            "Kenku": generate_kenku_name,
+            "Lizardfolk": generate_lizardfolk_name,
+            "Yuan-ti": generate_yuan_ti_name,
+            "Goblin": generate_goblin_name,
+            "Bugbear": generate_bugbear_name,
+            "Gnome": generate_gnome_name,
+            "Goliath": generate_goliath_name,
+            "Minotaur": generate_minotaur_name,
+            "Harengon": generate_harengon_name,
+            "Leonin": generate_leonin_name,
+            "Loxodon": generate_loxodon_name,
+            "Aasimar": generate_aasimar_name,
+            "Shifter": generate_shifter_name,
+            "Githyanki": generate_githyanki_name,
+        }
+
+        # Handle races requiring gender choice (can set npc_gender if needed later)
+        races_needing_gender = ["Human", "Halfling", "Orc", "Tiefling", "Drow",
+                                "Aarakocra", "Tortle", "Gnome", "Minotaur",
+                                "Leonin", "Loxodon", "Githyanki"]
+
+        if race_name == "Half-Elf":
             chosen_style = random.choice(["Elven", "Common"])
             if chosen_style == "Elven":
-                # --- Elven logic ---
-                race_key = "elf" # Define race_key here for Elven style
-                if race_key in name_data: name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
-                else: npc_name = f"[Elven Name Data Missing] Half-Elf"
-                # --- End Elven logic ---
-            else: # <--- Start of Common style block
-                # Ensure the argument is 'gender', NOT 'gender_filter'
-                npc_name_result = generate_common_name(gender=npc_gender) # CORRECTED
-
-                # --- THIS ENTIRE if/elif/else block needs to be indented under the 'else' above ---
-                if isinstance(npc_name_result, str) and "**Name:**" in npc_name_result:
-                    npc_name = npc_name_result.split("**Name:**")[1].split("\\n")[0].strip()
-                elif not isinstance(npc_name_result, str) or "Error:" in npc_name_result:
-                    npc_name = f"[{race_name} Name Error] {race_name}"
-                else:
-                    npc_name = npc_name_result
-        elif race_name == "Orc":
-             race_key = "orc"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), npc_gender)
+                name_markdown = generate_elven_name() # gender="Any" is default
+            else:
+                name_markdown = generate_common_name(gender=npc_gender)
         elif race_name == "Half-Orc":
             chosen_style = random.choice(["Orc", "Common"])
             if chosen_style == "Orc":
-                 # --- Orc logic ---
-                 race_key = "orc"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), npc_gender)
-                 # --- End Orc logic ---
-            else: # <--- Start of Common style block
-                npc_name_result = generate_common_name(gender=npc_gender) # Call the function
-
-                # --- THIS ENTIRE if/elif/else block needs to be indented under the 'else' above ---
-                if isinstance(npc_name_result, str) and "**Name:**" in npc_name_result:
-                    # This line MUST be indented further
-                    npc_name = npc_name_result.split("**Name:**")[1].split("\\n")[0].strip()
-                elif not isinstance(npc_name_result, str) or "Error:" in npc_name_result:
-                    # This line MUST be indented further
-                    npc_name = f"[{race_name} Name Error] {race_name}"
-                else:
-                    # This line MUST be indented further
-                    npc_name = npc_name_result
-
-        elif race_name == "Tiefling":
-              race_key = "infernal"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), npc_gender)
-        elif race_name == "Drow":
-              race_key = "drow"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), npc_gender)
-        elif race_name == "Dragonborn":
-              race_key = "draconic"; name_data_result = _generate_dragonborn_name_data(name_data.get(race_key, {}))
-        elif race_name == "Aarakocra":
-              race_key = "aarakocra"; name_data_result = _generate_aarakocra_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Owlin":
-              race_key = "owlin"; name_data_result = _generate_owlin_name_data(name_data.get(race_key, {}))
-        elif race_name == "Tortle":
-              race_key = "tortle"; name_data_result = _generate_tortle_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Triton":
-              race_key = "triton"; name_data_result = _generate_triton_name_data(name_data.get(race_key, {}))
-        elif race_name == "Fire Genasi":
-              race_key = "ignan"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Earth Genasi":
-              race_key = "terran"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Air Genasi":
-              race_key = "air_genasi"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Water Genasi":
-              race_key = "water_genasi"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Eladrin":
-              race_key = "sylvan"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Kenku":
-              if kenku_names: name_entry = random.choice(kenku_names); npc_name = name_entry.get('text', '[Name Error]')
-              else: npc_name = f"[{race_name} Name Data Missing] {race_name}"
-        elif race_name == "Lizardfolk":
-              if lizardfolk_names: name_entry = random.choice(lizardfolk_names); npc_name = name_entry.get('text', '[Name Error]')
-              else: npc_name = f"[{race_name} Name Data Missing] {race_name}"
-        elif race_name == "Yuan-ti":
-              if yuan_ti_names: name_entry = random.choice(yuan_ti_names); npc_name = name_entry.get('text', '[Name Error]')
-              else: npc_name = f"[{race_name} Name Data Missing] {race_name}"
-        elif race_name == "Goblin":
-              if goblin_names: name_entry = random.choice(goblin_names); npc_name = name_entry.get('text', '[Name Error]')
-              else: npc_name = f"[{race_name} Name Data Missing] {race_name}"
-        elif race_name == "Gnome":
-               race_key = "gnomish"; name_data_result = _generate_gnome_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Halfling":
-               race_key = "halfling"; name_data_result = _generate_halfling_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Goliath":
-               race_key = "goliath"; name_data_result = _generate_goliath_name_data(name_data.get(race_key, {}))
-        elif race_name == "Minotaur":
-               race_key = "minotaur"; name_data_result = _generate_minotaur_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Bugbear":
-               race_key = "bugbear"; name_data_result = _generate_bugbear_name_data(name_data.get(race_key, {}))
-        elif race_name == "Harengon":
-               race_key = "harengon"; name_data_result = _generate_harengon_name_data(name_data.get(race_key, {}))
-        elif race_name == "Leonin":
-               race_key = "leonin"; name_data_result = _generate_leonin_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Loxodon":
-               race_key = "loxodon"; name_data_result = _generate_loxodon_name_data(name_data.get(race_key, {}), gender="Any")
-        elif race_name == "Aasimar":
-               race_key = "aasimar"; name_data_result = _generate_aasimar_name_data(name_data.get(race_key, {}))
-        elif race_name == "Shifter":
-               if shifter_names: name_entry = random.choice(shifter_names); npc_name = name_entry.get('text', '[Name Error]')
-               else: npc_name = f"[{race_name} Name Data Missing] {race_name}"
-        elif race_name == "Githyanki":
-                race_key = "githyanki"; name_data_result = _generate_githyanki_name_data(name_data.get(race_key, {}), gender="Any")
-        # --- ADD more races here ---
-        else:
-             # Fallback for races not explicitly handled by specific generators
-             st.warning(f"No specific name generator found for {race_name}. Using default.")
-             # Optionally try a common name as a fallback?
-             # npc_name = generate_common_name(gender_filter=npc_gender)
-
-
-        # Process result if a helper function was called
-        if name_data_result:
-            if not name_data_result.get("error") and name_data_result.get("name"):
-                npc_name = name_data_result["name"]
+                name_markdown = generate_orc_name(gender=npc_gender)
             else:
-                # Construct more specific error message if helper failed
-                error_detail = name_data_result.get("error", "Unknown error")
-                npc_name = f"[{race_name} Name Error: {error_detail}] {race_name}"
+                name_markdown = generate_common_name(gender=npc_gender)
+        elif race_name == "Fire Genasi": name_markdown = generate_fire_genasi_name()
+        elif race_name == "Earth Genasi": name_markdown = generate_earth_genasi_name()
+        elif race_name == "Air Genasi": name_markdown = generate_air_genasi_name()
+        elif race_name == "Water Genasi": name_markdown = generate_water_genasi_name()
+        elif race_name == "Tabaxi":
+             # Need to pick a random clan for NPC gen
+             tabaxi_data = name_data.get("tabaxi", {})
+             clan_list = tabaxi_data.get("clans", [])
+             if clan_list and isinstance(clan_list, list):
+                  valid_clans = [c for c in clan_list if isinstance(c, dict) and "name" in c]
+                  if valid_clans:
+                      selected_clan_info = random.choice(valid_clans)
+                      selected_clan_name = selected_clan_info['name']
+                      name_markdown = generate_tabaxi_name(selected_clan_name)
+                      # Store clan name for output section
+                      clan_name = selected_clan_name
+                  else: name_markdown = "Error: No valid Tabaxi clans found."
+             else: name_markdown = "Error: Tabaxi clan data missing/invalid."
+        elif race_name in NPC_NAME_FUNC_MAP:
+             generator_func = NPC_NAME_FUNC_MAP[race_name]
+             if race_name in races_needing_gender:
+                  name_markdown = generator_func(gender=npc_gender)
+             else:
+                  name_markdown = generator_func() # Call without gender
+        else:
+             # Fallback for races not explicitly handled
+             st.warning(f"No specific name generator mapped for {race_name} in NPC gen. Trying Common.")
+             name_markdown = generate_common_name(gender=npc_gender)
+
+        # --- Parse the name from the markdown ---
+        npc_name = _parse_name_from_markdown(name_markdown, race_name)
+        # Special case: If Tabaxi name includes clan, remove it for the npc_name variable
+        if race_name == "Tabaxi" and " of the " in npc_name:
+            npc_name = npc_name.split(" of the ")[0]
+
 
     except Exception as e:
          # Catch any unexpected error during name generation phase
          st.error(f"Unexpected error generating name for {race_name}: {e}")
-         npc_name = f"[{race_name} Name Error] {race_name}" # Fallback name
+         # Ensure npc_name has a fallback value even after error
+         if npc_name.startswith("Unnamed"): # Only overwrite if it's still the default
+             npc_name = f"[{race_name} Name Error]"
 
 
     # --- Assemble NPC Output ---
-    npc_lines = [f"👤 **Name:** {npc_name}"]
+    npc_lines = [f"👤 **Name:** {npc_name}"] # Use the parsed name
 
-    # Add Clan details if applicable
-    if race_name == "Tabaxi" and clan_name and clan_name != "[Clan Data Missing]":
+    # Add Clan details if applicable (using clan_name variable set during Tabaxi generation)
+    if race_name == "Tabaxi" and clan_name:
          npc_lines.append(f"🏡 **Clan:** {clan_name}")
 
-    # Basic Info
+    # Basic Info (remains the same)
     npc_lines.extend([
         "---", "💼 **Basic Info**",
         f"🧬 **Race:** {race_name} ({race_data.get('rarity', 'N/A')})",
@@ -213,9 +179,13 @@ def generate_npc():
         "✶" * 25, "🎭 **Personality & Story**"
     ])
 
-    # Attributes
+    # Attributes (remains the same)
     if isinstance(npc_attributes, dict):
-        for category, options in npc_attributes.items():
+        # Shuffle categories for variety if desired
+        categories = list(npc_attributes.keys())
+        random.shuffle(categories)
+        for category in categories:
+            options = npc_attributes[category]
             if not options or not isinstance(options, list): continue
             try:
                 clean_category = category.strip()
