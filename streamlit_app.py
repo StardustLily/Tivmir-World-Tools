@@ -787,7 +787,7 @@ with tabs[1]:
     st.header("🔤 Name Generator")
     race = st.selectbox(
         "Choose a race:",
-        ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow", "Dragonborn"]
+        ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow", "Dragonborn"],
         key="name_race"
     )
     if race == "Tabaxi":
