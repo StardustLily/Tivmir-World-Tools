@@ -1058,8 +1058,8 @@ with tabs[1]:
 
     elif race == "Shifter":
         # NO gender selection needed
-     _generate_githyanki_name_data
-    st.session_state.name_output = generate_shifter_name()
+        if st.button("Generate Shifter Name", key="shifter_name_button"):
+             st.session_state.name_output = generate_shifter_name()
 
     elif race == "Eladrin":
         # NO gender selection needed
