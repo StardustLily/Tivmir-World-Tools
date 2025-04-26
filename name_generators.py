@@ -775,7 +775,7 @@ def generate_common_name(gender="Any"): # Add gender parameter
 
     common_first_names = name_data["common"]["first_names"]
     common_surnames = name_data["common"]["surnames"]
-    # --- Filtering logic copied from _get_common_name_string ---
+    # --- Filtering logic copied from generate_common_name ---
     possible_first_names = common_first_names
     if gender != "Any":
         filtered_names = [

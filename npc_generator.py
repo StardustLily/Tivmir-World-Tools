@@ -7,7 +7,7 @@ from data_loader import races, npc_attributes, name_data, icons, kenku_names, li
 # but based on current structure, it calls helpers directly. Let's keep that for now.
 # If refactoring further (Step 2), we'd change this.
 from name_generators import (
-    _generate_structured_name_data, _get_common_name_string,
+    _generate_structured_name_data, generate_common_name,
     _generate_dragonborn_name_data, _generate_aarakocra_name_data,
     _generate_owlin_name_data, _generate_tortle_name_data,
     _generate_triton_name_data, _generate_gnome_name_data,
@@ -66,21 +66,21 @@ def generate_npc():
             # Skip setting npc_name directly from name_data_result here as it's handled above
             name_data_result = None # Prevent reprocessing below
         elif race_name == "Human":
-            npc_name = _get_common_name_string(gender_filter=npc_gender)
+            npc_name = generate_common_name(gender_filter=npc_gender)
         elif race_name == "Half-Elf":
             chosen_style = random.choice(["Elven", "Common"])
             if chosen_style == "Elven":
                 race_key = "elf"
                 if race_key in name_data: name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
                 else: npc_name = f"[Elven Name Data Missing] Half-Elf"
-            else: npc_name = _get_common_name_string(gender_filter=npc_gender)
+            else: npc_name = generate_common_name(gender_filter=npc_gender)
         elif race_name == "Orc":
              race_key = "orc"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), npc_gender)
         elif race_name == "Half-Orc":
              chosen_style = random.choice(["Orc", "Common"])
              if chosen_style == "Orc":
                  race_key = "orc"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), npc_gender)
-             else: npc_name = _get_common_name_string(gender_filter=npc_gender)
+             else: npc_name = generate_common_name(gender_filter=npc_gender)
         elif race_name == "Tiefling":
               race_key = "infernal"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), npc_gender)
         elif race_name == "Drow":
@@ -145,7 +145,7 @@ def generate_npc():
              # Fallback for races not explicitly handled by specific generators
              st.warning(f"No specific name generator found for {race_name}. Using default.")
              # Optionally try a common name as a fallback?
-             # npc_name = _get_common_name_string(gender_filter=npc_gender)
+             # npc_name = generate_common_name(gender_filter=npc_gender)
 
 
         # Process result if a helper function was called
