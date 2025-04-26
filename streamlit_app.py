@@ -1,5 +1,9 @@
 import streamlit as st
-from streamlit_clipboard import st_clipboard
+try:
+    from streamlit_clipboard import st_clipboard
+    st.write("streamlit_clipboard is installed correctly.")
+except ImportError:
+    st.write("streamlit_clipboard is not installed. Please install it using 'pip install streamlit-clipboard'")
 import random
 import json
 import os
