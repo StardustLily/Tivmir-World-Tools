@@ -109,19 +109,86 @@ def _generate_poetic_meaning(parts, poetic_gloss_dict):
 
     return random.choice(templates)
 
-# === Generate NPC Function ===
+# === (Revised) Internal Helper Functions for Name Assembly ===
+def _assemble_name_parts(prefixes, middles, suffixes):
+    """Internal logic to select name parts using smoothing. Returns list of chosen parts."""
+    if not prefixes or not suffixes: return [] # Return empty list on error
+    if not middles: middles_list = [] # Handle empty list
+    else: middles_list = middles
+
+    use_middle = random.random() < 0.4 and bool(middles_list)
+    chosen_parts = []
+
+    prefix = random.choice(prefixes)
+    chosen_parts.append(prefix)
+    last_part_ends_vowel = prefix["ends_vowel"]
+
+    if use_middle:
+        middle = _pick_smooth_part(middles_list, last_part_ends_vowel)
+        if middle:
+            chosen_parts.append(middle)
+            last_part_ends_vowel = middle["ends_vowel"]
+
+    suffix = _pick_smooth_part(suffixes, last_part_ends_vowel)
+    if suffix:
+        chosen_parts.append(suffix)
+
+    return chosen_parts # Return the list of chosen part dictionaries
+
+# We no longer need separate _get_elven_name_string, etc. We use _assemble_name_parts
+
+# === (Revised) Generate NPC Function ===
 def generate_npc():
-    race = random.choice(races)
+    if not races:
+        st.error("Race data is missing or empty.")
+        return "Error: Missing race data."
+    if not npc_attributes:
+        st.error("NPC attributes data is missing or empty.")
+        return "Error: Missing attribute data."
+
+    # --- Select Race ---
+    race_data = random.choice(races)
+    race_name = race_data['name']
+
+    # --- Generate Name based on Race ---
+    npc_name = f"Unnamed {race_name}" # Default placeholder
+    generated_parts = [] # Store parts if generated
+
+    if race_name == "Elven":
+        if all([elven_prefixes, elven_middles, elven_suffixes]): # Check data exists
+             generated_parts = _assemble_name_parts(elven_prefixes, elven_middles, elven_suffixes)
+             if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
+        else: npc_name = f"[Elven Name Data Missing] {race_name}"
+
+    elif race_name == "Tabaxi":
+        if all([tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes]): # Check data exists
+             generated_parts = _assemble_name_parts(tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes)
+             if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
+        else: npc_name = f"[Tabaxi Name Data Missing] {race_name}"
+
+    # --- Add more elif blocks here for future races ---
+    # elif race_name == "Dwarf":
+    #     if all ([dwarf_prefixes, ...]): # Load dwarf data first
+    #          generated_parts = _assemble_name_parts(dwarf_prefixes, ...)
+    #          if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
+    #     else: npc_name = f"[Dwarf Name Data Missing] {race_name}"
+
+
+    # --- Assemble NPC Output ---
     npc_lines = [
+        f"👤 **Name:** {npc_name}", # Add the name here!
+        "---", # Separator
         "💼 **Basic Info**",
-        f"🧬 **Race:** {race['name']} ({race['rarity']})",
-        f"🌍 **Region:** {race['region']}",
-        f"📖 **Lore:** {race['description']}",
+        f"🧬 **Race:** {race_name} ({race_data.get('rarity', 'N/A')})", # Use .get for safety
+        f"🌍 **Region:** {race_data.get('region', 'N/A')}",
+        f"📖 **Lore:** {race_data.get('description', 'N/A')}",
         "✶" * 25,
         "🎭 **Personality & Story**"
     ]
 
+    # Add attributes
     for category, options in npc_attributes.items():
+        if not options: continue # Skip empty attribute lists
         clean_category = category.strip()
         icon = icons.get(clean_category, "•")
         choice = random.choice(options)
@@ -129,52 +196,26 @@ def generate_npc():
 
     return "\n\n".join(npc_lines)
 
-# === Generate Tabaxi Name Function ===
+# === (Revised) Generate Tabaxi Name Function ===
 def generate_tabaxi_name(selected_clan):
-    # Ensure data lists are not empty
-    if not tabaxi_prefixes or not tabaxi_suffixes:
-         st.error("Tabaxi name parts data is missing or empty.")
-         return "Error: Missing name data."
-    # Check middles only if needed, but safer to check upfront
-    if not tabaxi_middles:
-         st.warning("Tabaxi middle name parts data is missing or empty.")
-         # Decide how to handle: error out, or guarantee no middle part?
-         # Let's guarantee no middle part if list is empty.
-         # return "Error: Missing middle name data."
+    # Check data (can be done inside _assemble_name_parts too)
+    if not all([tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes, tabaxi_poetic_gloss, tabaxi_clans]):
+         st.error("Missing required Tabaxi data.")
+         return "Error: Missing data."
 
+    # Assemble the parts using the helper
+    parts = _assemble_name_parts(tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes)
+    if not parts: return "Error: Failed to assemble name parts." # Check if assembly worked
 
-    use_middle = random.random() < 0.4 and bool(tabaxi_middles) # Only use middle if list exists
-    parts = []
-
-    # --- Choose Prefix ---
-    prefix = random.choice(tabaxi_prefixes)
-    parts.append(prefix)
-    last_part_ends_vowel = prefix["ends_vowel"] # Get vowel status for next step
-
-    # --- Choose Middle (Optional) ---
-    if use_middle:
-        # Pick middle part using smoothing logic
-        middle = _pick_smooth_part(tabaxi_middles, last_part_ends_vowel)
-        if middle: # Check if _pick_smooth_part returned a part
-             parts.append(middle)
-             last_part_ends_vowel = middle["ends_vowel"] # Update vowel status
-
-    # --- Choose Suffix ---
-    # Pick suffix part using smoothing logic based on the LAST chosen part (prefix or middle)
-    suffix = _pick_smooth_part(tabaxi_suffixes, last_part_ends_vowel)
-    if suffix:
-        parts.append(suffix)
-
-    # --- Assemble Name & Meanings ---
     full_name = "".join(p["text"] for p in parts)
     meaning_lines = [f"- **{p['text']}** = {p['meaning']}" for p in parts]
 
-    # --- Poetic Meaning ---
-    # Call the helper function
+    # Poetic Meaning (using existing helper)
     poetic = _generate_poetic_meaning(parts, tabaxi_poetic_gloss)
 
-    # --- Clan Info ---
+    # Clan Info (remains the same)
     clan_info = next((c for c in tabaxi_clans if c["name"] == selected_clan), None)
+    clan_desc = ""
     if clan_info:
         clan_desc = (
             f"\n\n🏡 **Clan:** {clan_info['name']}\n\n"
@@ -182,59 +223,36 @@ def generate_tabaxi_name(selected_clan):
             f"• **Traits:** {clan_info['traits']}\n\n"
             f"• **Twist:** {clan_info['twist']}"
         )
-    else:
-        clan_desc = ""
 
-    # --- Return Formatted Output ---
+    # Return Formatted Output
     return (
         f"🐾 **Name:** {full_name}\n\n"
         + "\n\n".join(meaning_lines)
         + f"\n\n➔ **Poetic Meaning:** {poetic}{clan_desc}"
     )
 
-# === Generate Elven Name Function ===
+# === (Revised) Generate Elven Name Function ===
 def generate_elven_name():
-    # Ensure data lists are not empty
-    if not elven_prefixes or not elven_suffixes:
-         st.error("Elven name parts data is missing or empty.")
-         return "Error: Missing name data."
-    if not elven_middles:
-         st.warning("Elven middle name parts data is missing or empty.")
+    if not all([elven_prefixes, elven_middles, elven_suffixes, elven_poetic_gloss]):
+         st.error("Missing required Elven data.")
+         return "Error: Missing data."
 
-    use_middle = random.random() < 0.4 and bool(elven_middles) # Only use middle if list exists
-    parts = []
+    # Assemble the parts using the helper
+    parts = _assemble_name_parts(elven_prefixes, elven_middles, elven_suffixes)
+    if not parts: return "Error: Failed to assemble name parts."
 
-    # --- Choose Prefix ---
-    prefix = random.choice(elven_prefixes)
-    parts.append(prefix)
-    last_part_ends_vowel = prefix["ends_vowel"]
-
-    # --- Choose Middle (Optional) ---
-    if use_middle:
-        middle = _pick_smooth_part(elven_middles, last_part_ends_vowel)
-        if middle:
-            parts.append(middle)
-            last_part_ends_vowel = middle["ends_vowel"]
-
-    # --- Choose Suffix ---
-    suffix = _pick_smooth_part(elven_suffixes, last_part_ends_vowel)
-    if suffix:
-        parts.append(suffix)
-
-    # --- Assemble Name & Meanings ---
     full_name = "".join(p["text"] for p in parts)
     meaning_lines = [f"- **{p['text']}** = {p['meaning']}" for p in parts]
 
-    # --- Poetic Meaning ---
+    # Poetic Meaning (using existing helper)
     poetic = _generate_poetic_meaning(parts, elven_poetic_gloss)
 
-    # --- Return Formatted Output ---
+    # Return Formatted Output
     return (
         f"🌿 **Name:** {full_name}\n\n" +
-        "\n".join(meaning_lines) + # Keep single newline for bullet list
+        "\n".join(meaning_lines) + # Single newline for bullet points
         f"\n\n➔ **Poetic Meaning:** {poetic}"
     )
-
 
 # === UI ===
 st.title("🌸 Tivmir World Tools")
