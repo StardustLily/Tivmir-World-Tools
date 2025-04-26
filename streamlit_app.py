@@ -567,40 +567,68 @@ with tabs[0]:
     with st.container(border=True):
         st.markdown(st.session_state.npc_output)
 
+# --- Start Corrected Name Generator Tab UI ---
 with tabs[1]:
     st.header("🔤 Name Generator")
-    race = st.selectbox("Choose a race:", ["Elven", "Tabaxi", "Human", "Orc", "Tiefling"], key="name_race")
-    gender = st.radio(
-        "Select Gender:",
-        ["Any", "Male", "Female"], # Options
-        key="name_gender",
-        horizontal=True # Display options side-by-side
-    )
+    # Race selection stays at the top
+    race = st.selectbox("Choose a race:", ["Elf", "Tabaxi", "Human", "Orc", "Tiefling"], key="name_race") # Added Tiefling based on previous steps
+
+    # --- Gender selection is now INSIDE the relevant blocks ---
 
     if race == "Tabaxi":
+        # NO gender selection shown here
         clan_names = [clan["name"] for clan in tabaxi_clans]
         selected_clan = st.selectbox("Choose a Tabaxi clan:", clan_names, key="tabaxi_clan")
         if st.button("Generate Tabaxi Name", key="tabaxi_name_button"):
-            # Pass gender - Note: generate_tabaxi_name needs to accept gender arg now!
-            st.session_state.name_output = generate_tabaxi_name(selected_clan) # Modify generate_tabaxi_name similarly if desired
-    elif race == "Human":
-         if st.button("Generate Common Name", key="common_name_button"):
-              # Pass the selected gender
-              st.session_state.name_output = generate_common_name(gender=gender) # Pass gender
-    elif race == "Orc":
-         if st.button("Generate Orcish Name", key="orc_name_button"):
-              # Pass the selected gender
-              st.session_state.name_output = generate_orc_name(gender=gender) # Pass gender
-    elif race == "Tiefling":
-         if st.button("Generate Infernal Name", key="tiefling_name_button"):
-              # Call the new function, passing the selected gender
-              st.session_state.name_output = generate_infernal_name(gender=gender)
-    else: # Elven
-        if st.button("Generate Elven Name", key="elven_name_button"):
-            # Pass gender - Note: generate_elven_name needs modification
-            st.session_state.name_output = generate_elven_name() # Modify generate_elven_name similarly if desired
+            # Call WITHOUT gender argument (it defaults to "Any" inside the function if needed)
+            st.session_state.name_output = generate_tabaxi_name(selected_clan)
 
-    # Always display name output from session state
+    elif race == "Human":
+        # Gender selection shown HERE for Humans
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="human_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Common Name", key="common_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_common_name(gender=gender)
+
+    elif race == "Orc":
+        # Gender selection shown HERE for Orcs
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="orc_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Orcish Name", key="orc_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_orc_name(gender=gender)
+
+    elif race == "Tiefling":
+        # Gender selection shown HERE for Tieflings (assuming they use it based on suffix tags)
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="tiefling_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Infernal Name", key="tiefling_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_infernal_name(gender=gender) # Ensure this function exists and accepts gender
+
+    # Use elif for Elf now, not else, to be specific
+    elif race == "Elf":
+        # NO gender selection shown here
+        if st.button("Generate Elven Name", key="elven_name_button"):
+            # Call WITHOUT gender argument (it defaults to "Any" inside the function if needed)
+            st.session_state.name_output = generate_elven_name()
+
+    else:
+        # Handle any unexpected race selection, maybe display a message
+        st.write(f"Select a race to generate a name.")
+
+
+    # Always display name output from session state (this part remains the same)
     if st.session_state.name_output:
         st.markdown("---") # Optional separator
         st.markdown(st.session_state.name_output)
