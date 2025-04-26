@@ -139,6 +139,10 @@ name_data = {
         "female_first": load_json("halfling_female_first.json"),
         "family": load_json("halfling_family.json"),
         "gloss": halfling_gloss},
+    "goliath": {
+        "given": load_json("goliath_given.json"),
+        "titles": load_json("goliath_titles.json"),
+        "gloss": giant_gloss},
     "minotaur": {
         "male_first": load_json("minotaur_male_first.json"),
         "female_first": load_json("minotaur_female_first.json"),
