@@ -107,7 +107,7 @@ if 'name_race' not in st.session_state: st.session_state.name_race = None
 # Call this only once per session start
 initialize_calendar_state(start_year=1478, start_month_index=0, start_day=1)
 
-tabs = st.tabs(["🌿 NPC Generator", "🔤 Name Generator"])
+tabs = st.tabs(["🌿 NPC Generator", "🔤 Name Generator", "📅 Calendar"])
 
 # --- NPC Generator Tab (Remains the same) ---
 with tabs[0]:
