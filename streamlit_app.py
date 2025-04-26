@@ -414,7 +414,7 @@ with tabs[0]:
 
     # Always display from session state
     if st.session_state.npc_output:
-    st.markdown("---")
+        st.markdown("---")
     with st.container(border=True):
         st.markdown(st.session_state.npc_output)
         if CLIPBOARD_AVAILABLE:
