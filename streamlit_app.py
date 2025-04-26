@@ -22,6 +22,7 @@ races = load_json("races.json")
 npc_attributes = load_json("npc_attributes.json")
 # Consolidate name data into a dictionary
 auran_gloss = load_json("auran_poetic_gloss.json")
+aquan_gloss = load_json("aquan_poetic_gloss.json")
 name_data = {
     "tabaxi": {
         "prefixes": load_json("tabaxi_prefixes.json"),
@@ -60,23 +61,31 @@ name_data = {
         "suffixes": load_json("drow_suffixes.json"),
         "gloss": load_json("drow_poetic_gloss.json"),
         "surnames": load_json("drow_surnames.json")
-},
-"draconic": {
-        "clans": load_json("draconic_clans.json"),
-        "prefixes": load_json("draconic_prefixes.json"),
-        "middles": load_json("draconic_middles.json"),
-        "suffixes": load_json("draconic_suffixes.json"),
-        "gloss": load_json("draconic_poetic_gloss.json")},
-"aarakocra": {
-        "lineages": load_json("aarakocra_lineages.json"),
-        "prefixes": load_json("aarakocra_prefixes.json"),
-        "middles": load_json("aarakocra_middles.json"),
-        "suffixes": load_json("aarakocra_suffixes.json"),
-        "gloss": auran_gloss},
-"owlin": {
-        "personal": load_json("owlin_personal.json"),
-        "descriptors": load_json("owlin_descriptors.json"),
-        "gloss": auran_gloss}
+    },
+    "draconic": {
+            "clans": load_json("draconic_clans.json"),
+            "prefixes": load_json("draconic_prefixes.json"),
+            "middles": load_json("draconic_middles.json"),
+            "suffixes": load_json("draconic_suffixes.json"),
+            "gloss": load_json("draconic_poetic_gloss.json")},
+    "aarakocra": {
+            "lineages": load_json("aarakocra_lineages.json"),
+            "prefixes": load_json("aarakocra_prefixes.json"),
+            "middles": load_json("aarakocra_middles.json"),
+            "suffixes": load_json("aarakocra_suffixes.json"),
+            "gloss": auran_gloss},
+    "owlin": {
+            "personal": load_json("owlin_personal.json"),
+            "descriptors": load_json("owlin_descriptors.json"),
+            "gloss": auran_gloss},
+    "tortle": {
+        "given": load_json("tortle_given.json"),
+        "descriptors": load_json("tortle_descriptors.json"),
+        "gloss": aquan_gloss},
+    "triton": {
+        "given": load_json("triton_given.json"),
+        "markers": load_json("triton_markers.json"),
+        "gloss": aquan_gloss}
 }
 
 # Emoji Icons (remains the same)
@@ -454,6 +463,101 @@ def _generate_owlin_name_data(race_data):
 
     return result
 
+# === NEW Helper Function for Tortle Names ===
+def _generate_tortle_name_data(race_data, gender="Any"):
+    """
+    Internal helper for Tortle names (Given + Descriptor structure).
+    Accepts the tortle data dictionary and gender.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    given_names = race_data.get("given")
+    descriptors = race_data.get("descriptors")
+    gloss = race_data.get("gloss")
+
+    if not given_names or not descriptors or not gloss:
+        error_msg = "Missing core Tortle data (given, descriptors, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Unisex) ---
+    given_part = random.choice(given_names)
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+    all_parts_for_meaning = [given_dict]
+
+    # --- Select Descriptor (Filtered by Gender) ---
+    descriptor_options = descriptors
+    if gender != "Any":
+        # Filter based on gender, always including Unisex
+        filtered_options = [
+            d for d in descriptors
+            if d.get("gender") == gender or d.get("gender") == "Unisex"
+        ]
+        if filtered_options:
+            descriptor_options = filtered_options
+        else:
+            st.warning(f"No specific {gender} or Unisex Tortle descriptors found, using any.")
+            # Fallback to all descriptors
+
+    if not descriptor_options:
+         error_msg = "Tortle descriptor options list is empty after filtering."
+         st.error(error_msg); result["error"] = error_msg
+         result["name"] = given_dict["text"] + " [Error]"
+         result["parts"] = [given_dict]; return result
+
+    descriptor_part = random.choice(descriptor_options)
+    descriptor_dict = {"text": descriptor_part["text"], "meaning": descriptor_part.get("meaning", "N/A")}
+    all_parts_for_meaning.append(descriptor_dict)
+
+    # --- Combine into Full Name (with space) ---
+    full_name = f"{given_dict['text']} {descriptor_dict['text']}"
+    result["name"] = full_name
+    result["parts"] = all_parts_for_meaning
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts_for_meaning, gloss)
+
+    return result
+
+# === NEW Helper Function for Triton Names ===
+def _generate_triton_name_data(race_data):
+    """
+    Internal helper for Triton names (Given + -Marker structure).
+    Accepts the triton data dictionary. Gender is always Unisex.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    given_names = race_data.get("given")
+    markers = race_data.get("markers")
+    gloss = race_data.get("gloss")
+
+    if not given_names or not markers or not gloss:
+        error_msg = "Missing core Triton data (given, markers, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Unisex) ---
+    given_part = random.choice(given_names)
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+
+    # --- Select Marker (Unisex) ---
+    marker_part = random.choice(markers)
+    marker_dict = {"text": marker_part["text"], "meaning": marker_part.get("meaning", "N/A")}
+
+    all_parts_for_meaning = [given_dict, marker_dict]
+
+    # --- Combine into Full Name (with hyphen?) ---
+    # Let's use a hyphen to visually separate the marker
+    full_name = f"{given_dict['text']}-{marker_dict['text']}"
+    result["name"] = full_name
+    # Add marker text to parts list for display of meanings
+    result["parts"] = all_parts_for_meaning
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts_for_meaning, gloss)
+
+    return result
+
 # === (Corrected) Generate NPC Function ===
 def generate_npc():
     if not races:
@@ -611,6 +715,30 @@ def generate_npc():
         if race_key in name_data:
             # Owlin names are unisex, no gender needed
             name_data_result = _generate_owlin_name_data(name_data[race_key])
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"]
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Tortle":
+        race_key = "tortle"
+        if race_key in name_data:
+            # Use "Any" gender for NPC gen default
+            name_data_result = _generate_tortle_name_data(name_data[race_key], gender="Any")
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"]
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Triton":
+        race_key = "triton"
+        if race_key in name_data:
+            # Triton names are unisex
+            name_data_result = _generate_triton_name_data(name_data[race_key])
             if not name_data_result["error"] and name_data_result["name"]:
                 npc_name = name_data_result["name"]
             else:
@@ -833,6 +961,54 @@ def generate_owlin_name(): # No gender parameter
         f"\n\n➔ **{poetic_label}** {data['poetic']}"
     )
 
+# === Generate Tortle Name Function ===
+def generate_tortle_name(gender="Any"):
+    """Generates a Tortle name with meanings for the Name Generator tab."""
+    race_key = "tortle"
+    if race_key not in name_data: return "Error: Tortle name data not loaded."
+    # Pass the Tortle sub-dictionary and gender to the helper
+    data = _generate_tortle_name_data(name_data[race_key], gender)
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include given + descriptor parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    # Poetic meaning applies to the whole name
+    poetic_label = "Poetic Meaning:"
+
+    # Use a turtle emoji
+    return (
+        f"🐢 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
+# === Generate Triton Name Function ===
+def generate_triton_name(): # No gender parameter
+    """Generates a Triton name with meanings for the Name Generator tab."""
+    race_key = "triton"
+    if race_key not in name_data: return "Error: Triton name data not loaded."
+    # Pass the Triton sub-dictionary to the helper
+    data = _generate_triton_name_data(name_data[race_key])
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include given + marker parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    # Poetic meaning applies to the whole name
+    poetic_label = "Poetic Meaning:"
+
+    # Use a trident emoji?
+    return (
+        f"🔱 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
 # IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
 # Example for Half-Elf (Elven style):
 # Replace:
@@ -953,7 +1129,8 @@ with tabs[1]:
     st.header("🔤 Name Generator")
     race = st.selectbox(
         "Choose a race:",
-        ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow", "Dragonborn", "Aarakocra", "Owlin"],
+        ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow", "Dragonborn",
+         "Aarakocra", "Owlin", "Tortle", "Triton"],
         key="name_race"
     )
     if race == "Tabaxi":
@@ -1031,6 +1208,23 @@ with tabs[1]:
         if st.button("Generate Owlin Name", key="owlin_name_button"):
              # Call the function without gender
              st.session_state.name_output = generate_owlin_name()
+
+    elif race == "Tortle":
+        # Gender selection needed for Tortle
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="tortle_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Tortle Name", key="tortle_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_tortle_name(gender=gender)
+
+    elif race == "Triton":
+        # NO gender selection needed for Triton
+        if st.button("Generate Triton Name", key="triton_name_button"):
+             # Call the function without gender
+             st.session_state.name_output = generate_triton_name()
 
     # Use elif for Elf now, not else, to be specific
     elif race == "Elf":
