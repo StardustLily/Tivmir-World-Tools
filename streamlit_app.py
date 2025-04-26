@@ -188,11 +188,11 @@ def generate_npc():
     npc_name = f"Unnamed {race_name}" # Default placeholder
     generated_parts = [] # Store parts if generated
 
-    if race_name == "Elven":
+    if race_name == "Elf":
         if all([elven_prefixes, elven_middles, elven_suffixes]): # Check data exists
              generated_parts = _assemble_name_parts(elven_prefixes, elven_middles, elven_suffixes)
              if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
-        else: npc_name = f"[Elven Name Data Missing] {race_name}"
+        else: npc_name = f"[Elf Name Data Missing] {race_name}"
 
     elif race_name == "Tabaxi":
         if all([tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes]): # Check data exists
