@@ -1,5 +1,6 @@
 # streamlit_app.py
 import streamlit as st
+st.set_page_config(page_title="Tivmir World Tools", layout="centered")
 # Import necessary data and TOP-LEVEL generator functions
 from data_loader import name_data # Keep name_data for Tabaxi clan lookup? Or pass it? Pass it maybe.
 # Let's try importing only the necessary top-level things
@@ -21,9 +22,6 @@ from name_generators import (
     generate_aasimar_name, generate_shifter_name, generate_githyanki_name,
     generate_common_name
 )
-
-# Set page config first!
-st.set_page_config(page_title="Tivmir World Tools", layout="centered")
 
 # === UI ===
 st.title("🌸 Tivmir World Tools")
