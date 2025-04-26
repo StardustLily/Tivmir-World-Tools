@@ -30,5 +30,53 @@
     {"text": "Jako", 
     "meaning": "hunter / heir",
     "starts_vowel": false,
-    "ends_vowel": true}
+    "ends_vowel": true},
+    {
+        "text": "Kai",
+        "starts_vowel": false,
+        "ends_vowel": true,
+        "meaning": "smoke"
+      },
+      {
+        "text": "Har",
+        "starts_vowel": false,
+        "ends_vowel": false,
+        "meaning": "stone"
+      },
+      {
+        "text": "Itz",
+        "starts_vowel": true,
+        "ends_vowel": false,
+        "meaning": "shadow"
+      },
+      {
+        "text": "Ene",
+        "starts_vowel": true,
+        "ends_vowel": true,
+        "meaning": "gentle"
+      },
+      {
+        "text": "Bel",
+        "starts_vowel": false,
+        "ends_vowel": false,
+        "meaning": "dark"
+      },
+      {
+        "text": "Zuri",
+        "starts_vowel": false,
+        "ends_vowel": true,
+        "meaning": "white"
+      },
+      {
+        "text": "Mikel",
+        "starts_vowel": false,
+        "ends_vowel": false,
+        "meaning": "paragon"
+      },
+      {
+        "text": "Este",
+        "starts_vowel": true,
+        "ends_vowel": true,
+        "meaning": "crowned"
+      }
 ]

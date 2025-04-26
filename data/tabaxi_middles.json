@@ -3,10 +3,6 @@
     "meaning": "strength",
     "starts_vowel": false,
     "ends_vowel": false},
-    {"text": "mari", 
-    "meaning": "grace / gift",
-    "starts_vowel": false,
-    "ends_vowel": true},
     {"text": "luz", 
     "meaning": "light",
     "starts_vowel": false,
@@ -19,8 +15,46 @@
     "meaning": "trade / wealth",
     "starts_vowel": false,
     "ends_vowel": true},
-    {"text": "halo", 
-    "meaning": "aura / guide",
-    "starts_vowel": false,
-    "ends_vowel": true}
+    {
+        "text": "urr",
+        "starts_vowel": true,
+        "ends_vowel": false,
+        "meaning": "distant"
+      },
+      {
+        "text": "esk",
+        "starts_vowel": true,
+        "ends_vowel": false,
+        "meaning": "hand"
+      },
+      {
+        "text": "otx",
+        "starts_vowel": true,
+        "ends_vowel": false,
+        "meaning": "wolf"
+      },
+      {
+        "text": "aga",
+        "starts_vowel": true,
+        "ends_vowel": true,
+        "meaning": "high place"
+      },
+      {
+        "text": "ola",
+        "starts_vowel": true,
+        "ends_vowel": true,
+        "meaning": "forge"
+      },
+      {
+        "text": "kal",
+        "starts_vowel": false,
+        "ends_vowel": false,
+        "meaning": "path"
+      },
+      {
+        "text": "gor",
+        "starts_vowel": false,
+        "ends_vowel": false,
+        "meaning": "red"
+      }
 ]
