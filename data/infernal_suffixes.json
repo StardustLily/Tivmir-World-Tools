@@ -1,0 +1,58 @@
+[
+  {
+    "text": "ys", // From 'phimirys'
+    "starts_vowel": false, // Often starts consonant cluster
+    "ends_vowel": false,
+    "meaning": "state of being" // Or Adjective suffix
+    //"gender": "Unisex" // Example if adding gender
+  },
+  {
+    "text": "ut", // Hebrew abstract
+    "starts_vowel": true,
+    "ends_vowel": false,
+    "meaning": "abstract quality"
+    //"gender": "Unisex"
+  },
+  {
+    "text": "an", // Common agent suffix
+    "starts_vowel": true,
+    "ends_vowel": false,
+    "meaning": "agent / one who"
+    //"gender": "Unisex"
+  },
+  {
+    "text": "ikh", // Place/belonging
+    "starts_vowel": true,
+    "ends_vowel": false,
+    "meaning": "belonging to / place"
+    //"gender": "Unisex"
+  },
+  {
+    "text": "on", // Collective/group
+    "starts_vowel": true,
+    "ends_vowel": false,
+    "meaning": "collective"
+    //"gender": "Unisex"
+  },
+  {
+    "text": "ez", // Remnant/small
+    "starts_vowel": true,
+    "ends_vowel": false,
+    "meaning": "remnant"
+    //"gender": "Unisex"
+  },
+    {
+    "text": "el", // Softer ending possibility
+    "starts_vowel": true,
+    "ends_vowel": false,
+    "meaning": "spark" // Relates to fire/potential
+    //"gender": "Unisex"
+  },
+  {
+    "text": "im", // Plural potentially (like Hebrew)
+    "starts_vowel": true,
+    "ends_vowel": true, // Ends in 'm', consonant
+    "meaning": "plural marker"
+    //"gender": "Unisex"
+  }
+]
