@@ -29,6 +29,12 @@ def load_json(filename):
 races = load_json("races.json")
 npc_attributes = load_json("npc_attributes.json")
 
+# === Load Calendar Data ===  # ADD THIS SECTION
+calendar_data = load_json("tivmir_calendar.json")
+if not calendar_data or "months" not in calendar_data:
+     st.error("Failed to load valid calendar data! Tracker will not work.")
+     calendar_data = {"months": [], "year_suffix": "ERR"}
+
 # === Load Single Name Lists ===
 kenku_names = load_json("kenku_names.json")
 lizardfolk_names = load_json("lizardfolk_names.json")

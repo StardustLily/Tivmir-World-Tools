@@ -3,8 +3,14 @@ st.set_page_config(page_title="Tivmir World Tools", layout="centered")
 # Import necessary data and TOP-LEVEL generator functions
 from data_loader import name_data, races
 from npc_generator import generate_npc
-# Import all the generate_X_name functions needed by the UI buttons
-# (Ensure ALL needed functions are listed here)
+# --- ADD Calendar Imports ---
+from calendar_tracker import (
+    initialize_calendar_state,
+    get_current_date_string,
+    advance_day,
+    advance_week,
+    advance_month
+)
 from name_generators import (
     generate_elven_name, generate_orc_name, generate_infernal_name,
     generate_tabaxi_name, generate_drow_name, generate_dragonborn_name,
@@ -90,12 +96,16 @@ else:
 # === UI ===
 st.title("🌸 Tivmir World Tools")
 
-# Initialize session state variables
+# === Initialize Session State ===
+# NPC & Name Output
 if 'npc_output' not in st.session_state: st.session_state.npc_output = ""
 if 'name_output' not in st.session_state: st.session_state.name_output = ""
-# Initialize state for rarity and race selection
-if 'selected_rarity' not in st.session_state: st.session_state.selected_rarity = "Common" # Default rarity
-if 'name_race' not in st.session_state: st.session_state.name_race = None # Will be set by second selectbox
+# Name Gen UI State
+if 'selected_rarity' not in st.session_state: st.session_state.selected_rarity = "Common"
+if 'name_race' not in st.session_state: st.session_state.name_race = None
+# --- ADD Calendar State Initialization ---
+# Call this only once per session start
+initialize_calendar_state(start_year=1478, start_month_index=0, start_day=1)
 
 tabs = st.tabs(["🌿 NPC Generator", "🔤 Name Generator"])
 
@@ -255,3 +265,29 @@ with tabs[1]:
             st.error(st.session_state.name_output)
         else:
             st.markdown(st.session_state.name_output)
+
+# --- ADD Calendar Tracker Tab ---
+with tabs[2]:
+    st.header("📅 Tivmir Calendar Tracker")
+
+    # Display current date
+    st.subheader("Current Date:")
+    st.markdown(f"## {get_current_date_string()}") # Display formatted date prominently
+
+    st.markdown("---") # Separator
+
+    # Buttons to advance time
+    st.subheader("Advance Time:")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if st.button("Advance 1 Day", key="adv_day_1"):
+            advance_day(1)
+            st.rerun() # Rerun script immediately to show updated date
+    with col2:
+        if st.button("Advance 1 Week", key="adv_week"):
+            advance_week()
+            st.rerun()
+    with col3:
+        if st.button("Advance 1 Month", key="adv_month"):
+            advance_month()
+            st.rerun()

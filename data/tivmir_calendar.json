@@ -1,0 +1,17 @@
+{
+  "year_suffix": "LD",
+  "months": [
+    {"name": "Jaysong", "days": 31},      // January equivalent
+    {"name": "Fellwind", "days": 28},     // February equivalent
+    {"name": "Marion", "days": 31},       // March equivalent
+    {"name": "Apstus", "days": 30},       // April equivalent
+    {"name": "Maya", "days": 31},         // May equivalent
+    {"name": "Junnseve", "days": 30},     // June equivalent
+    {"name": "Julen", "days": 31},         // July equivalent
+    {"name": "Auroventis", "days": 31},   // August equivalent
+    {"name": "Serpentis", "days": 30},    // September equivalent
+    {"name": "Oceanis", "days": 31},      // October equivalent
+    {"name": "Noxtis", "days": 30},       // November equivalent
+    {"name": "Defenestria", "days": 31}   // December equivalent
+  ]
+}
