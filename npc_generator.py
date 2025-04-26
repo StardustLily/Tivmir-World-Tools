@@ -77,11 +77,16 @@ def generate_npc():
         elif race_name == "Half-Elf":
             chosen_style = random.choice(["Elven", "Common"])
             if chosen_style == "Elven":
-                # ... (Elven name logic) ...
-            else:
+                # --- Elven logic ---
+                race_key = "elf" # Define race_key here for Elven style
+                if race_key in name_data: name_data_result = _generate_structured_name_data(name_data[race_key], npc_gender)
+                else: npc_name = f"[Elven Name Data Missing] Half-Elf"
+                # --- End Elven logic ---
+            else: # <--- Start of Common style block
                 # Ensure the argument is 'gender', NOT 'gender_filter'
                 npc_name_result = generate_common_name(gender=npc_gender) # CORRECTED
-                # ... (parsing logic as before) ...
+
+                # --- THIS ENTIRE if/elif/else block needs to be indented under the 'else' above ---
                 if isinstance(npc_name_result, str) and "**Name:**" in npc_name_result:
                     npc_name = npc_name_result.split("**Name:**")[1].split("\\n")[0].strip()
                 elif not isinstance(npc_name_result, str) or "Error:" in npc_name_result:
@@ -93,17 +98,23 @@ def generate_npc():
         elif race_name == "Half-Orc":
             chosen_style = random.choice(["Orc", "Common"])
             if chosen_style == "Orc":
-                # ... (Orc name logic) ...
-            else:
-                # Ensure the argument is 'gender', NOT 'gender_filter'
-                npc_name_result = generate_common_name(gender=npc_gender) # CORRECTED
-                # ... (parsing logic as before) ...
+                 # --- Orc logic ---
+                 race_key = "orc"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), npc_gender)
+                 # --- End Orc logic ---
+            else: # <--- Start of Common style block
+                npc_name_result = generate_common_name(gender=npc_gender) # Call the function
+
+                # --- THIS ENTIRE if/elif/else block needs to be indented under the 'else' above ---
                 if isinstance(npc_name_result, str) and "**Name:**" in npc_name_result:
+                    # This line MUST be indented further
                     npc_name = npc_name_result.split("**Name:**")[1].split("\\n")[0].strip()
                 elif not isinstance(npc_name_result, str) or "Error:" in npc_name_result:
+                    # This line MUST be indented further
                     npc_name = f"[{race_name} Name Error] {race_name}"
                 else:
+                    # This line MUST be indented further
                     npc_name = npc_name_result
+
         elif race_name == "Tiefling":
               race_key = "infernal"; name_data_result = _generate_structured_name_data(name_data.get(race_key, {}), npc_gender)
         elif race_name == "Drow":
