@@ -607,7 +607,6 @@ with tabs[1]:
 
     elif race == "Tiefling":
         # NO gender selection shown here
-        gender = st.radio(
         if st.button("Generate Infernal Name", key="tiefling_name_button"):
              # Pass the selected gender
              st.session_state.name_output = generate_infernal_name(gender=gender) # Ensure this function exists and accepts gender
