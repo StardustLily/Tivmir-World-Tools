@@ -230,6 +230,24 @@ def generate_npc():
              else: npc_name = f"[Orcish Name Assembly Failed] {race_name}"
         else: npc_name = f"[Orcish Name Data Missing] {race_name}"
 
+    elif race_name == "Half-Orc":
+        # Randomly choose which heritage name style to use
+        chosen_style = random.choice(["Orc", "Common"])
+
+        if chosen_style == "Orc":
+            st.info("Generating Orc-style name for Half-Orc...") # Optional debug info
+            if all([orcish_prefixes, orcish_middles, orcish_suffixes]):
+                generated_parts = _assemble_name_parts(orcish_prefixes, orcish_middles, orcish_suffixes)
+                if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
+                else: npc_name = f"[Orcish Name Assembly Failed] Half-Orc"
+            else: npc_name = f"[Orcish Name Data Missing] Half-Orc"
+
+        else: # Chosen style is "Common"
+            st.info("Generating Common-style name for Half-Orc...") # Optional debug info
+            if common_first_names and common_surnames:
+                npc_name = _get_common_name_string()
+            else: npc_name = f"[Common Name Data Missing] Half-Orc"
+
     # --- Add more elif blocks here for future races ---
     # elif race_name == "Dwarf":
     #     if all ([dwarf_prefixes, ...]): # Load dwarf data first
