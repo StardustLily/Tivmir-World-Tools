@@ -1,0 +1,20 @@
+[
+  { "text": "Fang", "meaning": "Sharp tooth, predator aspect", "gender": "Unisex" },
+  { "text": "Grim", "meaning": "Stern demeanor, perhaps wolfish", "gender": "Unisex" },
+  { "text": "Ash", "meaning": "Grey coloration, perhaps elusive", "gender": "Unisex" },
+  { "text": "Whisper", "meaning": "Quiet movement, stealthy", "gender": "Unisex" },
+  { "text": "Runt", "meaning": "Smallest of a group, survivor", "gender": "Unisex" },
+  { "text": "Claw", "meaning": "Natural weapon, fierce", "gender": "Unisex" },
+  { "text": "Swift", "meaning": "Fast runner, agile", "gender": "Unisex" },
+  { "text": "Shadow", "meaning": "Moves unseen, dark fur/hide", "gender": "Unisex" },
+  { "text": "Grit", "meaning": "Tough, resilient", "gender": "Unisex" },
+  { "text": "Snarl", "meaning": "Aggressive sound, intimidating", "gender": "Unisex" },
+  { "text": "Thorn", "meaning": "Prickly nature, defensive", "gender": "Unisex" },
+  { "text": "Ridge", "meaning": "Prominent feature, perhaps bony ridge", "gender": "Unisex" },
+  { "text": "Flint", "meaning": "Hard, sparky personality?", "gender": "Unisex" },
+  { "text": "Moon", "meaning": "Connection to the moon/night/cycles", "gender": "Unisex" },
+  { "text": "Patch", "meaning": "Distinctive marking or coloration", "gender": "Unisex" },
+  { "text": "Growl", "meaning": "Low, threatening sound", "gender": "Unisex" },
+  { "text": "Cinder", "meaning": "Dark coloration, remnant of something?", "gender": "Unisex" },
+  { "text": "Razor", "meaning": "Sharp edge, dangerous", "gender": "Unisex" }
+]

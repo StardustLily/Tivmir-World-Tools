@@ -32,6 +32,14 @@ yuan_ti_names = load_json("yuan-ti_names.json")
 goblin_names = load_json("goblin_names.json")
 gnomish_gloss = load_json("gnomish_poetic_gloss.json")
 halfling_gloss = load_json("halfling_poetic_gloss.json")
+giant_gloss = load_json("giant_poetic_gloss.json")
+bugbear_gloss = load_json("bugbear_poetic_gloss.json")
+harengon_gloss = load_json("harengon_poetic_gloss.json")
+leonin_gloss = load_json("leonin_poetic_gloss.json")
+loxodon_gloss = load_json("loxodon_poetic_gloss.json")
+aasimar_gloss = load_json("aasimar_poetic_gloss.json")
+shifter_names = load_json("shifter_names.json")
+githyanki_gloss = load_json("githyanki_poetic_gloss.json")
 name_data = {
     "tabaxi": {
         "prefixes": load_json("tabaxi_prefixes.json"),
@@ -130,7 +138,41 @@ name_data = {
         "male_first": load_json("halfling_male_first.json"),
         "female_first": load_json("halfling_female_first.json"),
         "family": load_json("halfling_family.json"),
-        "gloss": halfling_gloss}
+        "gloss": halfling_gloss},
+    "minotaur": {
+        "male_first": load_json("minotaur_male_first.json"),
+        "female_first": load_json("minotaur_female_first.json"),
+        "descriptors": load_json("minotaur_descriptors.json"),
+        "gloss": giant_gloss},
+    "bugbear": {
+        "given": load_json("bugbear_given.json"),
+        "epithets": load_json("bugbear_epithets.json"),
+        "gloss": bugbear_gloss},
+    "harengon": {
+        "given": load_json("harengon_given.json"),
+        "family": load_json("harengon_family.json"),
+        "gloss": harengon_gloss},
+    "leonin": {
+        "male_first": load_json("leonin_male_first.json"),
+        "female_first": load_json("leonin_female_first.json"),
+        "pridenames": load_json("leonin_pridenames.json"),
+        "gloss": leonin_gloss},
+    "loxodon": {
+        "male_first": load_json("loxodon_male_first.json"),
+        "female_first": load_json("loxodon_female_first.json"),
+        "herdnames": load_json("loxodon_herdnames.json"),
+        "gloss": loxodon_gloss},
+    "aasimar": {
+        "prefixes": load_json("aasimar_base_prefixes.json"),
+        "middles": load_json("aasimar_base_middles.json"),
+        "suffixes": load_json("aasimar_base_suffixes.json"),
+        "titles": load_json("aasimar_celestial_titles.json"),
+        "gloss": aasimar_gloss},
+    "githyanki": {
+        "male_first": load_json("githyanki_male_first.json"),
+        "female_first": load_json("githyanki_female_first.json"),
+        "titles": load_json("githyanki_titles.json"),
+        "gloss": githyanki_gloss}
 }
 
 # Emoji Icons (remains the same)
@@ -715,6 +757,365 @@ def _generate_halfling_name_data(race_data, gender="Any"):
 
     return result
 
+# === NEW Helper Function for Goliath Names ===
+def _generate_goliath_name_data(race_data):
+    """
+    Internal helper for Goliath names (Given + Title/Descriptor structure).
+    Accepts the goliath data dictionary. Names are Unisex.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    given_names = race_data.get("given")
+    titles = race_data.get("titles")
+    gloss = race_data.get("gloss")
+
+    if not given_names or not titles or not gloss:
+        error_msg = "Missing core Goliath data (given, titles, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Unisex) ---
+    given_part = random.choice(given_names)
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+
+    # --- Select Title/Descriptor (Unisex) ---
+    title_part = random.choice(titles)
+    title_dict = {"text": title_part["text"], "meaning": title_part.get("meaning", "N/A")}
+
+    all_parts = [given_dict, title_dict]
+
+    # --- Combine into Full Name (with space) ---
+    full_name = f"{given_dict['text']} {title_dict['text']}"
+    result["name"] = full_name
+    result["parts"] = all_parts
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts, gloss)
+
+    return result
+
+# === NEW Helper Function for Minotaur Names ===
+def _generate_minotaur_name_data(race_data, gender="Any"):
+    """
+    Internal helper for Minotaur names (Given + Descriptor/Epithet).
+    Accepts the minotaur data dictionary and gender.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    male_first = race_data.get("male_first")
+    female_first = race_data.get("female_first")
+    descriptors = race_data.get("descriptors")
+    gloss = race_data.get("gloss")
+
+    if not male_first or not female_first or not descriptors or not gloss:
+        error_msg = "Missing core Minotaur data (first names, descriptors, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Gendered) ---
+    given_part = None
+    if gender == "Male":
+        given_part = random.choice(male_first)
+    elif gender == "Female":
+        given_part = random.choice(female_first)
+    else: # Gender is "Any"
+        chosen_list = random.choice([male_first, female_first])
+        given_part = random.choice(chosen_list)
+
+    if not given_part:
+         error_msg = "Failed to select Minotaur given name."; st.error(error_msg)
+         result["error"] = error_msg; return result
+
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+
+    # --- Select Descriptor/Epithet (Unisex) ---
+    descriptor_part = random.choice(descriptors)
+    descriptor_dict = {"text": descriptor_part["text"], "meaning": descriptor_part.get("meaning", "N/A")}
+
+    all_parts = [given_dict, descriptor_dict]
+
+    # --- Combine into Full Name (with space) ---
+    full_name = f"{given_dict['text']} {descriptor_dict['text']}"
+    result["name"] = full_name
+    result["parts"] = all_parts
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts, gloss)
+
+    return result
+
+# === NEW Helper Function for Bugbear Names ===
+def _generate_bugbear_name_data(race_data):
+    """
+    Internal helper for Bugbear names (Given + Epithet structure).
+    Accepts the bugbear data dictionary. Names are Unisex.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    given_names = race_data.get("given")
+    epithets = race_data.get("epithets")
+    gloss = race_data.get("gloss")
+
+    if not given_names or not epithets or not gloss:
+        error_msg = "Missing core Bugbear data (given, epithets, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Unisex) ---
+    given_part = random.choice(given_names)
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+
+    # --- Select Epithet (Unisex) ---
+    epithet_part = random.choice(epithets)
+    epithet_dict = {"text": epithet_part["text"], "meaning": epithet_part.get("meaning", "N/A")}
+
+    all_parts = [given_dict, epithet_dict]
+
+    # --- Combine into Full Name (with space) ---
+    full_name = f"{given_dict['text']} {epithet_dict['text']}"
+    result["name"] = full_name
+    result["parts"] = all_parts
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts, gloss)
+
+    return result
+
+# === NEW Helper Function for Harengon Names ===
+def _generate_harengon_name_data(race_data):
+    """
+    Internal helper for Harengon names (Given + Family/Burrow structure).
+    Accepts the harengon data dictionary. Names are Unisex.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    given_names = race_data.get("given")
+    family_names = race_data.get("family")
+    gloss = race_data.get("gloss")
+
+    if not given_names or not family_names or not gloss:
+        error_msg = "Missing core Harengon data (given, family, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Unisex) ---
+    given_part = random.choice(given_names)
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+
+    # --- Select Family/Burrow Name (Unisex) ---
+    family_part = random.choice(family_names)
+    family_dict = {"text": family_part["text"], "meaning": family_part.get("meaning", "N/A")}
+
+    all_parts = [given_dict, family_dict]
+
+    # --- Combine into Full Name (with space) ---
+    full_name = f"{given_dict['text']} {family_dict['text']}"
+    result["name"] = full_name
+    result["parts"] = all_parts
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts, gloss)
+
+    return result
+
+# === NEW Helper Function for Leonin Names ===
+def _generate_leonin_name_data(race_data, gender="Any"):
+    """
+    Internal helper for Leonin names (Given + Pride Name structure).
+    Accepts the leonin data dictionary and gender.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    male_first = race_data.get("male_first")
+    female_first = race_data.get("female_first")
+    pride_names = race_data.get("pridenames")
+    gloss = race_data.get("gloss")
+
+    if not male_first or not female_first or not pride_names or not gloss:
+        error_msg = "Missing core Leonin data (first names, pride names, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Gendered) ---
+    given_part = None
+    if gender == "Male":
+        given_part = random.choice(male_first)
+    elif gender == "Female":
+        given_part = random.choice(female_first)
+    else: # Gender is "Any"
+        chosen_list = random.choice([male_first, female_first])
+        given_part = random.choice(chosen_list)
+
+    if not given_part:
+         error_msg = "Failed to select Leonin given name."; st.error(error_msg)
+         result["error"] = error_msg; return result
+
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+    all_parts = [given_dict]
+
+    # --- Select Pride Name (Unisex) ---
+    pride_part = random.choice(pride_names)
+    pride_dict = {"text": pride_part["text"], "meaning": pride_part.get("meaning", "N/A")}
+    all_parts.append(pride_dict)
+
+    # --- Combine into Full Name (with space) ---
+    full_name = f"{given_dict['text']} {pride_dict['text']}"
+    result["name"] = full_name
+    result["parts"] = all_parts
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts, gloss)
+
+    return result
+
+# === NEW Helper Function for Loxodon Names ===
+def _generate_loxodon_name_data(race_data, gender="Any"):
+    """
+    Internal helper for Loxodon names (Given + Herd Name structure).
+    Accepts the loxodon data dictionary and gender.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    male_first = race_data.get("male_first")
+    female_first = race_data.get("female_first")
+    herd_names = race_data.get("herdnames")
+    gloss = race_data.get("gloss")
+
+    if not male_first or not female_first or not herd_names or not gloss:
+        error_msg = "Missing core Loxodon data (first names, herd names, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Gendered) ---
+    given_part = None
+    if gender == "Male":
+        given_part = random.choice(male_first)
+    elif gender == "Female":
+        given_part = random.choice(female_first)
+    else: # Gender is "Any"
+        chosen_list = random.choice([male_first, female_first])
+        given_part = random.choice(chosen_list)
+
+    if not given_part:
+         error_msg = "Failed to select Loxodon given name."; st.error(error_msg)
+         result["error"] = error_msg; return result
+
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+    all_parts = [given_dict]
+
+    # --- Select Herd Name (Unisex) ---
+    herd_part = random.choice(herd_names)
+    herd_dict = {"text": herd_part["text"], "meaning": herd_part.get("meaning", "N/A")}
+    all_parts.append(herd_dict)
+
+    # --- Combine into Full Name (with space) ---
+    full_name = f"{given_dict['text']} {herd_dict['text']}"
+    result["name"] = full_name
+    result["parts"] = all_parts
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts, gloss)
+
+    return result
+
+# === NEW Helper Function for Aasimar Names ===
+def _generate_aasimar_name_data(race_data):
+    """
+    Internal helper for Aasimar names (Base P+M+S + Optional Title).
+    Accepts the aasimar data dictionary. Names are Unisex.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    prefixes = race_data.get("prefixes")
+    middles = race_data.get("middles")
+    suffixes = race_data.get("suffixes")
+    titles = race_data.get("titles")
+    gloss = race_data.get("gloss")
+
+    if not prefixes or not suffixes or not titles or not gloss: # Middles are optional
+        error_msg = "Missing core Aasimar data (prefixes, suffixes, titles, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Assemble Base Name Parts (Unisex) ---
+    base_parts = _assemble_name_parts(prefixes, middles or [], suffixes, gender_filter="Any")
+    if not base_parts:
+        error_msg = "Failed to assemble Aasimar base name parts."
+        st.warning(error_msg); result["error"] = error_msg
+        result["name"] = "[Base Name Error]"
+        return result
+
+    base_name_str = "".join(p["text"] for p in base_parts)
+    all_parts = base_parts # Start list for display & gloss
+
+    # --- Select Optional Title (Unisex) ---
+    title_dict = None
+    full_name = base_name_str # Default to just base name
+    use_title = random.random() < 0.4 # 40% chance of having a title
+    if use_title and titles:
+        title_part = random.choice(titles)
+        title_dict = {"text": title_part["text"], "meaning": title_part.get("meaning", "N/A")}
+        all_parts.append(title_dict)
+        full_name = f"{base_name_str} {title_dict['text']}" # Add title with space
+
+    result["name"] = full_name
+    result["parts"] = all_parts
+
+    # --- Generate Poetic Meaning (based on all selected parts) ---
+    result["poetic"] = _generate_poetic_meaning(all_parts, gloss)
+
+    return result
+
+# === NEW Helper Function for Githyanki Names ===
+def _generate_githyanki_name_data(race_data, gender="Any"):
+    """
+    Internal helper for Githyanki names (Given + Title structure).
+    Accepts the githyanki data dictionary and gender.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    male_first = race_data.get("male_first")
+    female_first = race_data.get("female_first")
+    titles = race_data.get("titles")
+    gloss = race_data.get("gloss")
+
+    if not male_first or not female_first or not titles or not gloss:
+        error_msg = "Missing core Githyanki data (first names, titles, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Gendered) ---
+    given_part = None
+    if gender == "Male":
+        given_part = random.choice(male_first)
+    elif gender == "Female":
+        given_part = random.choice(female_first)
+    else: # Gender is "Any"
+        chosen_list = random.choice([male_first, female_first])
+        given_part = random.choice(chosen_list)
+
+    if not given_part:
+         error_msg = "Failed to select Githyanki given name."; st.error(error_msg)
+         result["error"] = error_msg; return result
+
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+    all_parts = [given_dict]
+
+    # --- Select Title (Unisex) ---
+    title_part = random.choice(titles)
+    title_dict = {"text": title_part["text"], "meaning": title_part.get("meaning", "N/A")}
+    all_parts.append(title_dict)
+
+    # --- Combine into Full Name (with space) ---
+    full_name = f"{given_dict['text']} {title_dict['text']}"
+    result["name"] = full_name
+    result["parts"] = all_parts
+
+    # --- Generate Poetic Meaning ---
+    result["poetic"] = _generate_poetic_meaning(all_parts, gloss)
+
+    return result
+
 # === (Corrected) Generate NPC Function ===
 def generate_npc():
     if not races:
@@ -1011,6 +1412,109 @@ def generate_npc():
             name_data_result = _generate_halfling_name_data(name_data[race_key], gender="Any")
             if not name_data_result["error"] and name_data_result["name"]:
                 npc_name = name_data_result["name"] # Given + Family name
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Goliath":
+        race_key = "goliath"
+        if race_key in name_data:
+            # Goliath names are unisex
+            name_data_result = _generate_goliath_name_data(name_data[race_key])
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Given + Title
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Minotaur":
+        race_key = "minotaur"
+        if race_key in name_data:
+            # Use "Any" gender for NPC gen default
+            name_data_result = _generate_minotaur_name_data(name_data[race_key], gender="Any")
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Given + Descriptor
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Bugbear":
+        race_key = "bugbear"
+        if race_key in name_data:
+            # Bugbear names are unisex
+            name_data_result = _generate_bugbear_name_data(name_data[race_key])
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Given + Epithet
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Harengon":
+        race_key = "harengon"
+        if race_key in name_data:
+            # Harengon names are unisex
+            name_data_result = _generate_harengon_name_data(name_data[race_key])
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Given + Family name
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Leonin":
+        race_key = "leonin"
+        if race_key in name_data:
+            # Use "Any" gender for NPC gen default
+            name_data_result = _generate_leonin_name_data(name_data[race_key], gender="Any")
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Given + Pride Name
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Loxodon":
+        race_key = "loxodon"
+        if race_key in name_data:
+            # Use "Any" gender for NPC gen default
+            name_data_result = _generate_loxodon_name_data(name_data[race_key], gender="Any")
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Given + Herd Name
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Aasimar":
+        race_key = "aasimar"
+        if race_key in name_data:
+            # Aasimar names are unisex
+            name_data_result = _generate_aasimar_name_data(name_data[race_key])
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Base + Optional Title
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Shifter":
+        if shifter_names: # Check if the list was loaded
+             name_entry = random.choice(shifter_names)
+             npc_name = name_entry.get('text', '[Name Error]')
+        else:
+            npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Githyanki":
+        race_key = "githyanki"
+        if race_key in name_data:
+            # Use "Any" gender for NPC gen default
+            name_data_result = _generate_githyanki_name_data(name_data[race_key], gender="Any")
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Given + Title
             else:
                 npc_name = f"[{race_name} Name Error] {race_name}"
         else:
@@ -1509,6 +2013,203 @@ def generate_halfling_name(gender="Any"):
         f"\n\n➔ **{poetic_label}** {data['poetic']}"
     )
 
+# === Generate Goliath Name Function ===
+def generate_goliath_name(): # Unisex
+    """Generates a Goliath name with meanings for the Name Generator tab."""
+    race_key = "goliath"
+    if race_key not in name_data: return "Error: Goliath name data not loaded."
+    # Pass the Goliath sub-dictionary to the helper
+    data = _generate_goliath_name_data(name_data[race_key])
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+    poetic_label = "Poetic Meaning:"
+
+    # Use a mountain or stone emoji?
+    return (
+        f"🗿 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
+# === Generate Minotaur Name Function ===
+def generate_minotaur_name(gender="Any"):
+    """Generates a Minotaur name with meanings for the Name Generator tab."""
+    race_key = "minotaur"
+    if race_key not in name_data: return "Error: Minotaur name data not loaded."
+    # Pass the Minotaur sub-dictionary and gender to the helper
+    data = _generate_minotaur_name_data(name_data[race_key], gender)
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+    poetic_label = "Poetic Meaning:"
+
+    # Use a bull emoji?
+    return (
+        f"🐂 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
+# === Generate Bugbear Name Function ===
+def generate_bugbear_name(): # Unisex
+    """Generates a Bugbear name with meanings for the Name Generator tab."""
+    race_key = "bugbear"
+    if race_key not in name_data: return "Error: Bugbear name data not loaded."
+    # Pass the Bugbear sub-dictionary to the new helper
+    data = _generate_bugbear_name_data(name_data[race_key])
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include Given + Epithet parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    poetic_label = "Poetic Meaning:"
+
+    # Use a bear emoji?
+    return (
+        f"🐻 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
+# === Generate Harengon Name Function ===
+def generate_harengon_name(): # Unisex
+    """Generates a Harengon name with meanings for the Name Generator tab."""
+    race_key = "harengon"
+    if race_key not in name_data: return "Error: Harengon name data not loaded."
+    # Pass the Harengon sub-dictionary to the new helper
+    data = _generate_harengon_name_data(name_data[race_key])
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include Given + Family parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    poetic_label = "Poetic Meaning:"
+
+    # Use a rabbit emoji?
+    return (
+        f"🐇 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
+# === Generate Leonin Name Function ===
+def generate_leonin_name(gender="Any"):
+    """Generates a Leonin name with meanings for the Name Generator tab."""
+    race_key = "leonin"
+    if race_key not in name_data: return "Error: Leonin name data not loaded."
+    # Pass the Leonin sub-dictionary and gender to the new helper
+    data = _generate_leonin_name_data(name_data[race_key], gender)
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include Given + Pride Name parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    poetic_label = "Poetic Meaning:"
+
+    # Use a lion emoji
+    return (
+        f"🦁 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
+# === Generate Loxodon Name Function ===
+def generate_loxodon_name(gender="Any"):
+    """Generates a Loxodon name with meanings for the Name Generator tab."""
+    race_key = "loxodon"
+    if race_key not in name_data: return "Error: Loxodon name data not loaded."
+    # Pass the Loxodon sub-dictionary and gender to the new helper
+    data = _generate_loxodon_name_data(name_data[race_key], gender)
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include Given + Herd Name parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    poetic_label = "Poetic Meaning:"
+
+    # Use an elephant emoji
+    return (
+        f"🐘 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
+# === Generate Aasimar Name Function ===
+def generate_aasimar_name(): # Unisex
+    """Generates an Aasimar name with meanings for the Name Generator tab."""
+    race_key = "aasimar"
+    if race_key not in name_data: return "Error: Aasimar name data not loaded."
+    # Pass the Aasimar sub-dictionary to the new helper
+    data = _generate_aasimar_name_data(name_data[race_key])
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include base parts + optional title
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    poetic_label = "Poetic Meaning:"
+
+    # Use an angel or sparkle emoji?
+    return (
+        f"😇 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
+# === Generate Shifter Name Function ===
+def generate_shifter_name():
+    """Generates a Shifter name for the Name Generator tab."""
+    if not shifter_names: # Check if data loaded correctly
+        st.error("Shifter name data is missing or empty.")
+        return "Error: Missing Shifter data."
+
+    name_entry = random.choice(shifter_names)
+    name_text = name_entry.get('text', '[Name Error]')
+    name_meaning = name_entry.get('meaning', 'No description available.')
+
+    # Using a wolf emoji?
+    return (
+        f"🐺 **Name:** {name_text}\n\n"
+        f"*{name_meaning}*" # Add the meaning/description in italics
+    )
+
+# === Generate Githyanki Name Function ===
+def generate_githyanki_name(gender="Any"):
+    """Generates a Githyanki name with meanings for the Name Generator tab."""
+    race_key = "githyanki"
+    if race_key not in name_data: return "Error: Githyanki name data not loaded."
+    # Pass the Githyanki sub-dictionary and gender to the new helper
+    data = _generate_githyanki_name_data(name_data[race_key], gender)
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include Given + Title parts
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    poetic_label = "Poetic Meaning:"
+
+    # Use a sword or galaxy emoji?
+    return (
+        f"⚔️ **Name:** {data['name']}\n\n" # Or 🌌
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
 # IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
 # Example for Half-Elf (Elven style):
 # Replace:
@@ -1627,10 +2328,12 @@ with tabs[0]:
 # --- Start Corrected Name Generator Tab UI ---
 with tabs[1]:
     st.header("🔤 Name Generator")
-    race_options = ["Elf", "Eladrin", "Tabaxi", "Human", "Halfling", "Orc", # <-- Added Halfling
+    race_options = ["Elf", "Eladrin", "Tabaxi", "Human", "Halfling", "Orc",
                     "Tiefling", "Drow", "Dragonborn", "Aarakocra", "Owlin",
                     "Tortle", "Triton", "Genasi", "Kenku", "Lizardfolk",
-                    "Yuan-Ti", "Goblin", "Gnome"]
+                    "Yuan-Ti", "Goblin", "Bugbear", "Gnome", "Goliath",
+                    "Minotaur", "Harengon", "Leonin", "Loxodon",
+                    "Aasimar", "Shifter", "Githyanki"]
     race = st.selectbox(
         "Choose a race:",
         race_options,
@@ -1783,6 +2486,11 @@ with tabs[1]:
         if st.button("Generate Goblin Name", key="goblin_name_button"):
              st.session_state.name_output = generate_goblin_name()
 
+    elif race == "Bugbear":
+        # NO gender selection needed
+        if st.button("Generate Bugbear Name", key="bugbear_name_button"):
+             st.session_state.name_output = generate_bugbear_name()
+
     elif race == "Gnome":
         # Gender selection needed for Gnome
         gender = st.radio(
@@ -1794,10 +2502,74 @@ with tabs[1]:
              # Pass the selected gender
              st.session_state.name_output = generate_gnome_name(gender=gender)
 
+    elif race == "Harengon":
+        # NO gender selection needed
+        if st.button("Generate Harengon Name", key="harengon_name_button"):
+             st.session_state.name_output = generate_harengon_name()
+
+    elif race == "Leonin":
+        # Gender selection needed for Leonin
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="leonin_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Leonin Name", key="leonin_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_leonin_name(gender=gender)
+
+    elif race == "Loxodon":
+        # Gender selection needed for Loxodon
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="loxodon_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Loxodon Name", key="loxodon_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_loxodon_name(gender=gender)
+
+    elif race == "Githyanki":
+        # Gender selection needed for Githyanki
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="githyanki_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Githyanki Name", key="githyanki_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_githyanki_name(gender=gender)
+
+    elif race == "Aasimar":
+        # NO gender selection needed
+        if st.button("Generate Aasimar Name", key="aasimar_name_button"):
+             st.session_state.name_output = generate_aasimar_name()
+
+    elif race == "Shifter":
+        # NO gender selection needed
+        if st.button("Generate Shifter Name", key="shifter_name_button"):
+             st.session_state.name_output = generate_shifter_name()
+
     elif race == "Eladrin":
         # NO gender selection needed
         if st.button("Generate Eladrin Name", key="eladrin_name_button"):
              st.session_state.name_output = generate_eladrin_name()
+
+    elif race == "Goliath":
+        # NO gender selection needed
+        if st.button("Generate Goliath Name", key="goliath_name_button"):
+             st.session_state.name_output = generate_goliath_name()
+
+    elif race == "Minotaur":
+        # Gender selection needed for Minotaur
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="minotaur_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Minotaur Name", key="minotaur_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_minotaur_name(gender=gender)
 
     # Use elif for Elf now, not else, to be specific
     elif race == "Elf":

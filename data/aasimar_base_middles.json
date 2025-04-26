@@ -1,0 +1,9 @@
+[
+  { "text": "phyr", "starts_vowel": false, "ends_vowel": false, "meaning": "spirit shadow", "gender": "Unisex" },
+  { "text": "kyn", "starts_vowel": false, "ends_vowel": false, "meaning": "hidden kin", "gender": "Unisex" },
+  { "text": "sol", "starts_vowel": false, "ends_vowel": false, "meaning": "sun path", "gender": "Unisex" },
+  { "text": "larn", "starts_vowel": false, "ends_vowel": false, "meaning": "noble song", "gender": "Unisex" },
+  { "text": "zhar", "starts_vowel": false, "ends_vowel": false, "meaning": "gift fate", "gender": "Unisex" },
+  { "text": "morn", "starts_vowel": false, "ends_vowel": false, "meaning": "dark dawn", "gender": "Unisex" },
+  { "text": "val", "starts_vowel": false, "ends_vowel": false, "meaning": "valor strength", "gender": "Unisex" }
+]

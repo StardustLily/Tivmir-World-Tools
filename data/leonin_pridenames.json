@@ -1,0 +1,12 @@
+[
+  { "text": "Sunmane", "meaning": "Pride of the Golden Mane", "gender": "Unisex" },
+  { "text": "Stoneclaw", "meaning": "Pride of the Unbreakable Claw", "gender": "Unisex" },
+  { "text": "Dune Stalker", "meaning": "Pride of the Desert Hunters", "gender": "Unisex" },
+  { "text": "Goldenfield", "meaning": "Pride of the Sunlit Plains", "gender": "Unisex" },
+  { "text": "Skyroar", "meaning": "Pride of the Mighty Roar", "gender": "Unisex" },
+  { "text": "Ironpelt", "meaning": "Pride of the Resilient Hide", "gender": "Unisex" },
+  { "text": "Sandstrider", "meaning": "Pride of the Desert Wanderers", "gender": "Unisex" },
+  { "text": "Blazefur", "meaning": "Pride of the Fiery Spirit", "gender": "Unisex" },
+  { "text": "Rockhide", "meaning": "Pride of the Tough Skin", "gender": "Unisex" },
+  { "text": "Swiftwind", "meaning": "Pride of the Fast Hunters", "gender": "Unisex" }
+]

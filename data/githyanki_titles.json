@@ -1,0 +1,12 @@
+[
+  { "text": "Kith'rak", "meaning": "Captain / Knight", "gender": "Unisex" },
+  { "text": "Sarth", "meaning": "Sergeant", "gender": "Unisex" },
+  { "text": "Tl'a'ikith", "meaning": "Sword-Spirit (Master)", "gender": "Unisex" },
+  { "text": "Mlar", "meaning": "Artisan / Crafter", "gender": "Unisex" },
+  { "text": "Varsh", "meaning": "Creche Caretaker", "gender": "Unisex" },
+  { "text": "Gish'ra", "meaning": "Mind-Blade (Psionic Warrior)", "gender": "Unisex" },
+  { "text": "Zhak'tar", "meaning": "Mind-Master (Psionicist)", "gender": "Unisex" },
+  { "text": "Xan'dral", "meaning": "Freedom-Seeker / Scout", "gender": "Unisex" },
+  { "text": "Hshar'vok", "meaning": "Traitor-Hunter", "gender": "Unisex" },
+  { "text": "Zaith'isk", "meaning": "Purifier (Illithid Hunter)", "gender": "Unisex" }
+]

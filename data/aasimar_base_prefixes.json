@@ -1,0 +1,9 @@
+[
+  { "text": "Ael", "starts_vowel": true, "ends_vowel": false, "meaning": "star light", "gender": "Unisex" },
+  { "text": "Solz", "starts_vowel": false, "ends_vowel": false, "meaning": "sun shadow?", "gender": "Unisex" },
+  { "text": "Velar", "starts_vowel": false, "ends_vowel": false, "meaning": "hidden noble", "gender": "Unisex" },
+  { "text": "Zylos", "starts_vowel": false, "ends_vowel": false, "meaning": "fey dark?", "gender": "Unisex" },
+  { "text": "Lith", "starts_vowel": false, "ends_vowel": false, "meaning": "grace shadow?", "gender": "Unisex" },
+  { "text": "Cor", "starts_vowel": false, "ends_vowel": false, "meaning": "heart core", "gender": "Unisex" },
+  { "text": "Sha", "starts_vowel": false, "ends_vowel": true, "meaning": "whisper light", "gender": "Unisex" }
+]
