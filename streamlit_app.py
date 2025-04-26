@@ -27,6 +27,10 @@ aquan_gloss = load_json("aquan_poetic_gloss.json")
 ignan_gloss = load_json("ignan_poetic_gloss.json")
 terran_gloss = load_json("terran_poetic_gloss.json")
 sylvan_gloss = load_json("sylvan_poetic_gloss.json")
+lizardfolk_names = load_json("lizardfolk_names.json")
+yuan_ti_names = load_json("yuan-ti_names.json")
+goblin_names = load_json("goblin_names.json")
+gnomish_gloss = load_json("gnomish_poetic_gloss.json")
 name_data = {
     "tabaxi": {
         "prefixes": load_json("tabaxi_prefixes.json"),
@@ -114,7 +118,13 @@ name_data = {
         "prefixes": load_json("sylvan_prefixes.json"),
         "middles": load_json("sylvan_middles.json"),
         "suffixes": load_json("sylvan_suffixes.json"),
-        "gloss": sylvan_gloss}
+        "gloss": sylvan_gloss},
+    "gnomish": {
+        "male_first": load_json("gnome_male_first.json"),
+        "female_first": load_json("gnome_female_first.json"),
+        "clans": load_json("gnome_clans.json"),
+        "descriptors": load_json("gnome_descriptors.json"),
+        "gloss": gnomish_gloss}
 }
 
 # Emoji Icons (remains the same)
@@ -587,6 +597,67 @@ def _generate_triton_name_data(race_data):
 
     return result
 
+# === NEW Helper Function for Gnome Names ===
+def _generate_gnome_name_data(race_data, gender="Any"):
+    """
+    Internal helper for Gnome names (Given + Clan + Optional Descriptor).
+    Accepts the gnomish data dictionary and gender.
+    Returns {'name':..., 'parts':..., 'poetic':..., 'error':...}
+    """
+    result = {"name": None, "parts": [], "poetic": "", "error": None}
+
+    male_first = race_data.get("male_first")
+    female_first = race_data.get("female_first")
+    clans = race_data.get("clans")
+    descriptors = race_data.get("descriptors")
+    gloss = race_data.get("gloss")
+
+    if not male_first or not female_first or not clans or not descriptors or not gloss:
+        error_msg = "Missing core Gnomish data (first names, clans, descriptors, or gloss)."
+        st.error(error_msg); result["error"] = error_msg; return result
+
+    # --- Select Given Name (Gendered) ---
+    given_part = None
+    if gender == "Male":
+        given_part = random.choice(male_first)
+    elif gender == "Female":
+        given_part = random.choice(female_first)
+    else: # Gender is "Any"
+        # Randomly pick Male or Female list, then pick a name
+        chosen_list = random.choice([male_first, female_first])
+        given_part = random.choice(chosen_list)
+
+    if not given_part: # Should not happen if lists aren't empty
+         error_msg = "Failed to select Gnomish given name."; st.error(error_msg)
+         result["error"] = error_msg; return result
+
+    given_dict = {"text": given_part["text"], "meaning": given_part.get("meaning", "N/A")}
+    all_parts = [given_dict]
+
+    # --- Select Clan Name (Unisex) ---
+    clan_part = random.choice(clans)
+    clan_dict = {"text": clan_part["text"], "meaning": clan_part.get("meaning", "N/A")}
+    all_parts.append(clan_dict)
+
+    # --- Select Optional Descriptor (Unisex) ---
+    descriptor_dict = None
+    use_descriptor = random.random() < 0.5 # 50% chance of having a descriptor
+    if use_descriptor:
+        descriptor_part = random.choice(descriptors)
+        descriptor_dict = {"text": descriptor_part["text"], "meaning": descriptor_part.get("meaning", "N/A")}
+        all_parts.append(descriptor_dict)
+
+    # --- Combine into Full Name (Space separated) ---
+    name_components = [p["text"] for p in all_parts]
+    full_name = " ".join(name_components)
+    result["name"] = full_name
+    result["parts"] = all_parts
+
+    # --- Generate Poetic Meaning (based on all selected parts) ---
+    result["poetic"] = _generate_poetic_meaning(all_parts, gloss)
+
+    return result
+
 # === (Corrected) Generate NPC Function ===
 def generate_npc():
     if not races:
@@ -842,6 +913,39 @@ def generate_npc():
              npc_name = name_entry.get('text', '[Name Error]')
         else:
             npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Lizardfolk":
+        if lizardfolk_names: # Check if the list was loaded
+             name_entry = random.choice(lizardfolk_names)
+             npc_name = name_entry.get('text', '[Name Error]')
+        else:
+            npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Yuan-Ti":
+        if yuan_ti_names: # Check if the list was loaded
+             name_entry = random.choice(yuan_ti_names)
+             npc_name = name_entry.get('text', '[Name Error]')
+        else:
+            npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Goblin":
+        if goblin_names: # Check if the list was loaded
+             name_entry = random.choice(goblin_names)
+             npc_name = name_entry.get('text', '[Name Error]')
+        else:
+            npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
+    elif race_name == "Gnome":
+        race_key = "gnomish"
+        if race_key in name_data:
+            # Use "Any" gender for NPC gen default (helper function handles random M/F pick)
+            name_data_result = _generate_gnome_name_data(name_data[race_key], gender="Any")
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Full G+C+D name
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
 
     # --- Add more elif blocks here for future races ---
 
@@ -1238,6 +1342,81 @@ def generate_kenku_name():
         f"*{name_meaning}*" # Add the meaning/description in italics
     )
 
+# === Generate Lizardfolk Name Function ===
+def generate_lizardfolk_name():
+    """Generates a Lizardfolk name for the Name Generator tab."""
+    if not lizardfolk_names: # Check if data loaded correctly
+        st.error("Lizardfolk name data is missing or empty.")
+        return "Error: Missing Lizardfolk data."
+
+    name_entry = random.choice(lizardfolk_names)
+    name_text = name_entry.get('text', '[Name Error]')
+    name_meaning = name_entry.get('meaning', 'No description available.')
+
+    # Using a lizard emoji
+    return (
+        f"🦎 **Name:** {name_text}\n\n"
+        f"*{name_meaning}*" # Add the meaning/description in italics
+    )
+
+# === Generate Yuan-Ti Name Function ===
+def generate_yuan_ti_name():
+    """Generates a Yuan-Ti name for the Name Generator tab."""
+    if not yuan_ti_names: # Check if data loaded correctly
+        st.error("Yuan-Ti name data is missing or empty.")
+        return "Error: Missing Yuan-Ti data."
+
+    name_entry = random.choice(yuan_ti_names)
+    name_text = name_entry.get('text', '[Name Error]')
+    name_meaning = name_entry.get('meaning', 'Derived from Draconic/Ignan roots.') # Simplified meaning
+
+    # Using a snake emoji
+    return (
+        f"🐍 **Name:** {name_text}\n\n"
+        # Optionally add meaning back if desired: f"*{name_meaning}*"
+    )
+
+# === Generate Goblin Name Function ===
+def generate_goblin_name():
+    """Generates a Goblin name for the Name Generator tab."""
+    if not goblin_names: # Check if data loaded correctly
+        st.error("Goblin name data is missing or empty.")
+        return "Error: Missing Goblin data."
+
+    name_entry = random.choice(goblin_names)
+    name_text = name_entry.get('text', '[Name Error]')
+    name_meaning = name_entry.get('meaning', 'No description available.')
+
+    # Using a goblin emoji
+    return (
+        f"👺 **Name:** {name_text}\n\n"
+        f"*{name_meaning}*" # Add the meaning/description in italics
+    )
+
+# === Generate Gnome Name Function ===
+def generate_gnome_name(gender="Any"):
+    """Generates a Gnome name with meanings for the Name Generator tab."""
+    race_key = "gnomish"
+    if race_key not in name_data: return "Error: Gnomish name data not loaded."
+    # Pass the Gnomish sub-dictionary and gender to the new helper
+    data = _generate_gnome_name_data(name_data[race_key], gender)
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    # Meaning lines include all parts (Given, Clan, Optional Descriptor)
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+
+    # Poetic meaning applies to the whole name construct
+    poetic_label = "Poetic Meaning:"
+
+    # Use a mushroom or generic fantasy emoji?
+    return (
+        f"🍄 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
 # IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
 # Example for Half-Elf (Elven style):
 # Replace:
@@ -1358,7 +1537,8 @@ with tabs[1]:
     st.header("🔤 Name Generator")
     race_options = ["Elf", "Eladrin", "Tabaxi", "Human", "Orc", "Tiefling",
                     "Drow", "Dragonborn", "Aarakocra", "Owlin", "Tortle",
-                    "Triton", "Genasi", "Kenku"]
+                    "Triton", "Genasi", "Kenku", "Lizardfolk", "Yuan-Ti",
+                    "Goblin", "Gnome"]
     race = st.selectbox(
         "Choose a race:",
         race_options,
@@ -1484,6 +1664,32 @@ with tabs[1]:
         if st.button("Generate Kenku Name", key="kenku_name_button"):
              # The function returns the fully formatted string
              st.session_state.name_output = generate_kenku_name()
+
+    elif race == "Lizardfolk":
+        # NO gender selection needed
+        if st.button("Generate Lizardfolk Name", key="lizardfolk_name_button"):
+             st.session_state.name_output = generate_lizardfolk_name()
+
+    elif race == "Yuan-Ti":
+        # NO gender selection needed
+        if st.button("Generate Yuan-Ti Name", key="yuan_ti_name_button"):
+             st.session_state.name_output = generate_yuan_ti_name()
+
+    elif race == "Goblin":
+        # NO gender selection needed
+        if st.button("Generate Goblin Name", key="goblin_name_button"):
+             st.session_state.name_output = generate_goblin_name()
+
+    elif race == "Gnome":
+        # Gender selection needed for Gnome
+        gender = st.radio(
+            "Select Gender:", ["Any", "Male", "Female"],
+            key="gnome_gender_radio", # Use unique key
+            horizontal=True
+        )
+        if st.button("Generate Gnome Name", key="gnome_name_button"):
+             # Pass the selected gender
+             st.session_state.name_output = generate_gnome_name(gender=gender)
 
     elif race == "Eladrin":
         # NO gender selection needed
