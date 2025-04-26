@@ -29,6 +29,8 @@ elven_prefixes = load_json("elven_prefixes.json")
 elven_middles = load_json("elven_middles.json")
 elven_suffixes = load_json("elven_suffixes.json")
 elven_poetic_gloss = load_json("elven_poetic_gloss.json")
+common_first_names = load_json("common_first_names.json")
+common_surnames = load_json("common_surnames.json")
 
 # === Emoji Icons ===
 icons = {
@@ -135,7 +137,16 @@ def _assemble_name_parts(prefixes, middles, suffixes):
 
     return chosen_parts # Return the list of chosen part dictionaries
 
-# We no longer need separate _get_elven_name_string, etc. We use _assemble_name_parts
+# NEW helper specifically for Common names (returns only string)
+def _get_common_name_string():
+    """Generates a Common first name + surname string."""
+    if not common_first_names or not common_surnames:
+        return "[Common Name Data Missing]"
+
+    first_name_entry = random.choice(common_first_names)
+    surname_entry = random.choice(common_surnames)
+
+    return f"{first_name_entry['text']} {surname_entry['text']}"
 
 # === (Revised) Generate NPC Function ===
 def generate_npc():
@@ -149,6 +160,8 @@ def generate_npc():
     # --- Select Race ---
     race_data = random.choice(races)
     race_name = race_data['name']
+    npc_name = f"Unnamed {race_name}"
+    generated_parts = [] # Not strictly needed for common, but keep pattern
 
     # --- Generate Name based on Race ---
     npc_name = f"Unnamed {race_name}" # Default placeholder
@@ -166,13 +179,17 @@ def generate_npc():
              if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
         else: npc_name = f"[Tabaxi Name Data Missing] {race_name}"
 
+    elif race_name == "Human": # Or maybe check a list: if race_name in ["Human", "Halfling"]:
+        if common_first_names and common_surnames: # Check data exists
+             npc_name = _get_common_name_string() # Call the simple helper
+        else: npc_name = f"[Common Name Data Missing] {race_name}"
+
     # --- Add more elif blocks here for future races ---
     # elif race_name == "Dwarf":
     #     if all ([dwarf_prefixes, ...]): # Load dwarf data first
     #          generated_parts = _assemble_name_parts(dwarf_prefixes, ...)
     #          if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
     #     else: npc_name = f"[Dwarf Name Data Missing] {race_name}"
-
 
     # --- Assemble NPC Output ---
     npc_lines = [
@@ -254,6 +271,41 @@ def generate_elven_name():
         f"\n\n➔ **Poetic Meaning:** {poetic}"
     )
 
+# === Generate Common Name Function (for Name Generator Tab) ===
+def generate_common_name():
+    """Generates a Common name with meanings for the Name Generator tab."""
+    if not common_first_names or not common_surnames:
+        st.error("Missing required Common name data.")
+        return "Error: Missing data."
+
+    first_name_entry = random.choice(common_first_names)
+    surname_entry = random.choice(common_surnames)
+
+    full_name = f"{first_name_entry['text']} {surname_entry['text']}"
+
+    # Prepare meaning lines
+    meaning_lines = []
+    meaning_lines.append(f"- **{first_name_entry['text']}** = {first_name_entry.get('meaning', 'N/A')}")
+    if 'meaning' in surname_entry: # Check if surname meaning exists
+         meaning_lines.append(f"- **{surname_entry['text']}** = {surname_entry['meaning']}")
+    else:
+         meaning_lines.append(f"- **{surname_entry['text']}**") # Just list surname if no meaning
+
+    # Optional: Add generic flavor text instead of poetic meaning, or skip
+    flavor_text = random.choice([
+        "A sturdy name heard throughout the central valleys.",
+        "Commonly found among merchants and town guards.",
+        "A name that carries the weight of ordinary folk doing their best.",
+        "Simple, reliable, like good leather.",
+    ])
+
+    return (
+        f"👤 **Name:** {full_name}\n\n" +
+        "\n".join(meaning_lines) +
+        #f"\n\n📜 **Notes:** {flavor_text}" # Uncomment or modify if I want flavor text
+        "" # Or just return name and meanings
+    )
+
 # === UI ===
 st.title("🌸 Tivmir World Tools")
 
@@ -280,7 +332,7 @@ with tabs[0]:
 
 with tabs[1]:
     st.header("🔤 Name Generator")
-    race = st.selectbox("Choose a race:", ["Elven", "Tabaxi"], key="name_race")
+    race = st.selectbox("Choose a race:", ["Elven", "Tabaxi", "Human"], key="name_race")
 
     if race == "Tabaxi":
         clan_names = [clan["name"] for clan in tabaxi_clans]
@@ -288,6 +340,9 @@ with tabs[1]:
         if st.button("Generate Tabaxi Name", key="tabaxi_name_button"):
             # Store result
             st.session_state.name_output = generate_tabaxi_name(selected_clan)
+    elif race == "Human":
+         if st.button("Generate Common Name", key="common_name_button"):
+              st.session_state.name_output = generate_common_name()
     else: # Elven
         if st.button("Generate Elven Name", key="elven_name_button"):
             # Store result
