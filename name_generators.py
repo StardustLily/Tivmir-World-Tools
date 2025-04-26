@@ -812,20 +812,3 @@ if 'npc_output' not in st.session_state:
 if 'name_output' not in st.session_state:
     st.session_state.name_output = ""
 # (Initialize others as needed, e.g., for selected clan state if desired)
-
-with tabs[0]:
-    st.header("🌿 NPC Generator")
-    col1, col2 = st.columns([1, 1]) # Put buttons side-by-side
-    with col1:
-        if st.button("Generate NPC", key="npc_button"):
-            st.session_state.npc_output = generate_npc()
-    with col2:
-        # Add this button
-        if st.button("Clear Output", key="npc_clear"):
-            st.session_state.npc_output = "" # Clear the state
-
-    # Always display from session state
-    if st.session_state.npc_output:
-        st.markdown("---")
-    with st.container(border=True):
-        st.markdown(st.session_state.npc_output)
