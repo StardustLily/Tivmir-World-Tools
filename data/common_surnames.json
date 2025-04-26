@@ -1,0 +1,47 @@
+[
+  // Occupational
+  { "text": "Smith", "meaning": "Metalworker, Blacksmith" },
+  { "text": "Miller", "meaning": "Grain Grinder" },
+  { "text": "Taylor", "meaning": "Cloth Cutter, Tailor" },
+  { "text": "Tanner", "meaning": "Leather Worker" },
+  { "text": "Cooper", "meaning": "Barrel Maker" },
+  { "text": "Fletcher", "meaning": "Arrow Maker" },
+  { "text": "Carter", "meaning": "Transporter of Goods" },
+  { "text": "Baker", "meaning": "Bread Maker" },
+  { "text": "Brewer", "meaning": "Maker of Ale/Beer" },
+  { "text": "Fisher", "meaning": "One who Fishes" },
+  { "text": "Hunter", "meaning": "One who Hunts" },
+  { "text": "Mason", "meaning": "Stone Worker" },
+  { "text": "Shepherd", "meaning": "Guardian of Sheep" },
+  { "text": "Wright", "meaning": "Builder, Worker (often with wood)" },
+  { "text": "Glover", "meaning": "Maker of Gloves" },
+  { "text": "Thatcher", "meaning": "Roofer using Straw/Reeds" },
+
+  // Locational
+  { "text": "Blackwood", "meaning": "From the Dark Forest" },
+  { "text": "Greenwood", "meaning": "From the Verdant Forest" },
+  { "text": "Hawthorne", "meaning": "Dweller by Hawthorn Trees" },
+  { "text": "Rivers", "meaning": "Dweller near the River" },
+  { "text": "Ford", "meaning": "Dweller near a River Crossing" },
+  { "text": "Hill", "meaning": "Dweller on or near a Hill" },
+  { "text": "Marsh", "meaning": "Dweller near the Marshlands" },
+  { "text": "Thorne", "meaning": "Dweller near Thorny Bushes" },
+  { "text": "Ashworth", "meaning": "From the Ash Tree Enclosure" },
+  { "text": "Brooke", "meaning": "Dweller by the Stream" },
+  { "text": "Fielding", "meaning": "From the Open Pasture" },
+  { "text": "Heath", "meaning": "Dweller on the Heathland" },
+  { "text": "Underwood", "meaning": "Dweller beneath the Forest Canopy" },
+  { "text": "Crowley", "meaning": "From the Crow's Wood / Bent Meadow" }, // Adapted Celtic
+
+  // Descriptive/Nickname
+  { "text": "Swift", "meaning": "Quick, Fast Runner or Thinker" },
+  { "text": "Brown", "meaning": "Brown-haired or Complexioned" },
+  { "text": "White", "meaning": "Fair-haired or Complexioned" },
+  { "text": "Long", "meaning": "Tall" },
+  { "text": "Strong", "meaning": "Physically Powerful" },
+  { "text": "Armstrong", "meaning": "Mighty Arm, Strong Warrior" },
+  { "text": "Bright", "meaning": "Cheerful, Radiant, Intelligent" },
+  { "text": "Keen", "meaning": "Sharp-witted, Eager" },
+  { "text": "Hardy", "meaning": "Bold, Resilient, Tough" },
+  { "text": "Sharp", "meaning": "Clever, Quick-witted" }
+]
