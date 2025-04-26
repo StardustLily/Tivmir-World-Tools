@@ -6,5 +6,12 @@
   { "text": "stjärn", "starts_vowel": false, "ends_vowel": false, "meaning": "star gazer", "gender": "Unisex" },
   { "text": "bok", "starts_vowel": false, "ends_vowel": false, "meaning": "book lore", "gender": "Unisex" },
   { "text": "tysten", "starts_vowel": false, "ends_vowel": false, "meaning": "silent one", "gender": "Unisex" },
-  { "text": "siare", "starts_vowel": false, "ends_vowel": true, "meaning": "seer prophet", "gender": "Unisex" }
+  { "text": "siare", "starts_vowel": false, "ends_vowel": true, "meaning": "seer prophet", "gender": "Unisex" },
+  { "text": "forsk", "starts_vowel": false, "ends_vowel": false, "meaning": "researcher seeker", "gender": "Unisex" },
+  { "text": "tänk", "starts_vowel": false, "ends_vowel": false, "meaning": "thinker ponderer", "gender": "Unisex" },
+  { "text": "skriv", "starts_vowel": false, "ends_vowel": false, "meaning": "writer scribe", "gender": "Unisex" },
+  { "text": "väkt", "starts_vowel": false, "ends_vowel": false, "meaning": "guardian keeper", "gender": "Unisex" },
+  { "text": "känn", "starts_vowel": false, "ends_vowel": false, "meaning": "knower expert", "gender": "Unisex" },
+  { "text": "ande", "starts_vowel": true, "ends_vowel": true, "meaning": "spirit breath", "gender": "Unisex" },
+  { "text": "djupet", "starts_vowel": false, "ends_vowel": false, "meaning": "depths mystery", "gender": "Unisex" }
 ]

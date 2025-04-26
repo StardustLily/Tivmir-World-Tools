@@ -6,5 +6,12 @@
   { "text": "Hao'yun", "starts_vowel": false, "ends_vowel": false, "meaning": "vast cloud", "gender": "Unisex" },
   { "text": "Ren'ai", "starts_vowel": false, "ends_vowel": true, "meaning": "virtuous love", "gender": "Unisex" },
   { "text": "Stjärnfall", "starts_vowel": false, "ends_vowel": false, "meaning": "star fall", "gender": "Unisex" },
-  { "text": "Sol'ving", "starts_vowel": false, "ends_vowel": false, "meaning": "sun wing", "gender": "Unisex" }
+  { "text": "Sol'ving", "starts_vowel": false, "ends_vowel": false, "meaning": "sun wing", "gender": "Unisex" },
+  { "text": "Tian'skri", "starts_vowel": false, "ends_vowel": true, "meaning": "heaven scream", "gender": "Unisex" },
+  { "text": "Ädel'yun", "starts_vowel": true, "ends_vowel": false, "meaning": "noble cloud", "gender": "Unisex" },
+  { "text": "Feng'zhi", "starts_vowel": false, "ends_vowel": true, "meaning": "wind ambition", "gender": "Unisex" },
+  { "text": "Sol'hård", "starts_vowel": false, "ends_vowel": false, "meaning": "sun strength", "gender": "Unisex" },
+  { "text": "Klar'syn", "starts_vowel": false, "ends_vowel": false, "meaning": "clear sight", "gender": "Unisex" },
+  { "text": "Höjd'vind", "starts_vowel": false, "ends_vowel": false, "meaning": "high wind", "gender": "Unisex" },
+  { "text": "Shan'yao", "starts_vowel": false, "ends_vowel": true, "meaning": "mountain glory", "gender": "Unisex" }
 ]

@@ -4,5 +4,11 @@
   { "text": "väd", "starts_vowel": false, "ends_vowel": false, "meaning": "storm weather", "gender": "Unisex" },
   { "text": "sol", "starts_vowel": false, "ends_vowel": false, "meaning": "sun light", "gender": "Unisex" },
   { "text": "feng", "starts_vowel": false, "ends_vowel": false, "meaning": "peak sharp", "gender": "Unisex" },
-  { "text": "sten", "starts_vowel": false, "ends_vowel": false, "meaning": "stone heart", "gender": "Unisex" }
+  { "text": "sten", "starts_vowel": false, "ends_vowel": false, "meaning": "stone heart", "gender": "Unisex" },
+  { "text": "yu", "starts_vowel": false, "ends_vowel": true, "meaning": "feather plume", "gender": "Unisex" },
+  { "text": "topp", "starts_vowel": false, "ends_vowel": false, "meaning": "peak summit", "gender": "Unisex" },
+  { "text": "qi", "starts_vowel": false, "ends_vowel": true, "meaning": "air energy", "gender": "Unisex" },
+  { "text": "hjärn", "starts_vowel": false, "ends_vowel": false, "meaning": "mind heart", "gender": "Unisex" },
+  { "text": "ljus", "starts_vowel": false, "ends_vowel": false, "meaning": "light gleam", "gender": "Unisex" },
+  { "text": "ström", "starts_vowel": false, "ends_vowel": false, "meaning": "current flow", "gender": "Unisex" }
 ]
