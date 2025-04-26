@@ -230,10 +230,27 @@ def generate_npc():
         else: npc_name = f"[Elf Name Data Missing] {race_name}"
 
     elif race_name == "Tabaxi":
-        if all([tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes]): # Check data exists
-             generated_parts = _assemble_name_parts(tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes)
-             if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
-        else: npc_name = f"[Tabaxi Name Data Missing] {race_name}"
+        npc_first_name = f"Unnamed {race_name}" # Default for first name
+        # Generate the first name
+        if all([tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes]):
+             generated_parts = _assemble_name_parts(tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes, gender_filter="Any")
+             if generated_parts:
+                 npc_first_name = "".join(p["text"] for p in generated_parts)
+             else: npc_first_name = f"[Tabaxi Name Assembly Failed]"
+        else: npc_first_name = f"[Tabaxi Name Data Missing]"
+        # --- Assign Clan Name ---
+        clan_name_only = "" # Variable to hold just the clan name text
+        if tabaxi_clans: # Check clan data exists
+             clan_entry = random.choice(tabaxi_clans) # Choose a random clan entry
+             clan_name_only = clan_entry['name'] # Get the clan name
+             # Construct the full display name
+             npc_name = f"{npc_first_name} of the {clan_name_only} Clan"
+        else:
+             npc_name = f"{npc_first_name} [Clan Data Missing]" # Fallback if no clan data
+             clan_name_only = "[Clan Data Missing]" # Set placeholder for details output
+
+        # Store clan name for later insertion into details
+        clan_name = clan_name_only
 
     elif race_name == "Human":
         if common_first_names and common_surnames:
@@ -304,16 +321,23 @@ def generate_npc():
     #     else: npc_name = f"[Dwarf Name Data Missing] {race_name}"
 
     # --- Assemble NPC Output ---
-    npc_lines = [
-        f"👤 **Name:** {npc_name}", # Add the name here!
-        "---", # Separator
+    # Add Name first
+    npc_lines = [f"👤 **Name:** {npc_name}"]
+
+    # Add Clan details if a Tabaxi was generated AND clan name was found
+    if race_name == "Tabaxi" and clan_name and clan_name != "[Clan Data Missing]":
+         npc_lines.append(f"🏡 **Clan:** {clan_name}")
+
+    # Add Separator and Basic Info Header
+    npc_lines.extend([
+        "---",
         "💼 **Basic Info**",
-        f"🧬 **Race:** {race_name} ({race_data.get('rarity', 'N/A')})", # Use .get for safety
+        f"🧬 **Race:** {race_name} ({race_data.get('rarity', 'N/A')})",
         f"🌍 **Region:** {race_data.get('region', 'N/A')}",
         f"📖 **Lore:** {race_data.get('description', 'N/A')}",
         "✶" * 25,
         "🎭 **Personality & Story**"
-    ]
+    ])
 
     # Add attributes
     for category, options in npc_attributes.items():
