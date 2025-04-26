@@ -1,0 +1,9 @@
+[
+  { "text": "Ghor", "starts_vowel": false, "ends_vowel": false, "meaning": "stone rumble", "gender": "Unisex" },
+  { "text": "Qan", "starts_vowel": false, "ends_vowel": false, "meaning": "deep earth", "gender": "Unisex" },
+  { "text": "Dur", "starts_vowel": false, "ends_vowel": false, "meaning": "hard solid", "gender": "Unisex" },
+  { "text": "Nok", "starts_vowel": false, "ends_vowel": false, "meaning": "rock peak", "gender": "Unisex" },
+  { "text": "Bor", "starts_vowel": false, "ends_vowel": false, "meaning": "boulder mass", "gender": "Unisex" },
+  { "text": "Khaz", "starts_vowel": false, "ends_vowel": false, "meaning": "chasm root", "gender": "Unisex" },
+  { "text": "Um", "starts_vowel": true, "ends_vowel": false, "meaning": "loam soil", "gender": "Unisex" }
+]

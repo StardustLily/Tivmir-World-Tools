@@ -1,0 +1,8 @@
+[
+  { "text": "ai", "starts_vowel": true, "ends_vowel": true, "meaning": "water being", "gender": "Unisex" },
+  { "text": "o", "starts_vowel": true, "ends_vowel": true, "meaning": "flow spirit", "gender": "Unisex" },
+  { "text": "an", "starts_vowel": true, "ends_vowel": false, "meaning": "deep one", "gender": "Unisex" },
+  { "text": "ui", "starts_vowel": true, "ends_vowel": true, "meaning": "fluid grace", "gender": "Unisex" },
+  { "text": "lin", "starts_vowel": false, "ends_vowel": false, "meaning": "scale current", "gender": "Unisex" },
+  { "text": "en", "starts_vowel": true, "ends_vowel": false, "meaning": "pool depth", "gender": "Unisex" }
+]

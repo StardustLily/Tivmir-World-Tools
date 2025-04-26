@@ -1,0 +1,9 @@
+[
+  { "text": "K'sa", "starts_vowel": false, "ends_vowel": true, "meaning": "spark flash", "gender": "Unisex" },
+  { "text": "Tsi", "starts_vowel": false, "ends_vowel": true, "meaning": "hiss heat", "gender": "Unisex" },
+  { "text": "Zha", "starts_vowel": false, "ends_vowel": true, "meaning": "burn ash", "gender": "Unisex" },
+  { "text": "Esh", "starts_vowel": true, "ends_vowel": false, "meaning": "ember core", "gender": "Unisex" },
+  { "text": "Fli", "starts_vowel": false, "ends_vowel": true, "meaning": "flicker quick", "gender": "Unisex" },
+  { "text": "Sek", "starts_vowel": false, "ends_vowel": false, "meaning": "scorch dry", "gender": "Unisex" },
+  { "text": "Py", "starts_vowel": false, "ends_vowel": false, "meaning": "pyre bright", "gender": "Unisex" }
+]

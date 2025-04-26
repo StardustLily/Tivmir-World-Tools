@@ -1,0 +1,8 @@
+[
+  { "text": "gan", "starts_vowel": false, "ends_vowel": false, "meaning": "shore bank", "gender": "Unisex" },
+  { "text": "mar", "starts_vowel": false, "ends_vowel": false, "meaning": "sea deep", "gender": "Unisex" },
+  { "text": "ren", "starts_vowel": false, "ends_vowel": false, "meaning": "pearl lotus", "gender": "Unisex" },
+  { "text": "long", "starts_vowel": false, "ends_vowel": false, "meaning": "dragon wave", "gender": "Unisex" },
+  { "text": "kawa", "starts_vowel": false, "ends_vowel": true, "meaning": "river stream", "gender": "Unisex" },
+  { "text": "shui", "starts_vowel": false, "ends_vowel": true, "meaning": "water fluid", "gender": "Unisex" }
+]

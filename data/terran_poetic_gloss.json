@@ -1,0 +1,21 @@
+{
+  "stone rumble": ["Echo of the Mountain", "Deep Rock Voice", "Sound of Shifting Earth", "Granite Heartbeat"],
+  "deep earth": ["Child of the Underdark (non-Drow)", "Born of the Deep Stone", "Rooted Below", "Core of the World"],
+  "hard solid": ["Unbreakable Essence", "Immovable Soul", "Dense Being", "Adamant Spirit"],
+  "rock peak": ["Summit Stone", "High Crag", "Mountain's Crest", "Topmost Rock"],
+  "boulder mass": ["Immense Presence", "Weighty Soul", "Large Form", "Solid Bulk"],
+  "chasm root": ["Dweller in the Cracks", "Grasping the Depths", "Anchored Below", "Foundation Seeker"],
+  "loam soil": ["Fertile Ground Spirit", "Life from Earth", "Nurturing Soil", "Clay and Humus Soul"],
+  "cavern deep": ["Heart of the Hollow Mountain", "Echoing Space", "Subterranean Soul", "Dweller in Dark Stone"],
+  "echo resonance": ["Sound Reflected", "Deep Vibration", "Lingering Tone", "Voice of the Cave"],
+  "knot core": ["Center of Strength", "Dense Heartwood", "Unbreakable Point", "Hardened Essence"],
+  "foundation base": ["Solid Grounding", "Support Structure", "Bedrock Soul", "First Stone"],
+  "gravel shard": ["Fragment of Rock", "Broken Stone", "Sharp Edge", "Gritty Essence"],
+  "stone pillar": ["Upright Strength", "Support of the Earth", "Standing Stone Soul", "Column of Power"],
+  "massive great weight": ["Immense Being", "Heavy Soul", "Significant Presence", "Unmoved Mass"],
+  "solid being rock": ["Incarnation of Stone", "Stable Essence", "Unchanging Form", "Earthbound Spirit"],
+  "place state ground": ["Connected to the Land", "Embodiment of Terrain", "Earthen Realm", "Territory Soul"],
+  "deep ancient root": ["Oldest Foundation", "Connection to the Past", "Primordial Earth", "Source Below"],
+  "earth realm stone": ["Essence of the Plane", "Child of Terra", "Embodied Landscape", "Domain of Stone"],
+  "hardened point": ["Sharp Stone Edge", "Resilient Tip", "Focus of Hardness", "Unbending Point"]
+}

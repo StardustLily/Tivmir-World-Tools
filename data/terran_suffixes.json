@@ -1,0 +1,8 @@
+[
+  { "text": "on", "starts_vowel": true, "ends_vowel": false, "meaning": "massive great weight", "gender": "Unisex" },
+  { "text": "uk", "starts_vowel": true, "ends_vowel": false, "meaning": "solid being rock", "gender": "Unisex" },
+  { "text": "ath", "starts_vowel": true, "ends_vowel": false, "meaning": "place state ground", "gender": "Unisex" },
+  { "text": "ur", "starts_vowel": true, "ends_vowel": false, "meaning": "deep ancient root", "gender": "Unisex" },
+  { "text": "om", "starts_vowel": true, "ends_vowel": false, "meaning": "earth realm stone", "gender": "Unisex" },
+  { "text": "ek", "starts_vowel": true, "ends_vowel": false, "meaning": "hardened point", "gender": "Unisex" }
+]

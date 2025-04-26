@@ -1,0 +1,7 @@
+[
+  { "text": "el", "starts_vowel": true, "ends_vowel": false, "meaning": "light spirit", "gender": "Unisex" },
+  { "text": "ai", "starts_vowel": true, "ends_vowel": true, "meaning": "air being", "gender": "Unisex" },
+  { "text": "is", "starts_vowel": true, "ends_vowel": false, "meaning": "swift focus", "gender": "Unisex" },
+  { "text": "a", "starts_vowel": true, "ends_vowel": true, "meaning": "breath person", "gender": "Unisex" },
+  { "text": "en", "starts_vowel": true, "ends_vowel": false, "meaning": "sky kin", "gender": "Unisex" }
+]

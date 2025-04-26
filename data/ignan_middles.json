@@ -1,0 +1,8 @@
+[
+  { "text": "rek", "starts_vowel": false, "ends_vowel": false, "meaning": "crack snap", "gender": "Unisex" },
+  { "text": "shan", "starts_vowel": false, "ends_vowel": false, "meaning": "flash shine", "gender": "Unisex" },
+  { "text": "taz", "starts_vowel": false, "ends_vowel": false, "meaning": "cinder soot", "gender": "Unisex" },
+  { "text": "is", "starts_vowel": true, "ends_vowel": false, "meaning": "sizzle hiss", "gender": "Unisex" },
+  { "text": "kol", "starts_vowel": false, "ends_vowel": false, "meaning": "coal darkfire", "gender": "Unisex" },
+  { "text": "az", "starts_vowel": true, "ends_vowel": false, "meaning": "intense blaze", "gender": "Unisex" }
+]

@@ -81,5 +81,22 @@
   "guardian keeper": ["Protector of Lore", "Watcher of Secrets", "Vigilant Sentinel", "Preserver"],
   "knower expert": ["Master of a Subject", "Source of Information", "Skilled Mind", "One Who Understands"],
   "spirit breath": ["Life Essence", "Soul's Exhalation", "Inner Vitality", "Conscious Air"],
-  "depths mystery": ["Enigmatic Soul", "Keeper of the Unknown", "Profound Secret", "Unfathomed Mind"]
+  "depths mystery": ["Enigmatic Soul", "Keeper of the Unknown", "Profound Secret", "Unfathomed Mind"],
+  "vast airy": ["Boundless Sky Soul", "Child of the Expanse", "Open Air Spirit", "Limitless Breath"],
+  "breeze flow": ["Gentle Current", "Whispering Wind", "Soft Movement", "Air's Caress"],
+  "clear sky": ["Unclouded Essence", "Pure Atmosphere", "Bright Horizon Soul", "Lucid Air"],
+  "fly swift": ["Darting Wind Rider", "Agile Air Dancer", "Quickened Flight", "Soaring Spirit"],
+  "light nimble": ["Weightless Being", "Graceful Mover", "Airy Form", "Effortless Motion"],
+  "empty void": ["Spirit of the Expanse", "Unburdened Soul", "Infinite Sky Heart", "Formless Essence"],
+  "cloud form": ["Shifting Shape", "Mist Walker", "Sky Weaver", "Ephemeral Being"],
+  "wind current": ["Rider of the Jet Stream", "Air's Flow", "Guiding Breeze", "Atmospheric Path"],
+  "breath exhale": ["Living Air", "Vital Sigh", "Spirit's Release", "Essence of Respiration"],
+  "whistle sound": ["Voice of the Wind", "High Pitched Call", "Air's Song", "Piercing Note"],
+  "high cloud": ["Cirrus Soul", "Dweller Above", "Lofty Mist", "Summit Cloud"],
+  "whisper sigh": ["Softest Sound", "Gentle Exhalation", "Secretive Breeze", "Quiet Air"],
+  "light spirit": ["Ethereal Being", "Radiant Soul", "Weightless Essence", "Illuminated Air"],
+  "air being": ["Incarnation of Wind", "Atmospheric Soul", "Sky Person", "Breath Made Manifest"],
+  "swift focus": ["Darting Mind", "Quick Attention", "Focused Gale", "Rapid Purpose"],
+  "breath person": ["Living Exhalation", "Individual Air", "One Who Breathes", "Soul of Wind"],
+  "sky kin": ["Child of the Atmosphere", "Related to the Blue", "Cloud Brother/Sister", "Wind Tribe Soul"]
 }

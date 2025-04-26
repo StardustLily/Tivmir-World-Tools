@@ -1,0 +1,21 @@
+{
+  "spark flash": ["Sudden Ignition", "Brief Brilliance", "Crackling Start", "First Light of Fire"],
+  "hiss heat": ["Voice of the Flame", "Searing Presence", "Dry Heat Soul", "Whisper of Embers"],
+  "burn ash": ["Consumed by Fire", "Mark of Burning", "Remnant of Flame", "Scorched Soul"],
+  "ember core": ["Inner Glow", "Heart of Heat", "Lasting Warmth", "Contained Fire"],
+  "flicker quick": ["Dancing Light", "Unpredictable Flame", "Swift Movement", "Ephemeral Spark"],
+  "scorch dry": ["Parched Land Spirit", "Heat's Imprint", "Absence of Water", "Desiccating Touch"],
+  "pyre bright": ["Funeral Flame", "Intense Radiance", "Consuming Light", "Blazing Heart"],
+  "crack snap": ["Sound of Burning", "Sudden Break", "Sharp Report", "Fire's Voice"],
+  "flash shine": ["Momentary Brilliance", "Reflected Firelight", "Gleaming Surface", "Sudden Illumination"],
+  "cinder soot": ["Aftermath of Fire", "Darkened Ash", "Smoldering Remains", "Mark of Soot"],
+  "sizzle hiss": ["Sound of Heat", "Evaporating Spirit", "Intense Reaction", "Voice of Steam"],
+  "coal darkfire": ["Buried Heat", "Smoldering Potential", "Compressed Energy", "Blackened Flame"],
+  "intense blaze": ["Roaring Fire", "Uncontrolled Burn", "Consuming Power", "Overwhelming Heat"],
+  "sharp quick point": ["Focused Energy", "Darting Flame", "Piercing Heat", "Tip of the Fire"],
+  "small spark being": ["Incipient Fire", "Latent Heat", "Potential Ignition", "Tiny Flame Soul"],
+  "intense flare spirit": ["Sudden Burst of Light", "Passionate Soul", "Blazing Essence", "Uncontained Energy"],
+  "fire being essence": ["Incarnation of Flame", "Core of Fire", "Elemental Heat", "Spirit of the Blaze"],
+  "heat fire soul": ["Warm Presence", "Living Flame", "Essence of Combustion", "Burning Spirit"],
+  "ember lasting": ["Enduring Warmth", "Slow Burn", "Persistent Heat", "Heart of the Coals"]
+}

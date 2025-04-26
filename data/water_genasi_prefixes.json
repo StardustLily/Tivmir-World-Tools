@@ -1,0 +1,8 @@
+[
+  { "text": "Nami", "starts_vowel": false, "ends_vowel": true, "meaning": "wave motion", "gender": "Unisex" },
+  { "text": "Liu", "starts_vowel": false, "ends_vowel": true, "meaning": "flow current", "gender": "Unisex" },
+  { "text": "Shen", "starts_vowel": false, "ends_vowel": false, "meaning": "deep spirit", "gender": "Unisex" },
+  { "text": "Mizu", "starts_vowel": false, "ends_vowel": true, "meaning": "water clear", "gender": "Unisex" },
+  { "text": "Lian", "starts_vowel": false, "ends_vowel": false, "meaning": "lotus pool", "gender": "Unisex" },
+  { "text": "Hai", "starts_vowel": false, "ends_vowel": true, "meaning": "sea vast", "gender": "Unisex" }
+]

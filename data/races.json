@@ -150,11 +150,28 @@
     "description": "Fey-touched Elves with seasonal attunements. Born of high mana conditions."
   },
   {
-    "name": "Genasi",
+    "name": "Air Genasi",
     "rarity": "Very Rare",
-    "region": "Elementally disturbed areas",
-    "description": "Born during planar turbulence, embody elemental aspects."
+    "region": "Elementally disturbed areas, often near high altitudes or open skies",
+    "description": "Born during planar turbulence affecting the Elemental Plane of Air, they embody aspects of the wind and sky."
   },
+  {
+    "name": "Earth Genasi",
+    "rarity": "Very Rare",
+    "region": "Elementally disturbed areas, often near mountains or underground",
+    "description": "Born during planar turbulence affecting the Elemental Plane of Earth, they embody aspects of stone, soil, and resilience."
+  },
+  {
+    "name": "Fire Genasi",
+    "rarity": "Very Rare",
+    "region": "Elementally disturbed areas, often near volcanoes or intense heat",
+    "description": "Born during planar turbulence affecting the Elemental Plane of Fire, they embody aspects of flame, heat, and intensity."
+  },
+  {
+    "name": "Water Genasi",
+    "rarity": "Very Rare",
+    "region": "Elementally disturbed areas, often near coastlines, rivers, or large bodies of water",
+    "description": "Born during planar turbulence affecting the Elemental Plane of Water, they embody aspects of waves, currents, and the fluid nature of water."},
   {
     "name": "Githyanki",
     "rarity": "Very Rare",
