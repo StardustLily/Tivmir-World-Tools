@@ -1,13 +1,13 @@
 import streamlit as st
-st.set_page_config(page_title="Tivmir World Tools", layout="centered") 
-try:
-    from streamlit_clipboard import st_clipboard
-    st.write("streamlit_clipboard is installed correctly.")
-except ImportError:
-    st.write("streamlit_clipboard is not installed. Please install it using 'pip install streamlit-clipboard'")
 import random
 import json
 import os
+
+try:
+    from streamlit_clipboard import st_clipboard
+    CLIPBOARD_AVAILABLE = True
+except ImportError:
+    CLIPBOARD_AVAILABLE = False
 
 # Set page config first!
 st.set_page_config(page_title="Tivmir World Tools", layout="centered")
@@ -445,3 +445,6 @@ with tabs[1]:
     if st.session_state.name_output:
         st.markdown("---") # Optional separator
         st.markdown(st.session_state.name_output)
+
+if not CLIPBOARD_AVAILABLE:
+    st.warning("📋 Clipboard feature not available. Install with `pip install streamlit-clipboard`")
