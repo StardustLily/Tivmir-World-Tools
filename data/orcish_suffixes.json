@@ -1,68 +1,80 @@
 [
   {
-    "text": "ov",
-    "starts_vowel": true,
-    "ends_vowel": false,
-    "meaning": "of the line"
+    "text": "ov", "starts_vowel": true, "ends_vowel": false,
+    "meaning": "of the line", "gender": "Female"
   },
   {
-    "text": "in",
-    "starts_vowel": true,
-    "ends_vowel": false,
-    "meaning": "descendant"
+    "text": "a",
+    "starts_vowel": true, "ends_vowel": true,
+    "meaning": "feminine marker", "gender": "Male"
   },
   {
-    "text": "os",
-    "starts_vowel": true,
-    "ends_vowel": false,
-    "meaning": "proven"
+    "text": "in", "starts_vowel": true, "ends_vowel": false,
+    "meaning": "descendant", "gender": "Unisex"
   },
   {
-    "text": "us",
-    "starts_vowel": true,
-    "ends_vowel": false,
-    "meaning": "honored"
+    "text": "os", "starts_vowel": true, "ends_vowel": false,
+    "meaning": "proven", "gender": "Female"
   },
   {
-    "text": "grad",
-    "starts_vowel": false,
-    "ends_vowel": false,
-    "meaning": "stronghold"
+    "text": "us", "starts_vowel": true, "ends_vowel": false,
+    "meaning": "honored", "gender": "Male"
   },
   {
-    "text": "pol",
-    "starts_vowel": false,
-    "ends_vowel": false,
-    "meaning": "polis"
+    "text": "ka",
+    "starts_vowel": false, "ends_vowel": true,
+    "meaning": "initiate", "gender": "Male"
+  },
+   {
+    "text": "is",
+    "starts_vowel": true, "ends_vowel": false,
+    "meaning": "of the polis", "gender": "Unisex"
+  },
+  {
+    "text": "ar", "starts_vowel": true, "ends_vowel": false,
+    "meaning": "agent", "gender": "Unisex"
+  },
+  {
+    "text": "grad", "starts_vowel": false, "ends_vowel": false,
+    "meaning": "stronghold", "gender": "Unisex"
+  },
+  {
+    "text": "pol", "starts_vowel": false, "ends_vowel": false,
+    "meaning": "polis", "gender": "Unisex"
   },
   {
     "text": "sk",
     "starts_vowel": false,
     "ends_vowel": false,
-    "meaning": "belonging to the state"
+    "meaning": "belonging to the state",
+    "gender": "Unisex"
   },
   {
     "text": "ar",
     "starts_vowel": true,
     "ends_vowel": false,
-    "meaning": "agent"
+    "meaning": "agent",
+    "gender": "Unisex"
   },
   {
     "text": "ax",
     "starts_vowel": true,
     "ends_vowel": false,
-    "meaning": "tool of the state"
+    "meaning": "tool of the state",
+    "gender": "Male"
   },
   {
     "text": "on",
     "starts_vowel": true,
     "ends_vowel": false,
-    "meaning": "unit"
+    "meaning": "unit",
+    "gender": "Unisex"
   },
     {
     "text": "ka",
     "starts_vowel": false,
     "ends_vowel": true,
-    "meaning": "initiate"
+    "meaning": "initiate",
+    "gender": "Male"
   }
 ]

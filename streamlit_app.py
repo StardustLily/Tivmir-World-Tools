@@ -35,6 +35,7 @@ orcish_prefixes = load_json("orcish_prefixes.json")
 orcish_middles = load_json("orcish_middles.json")
 orcish_suffixes = load_json("orcish_suffixes.json")
 orcish_poetic_gloss = load_json("orcish_poetic_gloss.json")
+orcish_surnames = load_json("orcish_surnames.json")
 
 # === Emoji Icons ===
 icons = {
@@ -116,45 +117,60 @@ def _generate_poetic_meaning(parts, poetic_gloss_dict):
     return random.choice(templates)
 
 # === (Revised) Internal Helper Functions for Name Assembly ===
-def _assemble_name_parts(prefixes, middles, suffixes):
+def _assemble_name_parts(prefixes, middles, suffixes, gender_filter="Any"): # Add gender_filter
     """Internal logic to select name parts using smoothing. Returns list of chosen parts."""
-    if not prefixes or not suffixes: return [] # Return empty list on error
-    if not middles: middles_list = [] # Handle empty list
+    if not prefixes or not suffixes: return []
+    if not middles: middles_list = []
     else: middles_list = middles
 
     use_middle = random.random() < 0.3 and bool(middles_list)
     chosen_parts = []
 
+    # --- Prefix Selection (Could add gender filtering here too if desired later) ---
     prefix = random.choice(prefixes)
     chosen_parts.append(prefix)
     last_part_ends_vowel = prefix["ends_vowel"]
-    last_part_text = prefix["text"] # Store last part text
+    last_part_text = prefix["text"]
 
+    # --- Middle Selection (No gender filtering applied here currently) ---
     if use_middle:
         middle = _pick_smooth_part(middles_list, last_part_ends_vowel)
         if middle:
-            # Simple check: If middle starts like prefix ends, try picking ONE more time
+            # Simple repeat check
             if len(last_part_text) > 1 and len(middle["text"]) > 1 and \
-               last_part_text.endswith(middle["text"][0]): # Basic check
-                # print(f"Avoiding simple repeat: {last_part_text} + {middle['text']}") # Debug print
-                middle = _pick_smooth_part(middles_list, last_part_ends_vowel) # Try again
+               last_part_text.endswith(middle["text"][0]):
+                middle = _pick_smooth_part(middles_list, last_part_ends_vowel)
 
-            if middle: # Check again after the potential re-pick
+            if middle:
                 chosen_parts.append(middle)
                 last_part_ends_vowel = middle["ends_vowel"]
-                last_part_text = middle["text"] # Update last part text
+                last_part_text = middle["text"]
 
-    suffix = _pick_smooth_part(suffixes, last_part_ends_vowel)
+    # --- Suffix Selection with Gender Filtering ---
+    suffix_options = suffixes # Start with all suffixes
+    if gender_filter != "Any":
+        # Filter based on gender, always including Unisex
+        suffix_options = [
+            s for s in suffixes
+            if s.get("gender") == gender_filter or s.get("gender") == "Unisex"
+        ]
+        if not suffix_options: # Fallback if no matching gendered suffixes found
+            st.warning(f"No specific {gender_filter} or Unisex suffixes found, using any.")
+            suffix_options = suffixes # Use all suffixes as fallback
+
+    if not suffix_options: # Check if list became empty (shouldn't if fallback works)
+        st.error("Suffix options list is empty after filtering.")
+        return chosen_parts # Return parts assembled so far
+
+    suffix = _pick_smooth_part(suffix_options, last_part_ends_vowel)
     if suffix:
-         # Simple check: If suffix starts like last part ends, try picking ONE more time
+        # Simple repeat check
         if len(last_part_text) > 1 and len(suffix["text"]) > 1 and \
            last_part_text.endswith(suffix["text"][0]):
-            # print(f"Avoiding simple repeat: {last_part_text} + {suffix['text']}") # Debug print
-            suffix = _pick_smooth_part(suffixes, last_part_ends_vowel) # Try again
+            suffix = _pick_smooth_part(suffix_options, last_part_ends_vowel) # Try again on filtered list
 
-        if suffix: # Check again after potential re-pick
+        if suffix:
             chosen_parts.append(suffix)
-            # No need to update last_part variables here
 
     return chosen_parts # Return the list of chosen part dictionaries
 
@@ -224,11 +240,23 @@ def generate_npc():
             else: npc_name = f"[Common Name Data Missing] Half-Elf"
 
     elif race_name == "Orc":
-        if all([orcish_prefixes, orcish_middles, orcish_suffixes]): # Check data exists
-             generated_parts = _assemble_name_parts(orcish_prefixes, orcish_middles, orcish_suffixes)
-             if generated_parts: npc_name = "".join(p["text"] for p in generated_parts)
-             else: npc_name = f"[Orcish Name Assembly Failed] {race_name}"
-        else: npc_name = f"[Orcish Name Data Missing] {race_name}"
+        npc_first_name = f"Unnamed {race_name}" # Default
+        # Check if data for first name exists
+        if all([orcish_prefixes, orcish_middles, orcish_suffixes]):
+             generated_parts = _assemble_name_parts(orcish_prefixes, orcish_middles, orcish_suffixes, gender_filter="Any") # Use "Any" gender
+             if generated_parts:
+                 npc_first_name = "".join(p["text"] for p in generated_parts)
+             else: npc_first_name = f"[Orcish Name Assembly Failed]"
+        else: npc_first_name = f"[Orcish Name Data Missing]"
+
+        # Add Surname
+        npc_surname = ""
+        if orcish_surnames: # Check surname data exists
+             surname_entry = random.choice(orcish_surnames)
+             npc_surname = surname_entry["text"]
+        else: npc_surname = "[Surname Data Missing]"
+
+        npc_name = f"{npc_first_name} {npc_surname}" # Combine first and surname
 
     elif race_name == "Half-Orc":
         # Randomly choose which heritage name style to use
@@ -371,34 +399,39 @@ def generate_common_name():
     )
 
 # === Generate Orcish Name Function (for Name Generator Tab) ===
-def generate_orc_name():
+def generate_orc_name(gender="Any"): # Accept gender parameter
     """Generates an Orcish name with meanings for the Name Generator tab."""
-    # Check required data is loaded
-    if not all([orcish_prefixes, orcish_middles, orcish_suffixes, orcish_poetic_gloss]):
-         st.error("Missing required Orcish name data.")
+    if not all([orcish_prefixes, orcish_middles, orcish_suffixes, orcish_poetic_gloss, orcish_surnames]):
+         st.error("Missing required Orcish data.")
          return "Error: Missing data."
 
-    # Assemble the parts using the main helper
-    parts = _assemble_name_parts(orcish_prefixes, orcish_middles, orcish_suffixes)
-    if not parts:
-        # Handle assembly failure if needed (though _assemble should usually return something)
-        st.warning("Name part assembly failed unexpectedly.")
-        return "Error: Failed to assemble name parts."
+    # Assemble the FIRST name parts using the main helper, passing gender
+    first_name_parts = _assemble_name_parts(orcish_prefixes, orcish_middles, orcish_suffixes, gender_filter=gender)
+    if not first_name_parts:
+         st.warning("First name part assembly failed unexpectedly.")
+         return "Error: Failed to assemble first name parts."
 
-    # Combine parts into the full name string
-    full_name = "".join(p["text"] for p in parts)
+    # Combine first name parts
+    first_name = "".join(p["text"] for p in first_name_parts)
 
-    # Create the list of meaning lines
-    meaning_lines = [f"- **{p['text']}** = {p['meaning']}" for p in parts]
+    # Select a surname
+    surname_entry = random.choice(orcish_surnames)
+    surname = surname_entry["text"]
 
-    # Generate the poetic meaning using the specific Orcish gloss
-    poetic = _generate_poetic_meaning(parts, orcish_poetic_gloss)
+    # Combine for full name
+    full_name = f"{first_name} {surname}"
 
-    # Return the formatted output string (using a gear or volcano emoji perhaps?)
+    # Create the list of meaning lines (including surname)
+    meaning_lines = [f"- **{p['text']}** = {p['meaning']}" for p in first_name_parts]
+    meaning_lines.append(f"- **{surname}** = {surname_entry.get('meaning', 'N/A')}") # Add surname meaning
+
+    # Generate the poetic meaning for the FIRST NAME parts
+    poetic = _generate_poetic_meaning(first_name_parts, orcish_poetic_gloss)
+
     return (
-        f"⚙️ **Name:** {full_name}\n\n" + # Or use 🌋
-        "\n".join(meaning_lines) + # Single newline for bullet points looks better here
-        f"\n\n➔ **Poetic Meaning:** {poetic}"
+        f"⚙️ **Name:** {full_name}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **Poetic Meaning (First Name):** {poetic}" # Clarify poetic applies to first name
     )
 
 # === UI ===
@@ -433,24 +466,27 @@ with tabs[0]:
 with tabs[1]:
     st.header("🔤 Name Generator")
     race = st.selectbox("Choose a race:", ["Elven", "Tabaxi", "Human", "Orc"], key="name_race")
+    #Gender Selection -- Will add in non-binary later
+    gender = st.radio("Select Gender:", ["Any", "Male", "Female"], key="name_gender", horizontal=True)
 
     if race == "Tabaxi":
         clan_names = [clan["name"] for clan in tabaxi_clans]
         selected_clan = st.selectbox("Choose a Tabaxi clan:", clan_names, key="tabaxi_clan")
         if st.button("Generate Tabaxi Name", key="tabaxi_name_button"):
-            # Store result
-            st.session_state.name_output = generate_tabaxi_name(selected_clan)
+            # Pass gender - Note: generate_tabaxi_name needs to accept gender arg now!
+            st.session_state.name_output = generate_tabaxi_name(selected_clan) # Modify generate_tabaxi_name similarly if desired
     elif race == "Human":
          if st.button("Generate Common Name", key="common_name_button"):
-              st.session_state.name_output = generate_common_name()
+              # Pass gender - Note: generate_common_name needs modification
+              st.session_state.name_output = generate_common_name() # Modify generate_common_name similarly if desired
     elif race == "Orc":
          if st.button("Generate Orcish Name", key="orc_name_button"):
-              # Call the function we will create in the next step
-              st.session_state.name_output = generate_orc_name()
+              # Pass the selected gender to the function
+              st.session_state.name_output = generate_orc_name(gender=gender)
     else: # Elven
         if st.button("Generate Elven Name", key="elven_name_button"):
-            # Store result
-            st.session_state.name_output = generate_elven_name()
+            # Pass gender - Note: generate_elven_name needs modification
+            st.session_state.name_output = generate_elven_name() # Modify generate_elven_name similarly if desired
 
     # Always display name output from session state
     if st.session_state.name_output:

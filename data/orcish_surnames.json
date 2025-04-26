@@ -1,0 +1,43 @@
+[
+  {
+    "text": "Ironfist",
+    "meaning": "Unyielding Command / Strength"
+  },
+  {
+    "text": "Stoneguard",
+    "meaning": "Steadfast Defender / Fortress Born"
+  },
+  {
+    "text": "Deepmind",
+    "meaning": "Profound Knowledge / Strategic Insight"
+  },
+  {
+    "text": "Flameseeker",
+    "meaning": "Pyroclastic Researcher / Forge Adept"
+  },
+  {
+    "text": "Voltbreaker",
+    "meaning": "Mana Conduit Specialist / Storm Warrior"
+  },
+  {
+    "text": "Ashfall", // Location/Event?
+    "meaning": "Survivor of the Ashfall / From the Ash Region"
+  },
+  {
+    "text": "Kazgradian", // Affiliation (City/Stronghold)
+    "meaning": "Of the Kazgrad Stronghold"
+  },
+  {
+    "text": "Kratosborn", // Affiliation (Group/Philosophy?)
+    "meaning": "Follower of the Power Doctrine / State Educated"
+  },
+  {
+    "text": "Shield-Oath", // Title/Deed
+    "meaning": "Bound by a Defender's Vow"
+  },
+  {
+    "text": "Logic-Core", // Title/Descriptor
+    "meaning": "Driven by Pure Reason / Master Analyst"
+  }
+  // Add many more! Mix descriptors, titles, affiliations
+]
