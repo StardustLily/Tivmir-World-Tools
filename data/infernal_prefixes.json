@@ -1,72 +1,24 @@
 [
-  {
-    "text": "Mal",
-    "starts_vowel": false,
-    "ends_vowel": false,
-    "meaning": "shadow"
-  },
-  {
-    "text": "Zahr",
-    "starts_vowel": false,
-    "ends_vowel": false,
-    "meaning": "origin gift"
-  },
-  {
-    "text": "Pyr",
-    "starts_vowel": false,
-    "ends_vowel": false,
-    "meaning": "fire"
-  },
-  {
-    "text": "Khar",
-    "starts_vowel": false,
-    "ends_vowel": false,
-    "meaning": "exile"
-  },
-  {
-    "text": "Akh",
-    "starts_vowel": true,
-    "ends_vowel": false,
-    "meaning": "kin"
-  },
-  {
-    "text": "Rak",
-    "starts_vowel": false,
-    "ends_vowel": false,
-    "meaning": "endure"
-  },
-  {
-    "text": "Sekh",
-    "starts_vowel": false,
-    "ends_vowel": false,
-    "meaning": "irony"
-  },
-  {
-    "text": "Yahf",
-    "starts_vowel": false,
-    "ends_vowel": false,
-    "meaning": "being"
-  },
-  {
-    "text": "Ath",
-    "starts_vowel": true,
-    "ends_vowel": false,
-    "meaning": "creator"
-  },
-  {
-    "text": "Gez",
-    "starts_vowel": false,
-    "ends_vowel": false,
-    "meaning": "outcast"
-  },
-  { "text": "Tor", "starts_vowel": false, "ends_vowel": false, "meaning": "twist fate" },
-  { "text": "Zil", "starts_vowel": false, "ends_vowel": false, "meaning": "hope glimmer" },
-  { "text": "Vok", "starts_vowel": false, "ends_vowel": false, "meaning": "voice truth" },
-  { "text": "Nesh", "starts_vowel": false, "ends_vowel": false, "meaning": "breath spirit" },
-  { "text": "Kor", "starts_vowel": false, "ends_vowel": false, "meaning": "cold ash loss" },
-  { "text": "Shem", "starts_vowel": false, "ends_vowel": false, "meaning": "name identity" },
-  { "text": "Bri", "starts_vowel": false, "ends_vowel": true, "meaning": "create forge" },
-  { "text": "Daz", "starts_vowel": false, "ends_vowel": false, "meaning": "pain scar" },
-  { "text": "Lir", "starts_vowel": false, "ends_vowel": false, "meaning": "knowledge memory" },
-  { "text": "Tir", "starts_vowel": false, "ends_vowel": false, "meaning": "time history" }
+  { "text": "Mal", "starts_vowel": false, "ends_vowel": false, "meaning": "shadow", "gender": "Unisex" },
+  { "text": "Zahr", "starts_vowel": false, "ends_vowel": false, "meaning": "origin gift", "gender": "Unisex" },
+  { "text": "Pyr", "starts_vowel": false, "ends_vowel": false, "meaning": "fire", "gender": "Unisex" },
+  { "text": "Khar", "starts_vowel": false, "ends_vowel": false, "meaning": "exile", "gender": "Unisex" },
+  { "text": "Akh", "starts_vowel": true, "ends_vowel": false, "meaning": "kin", "gender": "Unisex" },
+  { "text": "Rak", "starts_vowel": false, "ends_vowel": false, "meaning": "endure", "gender": "Unisex" },
+  { "text": "Sekh", "starts_vowel": false, "ends_vowel": false, "meaning": "irony", "gender": "Unisex" },
+  { "text": "Yahf", "starts_vowel": false, "ends_vowel": false, "meaning": "being", "gender": "Unisex" },
+  { "text": "Ath", "starts_vowel": true, "ends_vowel": false, "meaning": "creator", "gender": "Unisex" },
+  { "text": "Gez", "starts_vowel": false, "ends_vowel": false, "meaning": "outcast", "gender": "Unisex" },
+  { "text": "Tor", "starts_vowel": false, "ends_vowel": false, "meaning": "twist fate", "gender": "Unisex" },
+  { "text": "Zil", "starts_vowel": false, "ends_vowel": false, "meaning": "hope glimmer", "gender": "Unisex" },
+  { "text": "Vok", "starts_vowel": false, "ends_vowel": false, "meaning": "voice truth", "gender": "Unisex" },
+  { "text": "Nesh", "starts_vowel": false, "ends_vowel": false, "meaning": "breath spirit", "gender": "Unisex" },
+  { "text": "Kor", "starts_vowel": false, "ends_vowel": false, "meaning": "cold ash loss", "gender": "Unisex" },
+  { "text": "Shem", "starts_vowel": false, "ends_vowel": false, "meaning": "name identity", "gender": "Unisex" },
+  { "text": "Bri", "starts_vowel": false, "ends_vowel": true, "meaning": "create forge", "gender": "Unisex" },
+  { "text": "Daz", "starts_vowel": false, "ends_vowel": false, "meaning": "pain scar", "gender": "Unisex" },
+  { "text": "Lir", "starts_vowel": false, "ends_vowel": false, "meaning": "knowledge memory", "gender": "Unisex" },
+  { "text": "Tir", "starts_vowel": false, "ends_vowel": false, "meaning": "time history", "gender": "Unisex" },
+  { "text": "Phel", "starts_vowel": false, "ends_vowel": false, "meaning": "legacy gift", "gender": "Unisex"},
+  { "text": "Tzel", "starts_vowel": false, "ends_vowel": false, "meaning": "hide", "gender": "Unisex"}
 ]
