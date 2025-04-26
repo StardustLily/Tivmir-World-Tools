@@ -609,7 +609,7 @@ with tabs[1]:
         # NO gender selection shown here
         if st.button("Generate Infernal Name", key="tiefling_name_button"):
              # Pass the selected gender
-             st.session_state.name_output = generate_infernal_name(gender=gender) # Ensure this function exists and accepts gender
+             st.session_state.name_output = generate_infernal_name()
 
     # Use elif for Elf now, not else, to be specific
     elif race == "Elf":
