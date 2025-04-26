@@ -17,31 +17,46 @@ def load_json(filename):
         st.error(f"Error loading {filename}: {e}")
         return [] if "list" in filename else {}
 
-# === Load Data ===
+# === (Revised) Load Data ===
 races = load_json("races.json")
 npc_attributes = load_json("npc_attributes.json")
-tabaxi_prefixes = load_json("tabaxi_prefixes.json")
-tabaxi_middles = load_json("tabaxi_middles.json")
-tabaxi_suffixes = load_json("tabaxi_suffixes.json")
-tabaxi_poetic_gloss = load_json("tabaxi_poetic_gloss.json")
-tabaxi_clans = load_json("tabaxi_clans.json")
-elven_prefixes = load_json("elven_prefixes.json")
-elven_middles = load_json("elven_middles.json")
-elven_suffixes = load_json("elven_suffixes.json")
-elven_poetic_gloss = load_json("elven_poetic_gloss.json")
-common_first_names = load_json("common_first_names.json")
-common_surnames = load_json("common_surnames.json")
-orcish_prefixes = load_json("orcish_prefixes.json")
-orcish_middles = load_json("orcish_middles.json")
-orcish_suffixes = load_json("orcish_suffixes.json")
-orcish_poetic_gloss = load_json("orcish_poetic_gloss.json")
-orcish_surnames = load_json("orcish_surnames.json")
-infernal_prefixes = load_json("infernal_prefixes.json")
-infernal_middles = load_json("infernal_middles.json")
-infernal_suffixes = load_json("infernal_suffixes.json")
-infernal_poetic_gloss = load_json("infernal_poetic_gloss.json")
+# Consolidate name data into a dictionary
+name_data = {
+    "tabaxi": {
+        "prefixes": load_json("tabaxi_prefixes.json"),
+        "middles": load_json("tabaxi_middles.json"),
+        "suffixes": load_json("tabaxi_suffixes.json"),
+        "gloss": load_json("tabaxi_poetic_gloss.json"),
+        "clans": load_json("tabaxi_clans.json") # Specific to Tabaxi
+    },
+    "elf": {
+        "prefixes": load_json("elven_prefixes.json"),
+        "middles": load_json("elven_middles.json"),
+        "suffixes": load_json("elven_suffixes.json"),
+        "gloss": load_json("elven_poetic_gloss.json")
+    },
+    "common": { # For Human/Common names
+        "first_names": load_json("common_first_names.json"),
+        "surnames": load_json("common_surnames.json")
+    },
+    "orc": {
+        "prefixes": load_json("orcish_prefixes.json"),
+        "middles": load_json("orcish_middles.json"),
+        "suffixes": load_json("orcish_suffixes.json"),
+        "gloss": load_json("orcish_poetic_gloss.json"),
+        "surnames": load_json("orcish_surnames.json") # Specific to Orc
+    },
+    "infernal": { # Using 'infernal' as the key for Tiefling
+        "prefixes": load_json("infernal_prefixes.json"),
+        "middles": load_json("infernal_middles.json"),
+        "suffixes": load_json("infernal_suffixes.json"),
+        "gloss": load_json("infernal_poetic_gloss.json")
+    },
+    # Add new races here in the future
+    # "dwarf": { ... }
+}
 
-# === Emoji Icons ===
+# Emoji Icons (remains the same)
 icons = {
     "Appearance": "👁️",
     "Worships": "🙏",
@@ -53,7 +68,7 @@ icons = {
     "Ally": "🧡"
 }
 
-# === Helper Functions for Name Generation ===
+# === (Revised) Helper Functions for Name Generation ===
 
 VOWELS = "aeiouyáéíóúàèìòùâêîôûäëïöü" # Define vowels (adjust if needed)
 
@@ -61,64 +76,77 @@ def _is_vowel(char):
   """Checks if a single character is a vowel (case-insensitive)."""
   return char.lower() in VOWELS
 
-# I might not need _is_vowel if I manually set flags in JSON,
-# but it could be useful for auto-generating flags later.
-
 def _is_smooth_transition(prev_part_ends_vowel, current_part_starts_vowel):
-  """Checks if joining two parts is phonetically smooth (avoids vowel+vowel)."""
-  # Returns True if it's NOT (vowel + vowel), False otherwise.
+  """Checks if joining two parts is phonetically smooth (avoids vowel+vowel or maybe consonant+consonant)."""
+  # Simple: Avoid vowel + vowel. Could add consonant cluster checks later.
   return not (prev_part_ends_vowel and current_part_starts_vowel)
 
 def _pick_smooth_part(part_list, prev_part_ends_vowel):
   """Picks a random part from the list, preferring smooth transitions."""
-  if not part_list: # Handle empty list case
+  if not part_list:
       st.warning("Attempted to pick from an empty name part list.")
-      return None # Or return a default placeholder part
+      return None
 
-  # Find parts that start smoothly after the previous part
   smooth_options = [
       part for part in part_list
       if _is_smooth_transition(prev_part_ends_vowel, part["starts_vowel"])
   ]
 
   if smooth_options:
-      # If smooth options exist, pick one randomly
       return random.choice(smooth_options)
   else:
-      # Fallback: If NO smooth options exist (e.g., prev ends vowel, all options start vowel),
-      # just pick any part randomly to avoid errors. The name might sound slightly less smooth.
-      # st.info("Note: No perfectly smooth name transition found, choosing randomly.") # Optional debug info
+      # Fallback: pick any part if no smooth options exist
       return random.choice(part_list)
 
 def _generate_poetic_meaning(parts, poetic_gloss_dict):
     """Generates a poetic meaning string from chosen name parts and a gloss dictionary."""
-    if not parts:
-        return ""
+    if not parts or not poetic_gloss_dict:
+        return "No poetic meaning available." # Return informative string
 
-    keywords = [p["meaning"].split("/")[0].strip() for p in parts] # Takes first meaning if '/' present
-    glosses = [random.choice(poetic_gloss_dict.get(k, [k])) for k in keywords] # Gets poetic variations
+    # Extract primary meaning keyword for lookup
+    keywords = [p.get("meaning", "").split("/")[0].strip() for p in parts if p.get("meaning")]
+    if not keywords:
+        return "Could not determine meaning keywords." # Handle case where parts have no meaning
+
+    # Get random poetic gloss for each keyword
+    glosses = [random.choice(poetic_gloss_dict.get(k, [k.capitalize()])) for k in keywords] # Fallback to capitalized keyword
+
+    num_glosses = len(glosses)
+    templates = []
 
     # Choose a template based on the number of parts/glosses
-    if len(glosses) == 2:
+    if num_glosses == 1:
+        templates = [
+            f"Embodiment of {glosses[0]}",
+            f"Bearer of {glosses[0]}",
+            f"A soul defined by {glosses[0]}",
+        ]
+    elif num_glosses == 2:
         templates = [
             f"{glosses[0].title()} of {glosses[1]}",
             f"Bearer of {glosses[1]}, born of {glosses[0]}",
             f"A soul touched by {glosses[0]} and {glosses[1]}",
-            f"Walker of {glosses[0]} and {glosses[1]}", # Added another option
-            f"Voice of the {glosses[1]}, spirit of {glosses[0]}" # Added another option
+            f"Walker between {glosses[0]} and {glosses[1]}",
+            f"Voice of the {glosses[1]}, spirit of {glosses[0]}"
         ]
-    elif len(glosses) == 3:
+    elif num_glosses == 3:
          templates = [
             f"One who walks with {glosses[0]}, guided by {glosses[1]}, keeper of {glosses[2]}",
             f"A spirit shaped by {glosses[0]}, voice of {glosses[1]}, hand of {glosses[2]}",
             f"Child of {glosses[0]}, gifted by {glosses[1]}, soul of {glosses[2]}",
             f"{glosses[2].title()} made flesh, carved from {glosses[0]} and {glosses[1]}",
-            f"Heart of {glosses[0]}, mind of {glosses[1]}, destiny of {glosses[2]}" # Added another option
+            f"Heart of {glosses[0]}, mind of {glosses[1]}, destiny of {glosses[2]}"
          ]
-    else: # Handle 1 part or other cases
-         templates = [f"Embodiment of {glosses[0]}", f"Bearer of {glosses[0]}"]
+    else: # Fallback for 4 or more parts - simple conjunction
+         # Join all but the last with commas, then add "and" before the last one.
+         if num_glosses > 0:
+             all_but_last = ", ".join(glosses[:-1])
+             last = glosses[-1]
+             templates = [f"One connected to {all_but_last}, and {last}"]
+         else: # Should not happen if checks above work, but safety
+             return "Meaning generation failed."
 
-    return random.choice(templates)
+    return random.choice(templates) if templates else "Could not generate poetic meaning."
 
 # === (Revised) Internal Helper Functions for Name Assembly ===
 def _assemble_name_parts(prefixes, middles, suffixes, gender_filter="Any"): # Add gender_filter
@@ -178,41 +206,63 @@ def _assemble_name_parts(prefixes, middles, suffixes, gender_filter="Any"): # Ad
 
     return chosen_parts # Return the list of chosen part dictionaries
 
-# === NEW Generalized Helper for Structured Names ===
-def _generate_structured_name_data(race_key, gender="Any"):
+# === (Revised) Generalized Helper for Structured Names ===
+def _generate_structured_name_data(race_data, gender="Any"): # Accepts the race's data dict
     """
     Internal helper to generate name components for structured names (Elf, Orc, Infernal, Tabaxi).
+    Accepts a dictionary containing the specific race's data ('prefixes', 'middles', etc.).
     Returns a dictionary containing 'name', 'parts', 'poetic', 'error' (if any).
     """
-    prefixes, middles, suffixes, gloss, surnames = None, None, None, None, None
-    error_msg = None
     result = {"name": None, "parts": [], "poetic": "", "error": None}
 
-    # --- Map race_key to data variables ---
-    # (This mapping is needed because we haven't done the data restructure yet)
-    if race_key == "elf":
-        if all([elven_prefixes, elven_middles, elven_suffixes, elven_poetic_gloss]):
-            prefixes, middles, suffixes, gloss = elven_prefixes, elven_middles, elven_suffixes, elven_poetic_gloss
-        else: error_msg = "Missing required Elven data."
-    elif race_key == "orc":
-         if all([orcish_prefixes, orcish_middles, orcish_suffixes, orcish_poetic_gloss, orcish_surnames]):
-            prefixes, middles, suffixes, gloss, surnames = orcish_prefixes, orcish_middles, orcish_suffixes, orcish_poetic_gloss, orcish_surnames
-         else: error_msg = "Missing required Orcish data."
-    elif race_key == "infernal":
-         if all([infernal_prefixes, infernal_middles, infernal_suffixes, infernal_poetic_gloss]):
-             prefixes, middles, suffixes, gloss = infernal_prefixes, infernal_middles, infernal_suffixes, infernal_poetic_gloss
-         else: error_msg = "Missing required Infernal data."
-    elif race_key == "tabaxi":
-        if all([tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes, tabaxi_poetic_gloss]):
-            prefixes, middles, suffixes, gloss = tabaxi_prefixes, tabaxi_middles, tabaxi_suffixes, tabaxi_poetic_gloss
-        else: error_msg = "Missing required Tabaxi data."
-    else:
-        error_msg = f"Unknown race key for structured name: {race_key}"
+    # --- Access data directly from the passed dictionary ---
+    prefixes = race_data.get("prefixes")
+    middles = race_data.get("middles") # Might be missing for some future structures
+    suffixes = race_data.get("suffixes")
+    gloss = race_data.get("gloss")
+    surnames = race_data.get("surnames") # Only present for Orcs currently
 
-    if error_msg:
+    # --- Basic Data Validation ---
+    if not prefixes or not suffixes or not gloss:
+        error_msg = "Missing core name data (prefixes, suffixes, or gloss) for this race."
         st.error(error_msg)
         result["error"] = error_msg
-        return result # Return early with error
+        return result
+
+    # --- Assemble Parts ---
+    # Handle potentially missing middles list gracefully
+    parts = _assemble_name_parts(prefixes, middles or [], suffixes, gender_filter=gender)
+    if not parts:
+        error_msg = f"Failed to assemble name parts."
+        st.warning(error_msg)
+        result["error"] = error_msg
+        return result
+
+    result["parts"] = parts
+    first_name = "".join(p["text"] for p in parts)
+
+    # --- Handle Surnames ---
+    surname = ""
+    surname_part = None
+    if surnames: # Check if surname list exists for this race
+        surname_entry = random.choice(surnames)
+        surname = surname_entry["text"]
+        surname_part = {"text": surname, "meaning": surname_entry.get('meaning', 'N/A')}
+        full_name = f"{first_name} {surname}"
+    else:
+        full_name = first_name
+
+    result["name"] = full_name
+
+    # --- Poetic Meaning (use the correct gloss dict) ---
+    # Ensure _generate_poetic_meaning is called *after* potential surname handling
+    # but *before* adding surname_part to result["parts"] if you only want poetic meaning for generated parts.
+    result["poetic"] = _generate_poetic_meaning(parts, gloss) # Pass the specific gloss dict
+
+    if surname_part:
+        result["parts"].append(surname_part) # Add surname details for display
+
+    return result # Return early with error
 
     # --- Assemble Parts ---
     parts = _assemble_name_parts(prefixes, middles, suffixes, gender_filter=gender)
@@ -397,25 +447,73 @@ def generate_npc():
 
     return "\n\n".join(npc_lines) # Use double newline for better spacing
 
-# === (Revised) Generate Tabaxi Name Function ===
-def generate_tabaxi_name(selected_clan): # Tabaxi doesn't use gender filter currently
-    # Check clan data exists (specific to Tabaxi)
-    if not tabaxi_clans:
+# === (Revised Wrappers using name_data) ===
+
+def generate_elven_name(gender="Any"):
+    race_key = "elf"
+    if race_key not in name_data: return "Error: Elven name data not loaded."
+    data = _generate_structured_name_data(name_data[race_key], gender) # Pass sub-dictionary
+    # ... (rest of the function formatting remains the same) ...
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+    return (
+        f"🌿 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **Poetic Meaning:** {data['poetic']}"
+    )
+
+
+def generate_orc_name(gender="Any"):
+    race_key = "orc"
+    if race_key not in name_data: return "Error: Orcish name data not loaded."
+    data = _generate_structured_name_data(name_data[race_key], gender) # Pass sub-dictionary
+    # ... (rest of the function formatting remains the same) ...
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+    return (
+        f"⚙️ **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **Poetic Meaning (First Name):** {data['poetic']}"
+    )
+
+
+def generate_infernal_name(gender="Any"):
+    race_key = "infernal"
+    if race_key not in name_data: return "Error: Infernal name data not loaded."
+    data = _generate_structured_name_data(name_data[race_key], gender) # Pass sub-dictionary
+    # ... (rest of the function formatting remains the same) ...
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+    return (
+        f"🔥 **Name:** {data['name']}\n\n" +
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **Poetic Meaning:** {data['poetic']}"
+    )
+
+
+def generate_tabaxi_name(selected_clan):
+    race_key = "tabaxi"
+    if race_key not in name_data: return "Error: Tabaxi name data not loaded."
+    # Check specific clan data (still needed separately)
+    if "clans" not in name_data[race_key] or not name_data[race_key]["clans"]:
          st.error("Missing required Tabaxi clan data.")
          return "Error: Missing clan data."
 
-    # Use helper for name generation part
-    data = _generate_structured_name_data("tabaxi", gender="Any") # Pass "Any" gender
+    data = _generate_structured_name_data(name_data[race_key], gender="Any") # Pass sub-dictionary
+    # ... (rest of the function formatting remains the same) ...
     if data["error"]: return f"Error: {data['error']}"
     if not data["name"]: return "Error: Name generation failed silently."
 
-    # Tabaxi name is just the generated part
     full_name = data["name"]
     meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
     poetic = data["poetic"]
 
-    # Clan Info (remains the same logic as before)
-    clan_info = next((c for c in tabaxi_clans if c["name"] == selected_clan), None)
+    # Clan Info (Access clans via name_data)
+    clan_list = name_data[race_key]["clans"]
+    clan_info = next((c for c in clan_list if c["name"] == selected_clan), None)
     clan_desc = ""
     if clan_info:
         clan_desc = (
@@ -428,36 +526,66 @@ def generate_tabaxi_name(selected_clan): # Tabaxi doesn't use gender filter curr
         st.warning(f"Could not find details for clan: {selected_clan}")
         clan_desc = f"\n\n🏡 **Clan:** {selected_clan} (Details not found)"
 
-
-    # Return Formatted Output
     return (
-        f"🐾 **Name:** {full_name}\n\n" # Note: Tabaxi names might not include "of the X clan" directly here
+        f"🐾 **Name:** {full_name}\n\n"
         + "\n".join(meaning_lines)
         + f"\n\n➔ **Poetic Meaning:** {poetic}{clan_desc}"
     )
 
-# === (Revised) Generate Elven Name Function ===
-def generate_elven_name(gender="Any"): # Added gender default
-    data = _generate_structured_name_data("elf", gender) # Use helper
-    if data["error"]: return f"Error: {data['error']}"
-    if not data["name"]: return "Error: Name generation failed silently." # Safety check
+# IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
+# Example for Half-Elf (Elven style):
+# Replace:
+# name_data_result = _generate_structured_name_data("elf", npc_gender)
+# With:
+# if "elf" in name_data:
+#     name_data_result = _generate_structured_name_data(name_data["elf"], npc_gender)
+# else:
+#     name_data_result = {"error": "Elven name data not loaded."}
 
-    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+# Do similarly for Half-Orc (Orc Style).
+# Calls to _get_common_name_string also need updating to use name_data['common']
 
-    return (
-        f"🌿 **Name:** {data['name']}\n\n" +
-        "\n".join(meaning_lines) +
-        f"\n\n➔ **Poetic Meaning:** {data['poetic']}"
-    )
+# Revised _get_common_name_string:
+def _get_common_name_string(gender_filter="Any"):
+    """Generates a Common first name + surname string, optionally filtered by gender."""
+    if "common" not in name_data or "first_names" not in name_data["common"] or "surnames" not in name_data["common"]:
+        st.error("Common name data missing or incomplete.")
+        return "[Common Name Data Missing]"
 
-# === Generate Common Name Function (for Name Generator Tab) ===
+    common_first_names = name_data["common"]["first_names"]
+    common_surnames = name_data["common"]["surnames"]
+
+    # --- Filter first names based on gender --- (Logic remains the same)
+    possible_first_names = common_first_names
+    if gender_filter != "Any":
+        filtered_names = [
+            name_entry for name_entry in common_first_names
+            if name_entry.get("gender") == gender_filter or name_entry.get("gender") == "Unisex"
+        ]
+        if filtered_names:
+            possible_first_names = filtered_names
+        else:
+            st.warning(f"No '{gender_filter}' or 'Unisex' first names found, using any.")
+
+    if not possible_first_names:
+        return "[Error: No suitable first names]"
+    # --- End Filtering ---
+
+    first_name_entry = random.choice(possible_first_names)
+    surname_entry = random.choice(common_surnames)
+
+    return f"{first_name_entry['text']} {surname_entry['text']}"
+
+# And update generate_common_name similarly:
 def generate_common_name(gender="Any"): # Add gender parameter
     """Generates a Common name with meanings for the Name Generator tab."""
-    if not common_first_names or not common_surnames:
+    if "common" not in name_data or "first_names" not in name_data["common"] or "surnames" not in name_data["common"]:
         st.error("Missing required Common name data.")
         return "Error: Missing data."
 
-    # --- Filter first names based on gender ---
+    common_first_names = name_data["common"]["first_names"]
+    common_surnames = name_data["common"]["surnames"]
+    # --- Filtering logic copied from _get_common_name_string ---
     possible_first_names = common_first_names
     if gender != "Any":
         filtered_names = [
@@ -473,56 +601,20 @@ def generate_common_name(gender="Any"): # Add gender parameter
     if not possible_first_names:
         return "[Error: No suitable first names]"
     # --- End Filtering ---
-
     first_name_entry = random.choice(possible_first_names)
-    # Choose surname (no gender filter applied)
     surname_entry = random.choice(common_surnames)
-
+    # ... rest of formatting logic remains the same ...
     full_name = f"{first_name_entry['text']} {surname_entry['text']}"
-
-    # Prepare meaning lines (remains the same)
     meaning_lines = []
     meaning_lines.append(f"- **{first_name_entry['text']}** = {first_name_entry.get('meaning', 'N/A')}")
     if 'meaning' in surname_entry:
          meaning_lines.append(f"- **{surname_entry['text']}** = {surname_entry['meaning']}")
     else:
          meaning_lines.append(f"- **{surname_entry['text']}**")
-
     return (
         f"👤 **Name:** {full_name}\n\n" +
         "\n".join(meaning_lines) +
-        #f"\n\n📜 **Notes:** {flavor_text}"
         ""
-    )
-
-# === (Revised) Generate Orcish Name Function ===
-def generate_orc_name(gender="Any"):
-    data = _generate_structured_name_data("orc", gender) # Use helper
-    if data["error"]: return f"Error: {data['error']}"
-    if not data["name"]: return "Error: Name generation failed silently."
-
-    # Meaning lines include surname meaning because helper adds it to 'parts'
-    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
-
-    # Note: Poetic meaning from helper applies only to the first name parts
-    return (
-        f"⚙️ **Name:** {data['name']}\n\n" +
-        "\n".join(meaning_lines) +
-        f"\n\n➔ **Poetic Meaning (First Name):** {data['poetic']}"
-    )
-
-# === (Revised) Generate Infernal Name Function ===
-def generate_infernal_name(gender="Any"):
-    data = _generate_structured_name_data("infernal", gender) # Use helper
-    if data["error"]: return f"Error: {data['error']}"
-    if not data["name"]: return "Error: Name generation failed silently."
-
-    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
-
-    return (
-        f"🔥 **Name:** {data['name']}\n\n" +
-        "\n".join(meaning_lines) +
-        f"\n\n➔ **Poetic Meaning:** {data['poetic']}"
     )
 
 # === UI ===
