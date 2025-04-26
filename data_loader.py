@@ -35,6 +35,12 @@ if not calendar_data or "months" not in calendar_data:
      st.error("Failed to load valid calendar data! Tracker will not work.")
      calendar_data = {"months": [], "year_suffix": "ERR"}
 
+# === Load Deity Data === # ADD THIS SECTION
+deities = load_json("deities.json")
+if not deities or not isinstance(deities, list):
+     st.error("Failed to load valid deity data! Lore tab might be empty.")
+     deities = [] # Set to empty list on failure
+
 # === Load Single Name Lists ===
 kenku_names = load_json("kenku_names.json")
 lizardfolk_names = load_json("lizardfolk_names.json")

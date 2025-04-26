@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Jaydis",
+    "title": "God of Harmony and Balance",
+    "domains": ["Balance", "Harmony", "Protection"],
+    "symbol": "Interlocking silver and gold rings",
+    "dogma": "Seek balance in all things. Mediate conflict and promote understanding. Protect the equilibrium of the world."
+  },
+  {
+    "name": "Maya",
+    "title": "Goddess of Day and Light",
+    "domains": ["Light", "Life", "Order"],
+    "symbol": "A radiant sunburst",
+    "dogma": "Bask in the light of day. Uphold truth and righteousness. Vanquish darkness and reveal deceit."
+  },
+  {
+    "name": "Solaren",
+    "title": "Goddess of Truth and Clarity",
+    "domains": ["Knowledge", "Truth", "Light"],
+    "symbol": "An unblinking eye within a crystal",
+    "dogma": "Seek truth above all else, even when inconvenient. Clarity reveals the path forward. Lies obscure and weaken."
+  },
+  {
+    "name": "Vivarakan",
+    "title": "Lord of Beginning and Vitality",
+    "domains": ["Life", "Change", "Strength"],
+    "symbol": "A sprouting seed engulfed in green flame",
+    "dogma": "Embrace new beginnings and the vitality of life. Change is growth. Stagnation is death. Live with passion."
+  },
+  {
+    "name": "Zithra",
+    "title": "God of Warmth and Pleasure",
+    "domains": ["Fire", "Charm", "Joy"],
+    "symbol": "A flickering hearth flame",
+    "dogma": "Seek joy and comfort. Share warmth and companionship. Life's simple pleasures are its greatest gifts."
+  },
+  {
+    "name": "Apsen",
+    "title": "Goddess of Travel and Crossroads",
+    "domains": ["Travel", "Luck", "Trickery"],
+    "symbol": "A compass rose with winding paths",
+    "dogma": "The journey is as important as the destination. Embrace the unknown path. Opportunity waits at the crossroads."
+  },
+  {
+    "name": "Auroris",
+    "title": "Deity of Nature and Weather",
+    "domains": ["Nature", "Tempest", "Animal"],
+    "symbol": "A swirling vortex of leaves and lightning",
+    "dogma": "Nature is wild and untamed, both beautiful and destructive. Respect its power and cycles. Adapt to the changing winds."
+  },
+  {
+    "name": "Julevir",
+    "title": "God of Inspiration and Creativity",
+    "domains": ["Artifice", "Knowledge", "Charm"],
+    "symbol": "A multi-faceted gemstone radiating light",
+    "dogma": "Create beauty and marvels. Inspire others through art and invention. Innovation drives the world forward."
+  },
+  {
+    "name": "Jun",
+    "title": "Deity of Dreams and Illusions",
+    "domains": ["Trickery", "Knowledge", "Mind"],
+    "symbol": "A swirling mist revealing fleeting images",
+    "dogma": "Reality is subjective. Dreams hold hidden truths. Illusion can be a tool or a weapon. Question what you see."
+  },
+  {
+    "name": "Mabu",
+    "title": "Entity of Chaos and Entropy",
+    "domains": ["Chaos", "Destruction", "Madness"],
+    "symbol": "A fractured sphere leaking darkness",
+    "dogma": "Order is a lie. Embrace chaos and the inevitable decay. True freedom lies in unraveling the structures of reality."
+  },
+  {
+    "name": "Ocea",
+    "title": "Goddess of the Seas and Tides",
+    "domains": ["Water", "Tempest", "Nature"],
+    "symbol": "A spiraling seashell",
+    "dogma": "The sea is vast, deep, and ever-changing. Respect its power and mysteries. Go with the flow, but beware the undertow."
+  },
+  {
+    "name": "Alfind",
+    "title": "Deity of Ending and Closure",
+    "domains": ["Death", "Fate", "Grave"],
+    "symbol": "A closed, ornate door",
+    "dogma": "All things must end. Accept closure and the finality of fate. There is peace in conclusion."
+  },
+  {
+    "name": "Defenestria",
+    "title": "Goddess of Frost and Pain",
+    "domains": ["Cold", "Pain", "Suffering"],
+    "symbol": "A shard of ice piercing a frozen heart",
+    "dogma": "Pain sharpens the senses and strengthens the spirit. Embrace the cold clarity of suffering. Weakness is purged by hardship."
+  },
+  {
+    "name": "Lolth",
+    "title": "Lady of Trickery and War",
+    "domains": ["War", "Trickery", "Ambition"],
+    "symbol": "A spiderweb dripping venom",
+    "dogma": "Weave schemes like a web. Exploit weakness and seize power. Trust no one. Chaos and conflict are ladders to ascend."
+  },
+  {
+    "name": "Noxtum",
+    "title": "Lord of the Night and Shadows",
+    "domains": ["Darkness", "Death", "Secrets"],
+    "symbol": "An eclipsed moon",
+    "dogma": "Secrets thrive in darkness. Control the night and its hidden paths. Order can be maintained through fear and shadow."
+  },
+  {
+    "name": "Sable",
+    "title": "Lady of Silence and Reflection",
+    "domains": ["Knowledge", "Mind", "Silence"],
+    "symbol": "A still, dark pool of water",
+    "dogma": "Silence holds wisdom. Seek introspection and understanding in quiet moments. Reflection reveals the true self."
+  }
+]

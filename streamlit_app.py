@@ -1,7 +1,7 @@
 import streamlit as st
 st.set_page_config(page_title="Tivmir World Tools", layout="centered")
 # Import necessary data and TOP-LEVEL generator functions
-from data_loader import name_data, races
+from data_loader import name_data, races, calendar_data, npc_attributes, icons, deities
 from npc_generator import generate_npc
 # --- ADD Calendar Imports ---
 from calendar_tracker import (
@@ -107,7 +107,7 @@ if 'name_race' not in st.session_state: st.session_state.name_race = None
 # Call this only once per session start
 initialize_calendar_state(start_year=1478, start_month_index=0, start_day=1)
 
-tabs = st.tabs(["🌿 NPC Generator", "🔤 Name Generator", "📅 Calendar"])
+tabs = st.tabs(["諺 NPC Generator", "筈 Name Generator", "套 Calendar", "🌌 Lore"])
 
 # --- NPC Generator Tab (Remains the same) ---
 with tabs[0]:
@@ -291,3 +291,77 @@ with tabs[2]:
         if st.button("Advance 1 Month", key="adv_month"):
             advance_month()
             st.rerun()
+
+# --- ADD Lore / Deity Browser Tab ---
+with tabs[3]: # Index 3 corresponds to the 4th tab, "🌌 Lore"
+    st.header("🌌 Tivmir Pantheon")
+
+    if not deities:
+        st.warning("Deity information could not be loaded.")
+    else:
+        # Option to show all or a random deity
+        display_mode = st.radio(
+            "Display:",
+            ["Browse All", "Random Deity"],
+            key="lore_display_mode",
+            horizontal=True
+        )
+
+        st.markdown("---")
+
+        if display_mode == "Browse All":
+            st.subheader("Browse Deities")
+
+            # Create a list of deity names for the selectbox
+            deity_names = [d.get("name", "Unknown Deity") for d in deities]
+            selected_deity_name = st.selectbox("Select a Deity:", deity_names)
+
+            # Find the selected deity's data
+            selected_deity = next((d for d in deities if d.get("name") == selected_deity_name), None)
+
+            if selected_deity:
+                st.markdown(f"### {selected_deity.get('name', '')} - _{selected_deity.get('title', '')}_")
+                # REMOVED ALIGNMENT LINE HERE
+                st.markdown(f"**Symbol:** {selected_deity.get('symbol', 'N/A')}")
+                st.markdown(f"**Domains:** {', '.join(selected_deity.get('domains', ['N/A']))}")
+                st.markdown("---")
+                st.markdown(f"**Dogma:**")
+                st.markdown(f"> {selected_deity.get('dogma', 'N/A')}")
+            else:
+                st.error("Could not find details for the selected deity.")
+
+        elif display_mode == "Random Deity":
+            st.subheader("Random Deity")
+
+            # Import random at the top if not already imported
+            import random 
+            
+            if 'random_deity' not in st.session_state:
+                 # Ensure deities list is not empty before choosing
+                if deities: 
+                    st.session_state.random_deity = random.choice(deities)
+                else: # Handle case where deities failed to load
+                    st.session_state.random_deity = None 
+
+            if st.button("Show Another Random Deity", key="lore_random_button"):
+                 # Ensure deities list is not empty before choosing
+                if deities:
+                    st.session_state.random_deity = random.choice(deities)
+                else: # Handle case where deities failed to load
+                    st.session_state.random_deity = None
+                    st.warning("Cannot select random deity, data missing.")
+                # No rerun needed here, button click handles refresh
+            
+            # Check if random_deity is not None before trying to display
+            if st.session_state.random_deity: 
+                random_deity = st.session_state.random_deity
+                st.markdown(f"### {random_deity.get('name', '')} - _{random_deity.get('title', '')}_")
+                # REMOVED ALIGNMENT LINE HERE
+                st.markdown(f"**Symbol:** {random_deity.get('symbol', 'N/A')}")
+                st.markdown(f"**Domains:** {', '.join(random_deity.get('domains', ['N/A']))}")
+                st.markdown("---")
+                st.markdown(f"**Dogma:**")
+                st.markdown(f"> {random_deity.get('dogma', 'N/A')}")
+            else:
+                # Display a message if no random deity could be selected (e.g., data loading failed)
+                st.info("Click 'Show Another Random Deity' or select 'Browse All'.")
