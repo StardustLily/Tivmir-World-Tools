@@ -414,10 +414,13 @@ with tabs[0]:
 
     # Always display from session state
     if st.session_state.npc_output:
-        st.markdown("---") # Or st.divider()
-    with st.container(border=True): # Add a border around the output
+    st.markdown("---")
+    with st.container(border=True):
         st.markdown(st.session_state.npc_output)
-        st_clipboard(st.session_state.npc_output, label="📋 Copy NPC", key="npc_copy_button")
+        if CLIPBOARD_AVAILABLE:
+            st_clipboard(st.session_state.npc_output, label="📋 Copy NPC")
+        else:
+            st.warning("📋 Clipboard copy not available!")
 
 with tabs[1]:
     st.header("🔤 Name Generator")
