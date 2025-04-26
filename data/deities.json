@@ -4,6 +4,7 @@
     "title": "God of Harmony and Balance",
     "domains": ["Balance", "Harmony", "Protection"],
     "symbol": "Interlocking silver and gold rings",
+    "symbol_image": "jaydis.png",
     "dogma": "Seek balance in all things. Mediate conflict and promote understanding. Protect the equilibrium of the world."
   },
   {
@@ -11,6 +12,7 @@
     "title": "Goddess of Day and Light",
     "domains": ["Light", "Life", "Order"],
     "symbol": "A radiant sunburst",
+    "symbol_image": "maya.png",
     "dogma": "Bask in the light of day. Uphold truth and righteousness. Vanquish darkness and reveal deceit."
   },
   {
@@ -18,6 +20,7 @@
     "title": "Goddess of Truth and Clarity",
     "domains": ["Knowledge", "Truth", "Light"],
     "symbol": "An unblinking eye within a crystal",
+    "symbol_image": "solaren.png",
     "dogma": "Seek truth above all else, even when inconvenient. Clarity reveals the path forward. Lies obscure and weaken."
   },
   {
@@ -25,6 +28,7 @@
     "title": "Lord of Beginning and Vitality",
     "domains": ["Life", "Change", "Strength"],
     "symbol": "A sprouting seed engulfed in green flame",
+    "symbol_image": "vivarakan.png",
     "dogma": "Embrace new beginnings and the vitality of life. Change is growth. Stagnation is death. Live with passion."
   },
   {
@@ -32,6 +36,7 @@
     "title": "God of Warmth and Pleasure",
     "domains": ["Fire", "Charm", "Joy"],
     "symbol": "A flickering hearth flame",
+    "symbol_image": "zithra.png",
     "dogma": "Seek joy and comfort. Share warmth and companionship. Life's simple pleasures are its greatest gifts."
   },
   {
@@ -39,6 +44,7 @@
     "title": "Goddess of Travel and Crossroads",
     "domains": ["Travel", "Luck", "Trickery"],
     "symbol": "A compass rose with winding paths",
+    "symbol_image": "apsen.png",
     "dogma": "The journey is as important as the destination. Embrace the unknown path. Opportunity waits at the crossroads."
   },
   {
@@ -46,6 +52,7 @@
     "title": "Deity of Nature and Weather",
     "domains": ["Nature", "Tempest", "Animal"],
     "symbol": "A swirling vortex of leaves and lightning",
+    "symbol_image": "auroris.png",
     "dogma": "Nature is wild and untamed, both beautiful and destructive. Respect its power and cycles. Adapt to the changing winds."
   },
   {
@@ -53,6 +60,7 @@
     "title": "God of Inspiration and Creativity",
     "domains": ["Artifice", "Knowledge", "Charm"],
     "symbol": "A multi-faceted gemstone radiating light",
+    "symbol_image": "julevir.png",
     "dogma": "Create beauty and marvels. Inspire others through art and invention. Innovation drives the world forward."
   },
   {
@@ -60,6 +68,7 @@
     "title": "Deity of Dreams and Illusions",
     "domains": ["Trickery", "Knowledge", "Mind"],
     "symbol": "A swirling mist revealing fleeting images",
+    "symbol_image": "jun.png",
     "dogma": "Reality is subjective. Dreams hold hidden truths. Illusion can be a tool or a weapon. Question what you see."
   },
   {
@@ -67,6 +76,7 @@
     "title": "Entity of Chaos and Entropy",
     "domains": ["Chaos", "Destruction", "Madness"],
     "symbol": "A fractured sphere leaking darkness",
+    "symbol_image": "mabu.png",
     "dogma": "Order is a lie. Embrace chaos and the inevitable decay. True freedom lies in unraveling the structures of reality."
   },
   {
@@ -74,6 +84,7 @@
     "title": "Goddess of the Seas and Tides",
     "domains": ["Water", "Tempest", "Nature"],
     "symbol": "A spiraling seashell",
+    "symbol_image": "ocea.png",
     "dogma": "The sea is vast, deep, and ever-changing. Respect its power and mysteries. Go with the flow, but beware the undertow."
   },
   {
@@ -81,6 +92,7 @@
     "title": "Deity of Ending and Closure",
     "domains": ["Death", "Fate", "Grave"],
     "symbol": "A closed, ornate door",
+    "symbol_image": "alfind.png",
     "dogma": "All things must end. Accept closure and the finality of fate. There is peace in conclusion."
   },
   {
@@ -88,6 +100,7 @@
     "title": "Goddess of Frost and Pain",
     "domains": ["Cold", "Pain", "Suffering"],
     "symbol": "A shard of ice piercing a frozen heart",
+    "symbol_image": "defenestria.png",
     "dogma": "Pain sharpens the senses and strengthens the spirit. Embrace the cold clarity of suffering. Weakness is purged by hardship."
   },
   {
@@ -95,6 +108,7 @@
     "title": "Lady of Trickery and War",
     "domains": ["War", "Trickery", "Ambition"],
     "symbol": "A spiderweb dripping venom",
+    "symbol_image": "lolth.png",
     "dogma": "Weave schemes like a web. Exploit weakness and seize power. Trust no one. Chaos and conflict are ladders to ascend."
   },
   {
@@ -102,6 +116,7 @@
     "title": "Lord of the Night and Shadows",
     "domains": ["Darkness", "Death", "Secrets"],
     "symbol": "An eclipsed moon",
+    "symbol_image": "noxtum.png",
     "dogma": "Secrets thrive in darkness. Control the night and its hidden paths. Order can be maintained through fear and shadow."
   },
   {
@@ -109,6 +124,7 @@
     "title": "Lady of Silence and Reflection",
     "domains": ["Knowledge", "Mind", "Silence"],
     "symbol": "A still, dark pool of water",
+    "symbol_image": "sable.png",
     "dogma": "Silence holds wisdom. Seek introspection and understanding in quiet moments. Reflection reveals the true self."
   }
 ]
