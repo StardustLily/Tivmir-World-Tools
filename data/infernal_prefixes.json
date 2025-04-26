@@ -58,5 +58,15 @@
     "starts_vowel": false,
     "ends_vowel": false,
     "meaning": "outcast"
-  }
+  },
+  { "text": "Tor", "starts_vowel": false, "ends_vowel": false, "meaning": "twist fate" },
+  { "text": "Zil", "starts_vowel": false, "ends_vowel": false, "meaning": "hope glimmer" },
+  { "text": "Vok", "starts_vowel": false, "ends_vowel": false, "meaning": "voice truth" },
+  { "text": "Nesh", "starts_vowel": false, "ends_vowel": false, "meaning": "breath spirit" },
+  { "text": "Kor", "starts_vowel": false, "ends_vowel": false, "meaning": "cold ash loss" },
+  { "text": "Shem", "starts_vowel": false, "ends_vowel": false, "meaning": "name identity" },
+  { "text": "Bri", "starts_vowel": false, "ends_vowel": true, "meaning": "create forge" },
+  { "text": "Daz", "starts_vowel": false, "ends_vowel": false, "meaning": "pain scar" },
+  { "text": "Lir", "starts_vowel": false, "ends_vowel": false, "meaning": "knowledge memory" },
+  { "text": "Tir", "starts_vowel": false, "ends_vowel": false, "meaning": "time history" }
 ]

@@ -26,5 +26,19 @@
   "collective": ["The Many", "Our Shared Fate", "The Community", "United Shadows"],
   "remnant": ["Fading Spark", "Echo of the Past", "What Remains", "Trace Of"],
   "spark": ["Flicker of Hope", "Potential's Seed", "First Light in Dark", "Inner Ember"],
-  "plural marker": ["The Many", "More Than One", "-s", "Collective Noun"]
+  "plural marker": ["The Many", "More Than One", "-s", "Collective Noun"],
+  "twist fate": ["Path Diverged", "Unchosen Destiny", "Irony's Thread", "What Must Be"],
+  "hope glimmer": ["Light in the Cracks", "Ember in Ash", "Secret Wish", "Defiant Spark"],
+  "voice truth": ["The Unspoken Word", "Echo in Shadow", "Whispered Lore", "Soul's Sound"],
+  "breath spirit": ["Inner Wind", "Life's Essence", "The Fire Within (Soul)", "Enduring Soul"],
+  "cold ash loss": ["Fire's Absence", "Memory's Chill", "What is Left Behind", "Sorrow's Mark"],
+  "name identity": ["The Soul's Mark", "Who We Are", "Given Title, Chosen Truth", "Bearer of Legacy"],
+  "create forge": ["Shaped by Fire", "Will Made Manifest", "Zithra's Art", "Building Anew"],
+  "pain scar": ["Price of Being", "Memory Etched", "Strength's Test", "Mark of Survival"],
+  "knowledge memory": ["Whispers of the Past", "Lessons Learned in Shadow", "Secret Lore", "What We Carry"],
+  "time history": ["The Long Path", "Echoes of Exile", "Ages of Shadow", "Enduring Cycle"],
+  "diminutive echo": ["A Smaller Flame", "Faint Reflection", "Trace Of", "Little One"],
+  "place domain": ["Where We Belong", "Realm of Shadows", "Our Ground", "Heart's Territory"],
+  "purpose for the sake": ["Reason to Endure", "Goal in the Dark", "Why We Strive", "In the Name Of"],
+  "potential becoming": ["The Unfolding", "Power Yet Unseen", "Future Spark", "Growing Flame"]
 }
