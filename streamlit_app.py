@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config(page_title="Tivmir World Tools", layout="centered")
 # Import necessary data and TOP-LEVEL generator functions
 from data_loader import name_data, races
 from npc_generator import generate_npc
@@ -17,9 +18,6 @@ from name_generators import (
     generate_aasimar_name, generate_shifter_name, generate_githyanki_name,
     generate_common_name # Used for Human
 )
-
-# Set page config first!
-st.set_page_config(page_title="Tivmir World Tools", layout="centered")
 
 # --- Define the Name Generator Map ---
 # Maps Race Name -> { func: generator_function, needs_gender: bool, needs_clan: bool, needs_element: bool }
