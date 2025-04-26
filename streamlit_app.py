@@ -1,6 +1,6 @@
 import streamlit as st
 # Import necessary data and TOP-LEVEL generator functions
-from data_loader import name_data # Keep name_data for Tabaxi clan lookup
+from data_loader import name_data, races
 from npc_generator import generate_npc
 # Import all the generate_X_name functions needed by the UI buttons
 # (Ensure ALL needed functions are listed here)
@@ -55,126 +55,199 @@ NAME_GENERATOR_MAP = {
     "Shifter": {"func": generate_shifter_name, "needs_gender": False},
     "Githyanki": {"func": generate_githyanki_name, "needs_gender": True},
 }
-# Make sure all races from race_options are keys in the map above
+
+# === Pre-process Races for UI ===
+# Group races by rarity and sort alphabetically
+RACES_BY_RARITY = {
+    "Common": [],
+    "Uncommon": [],
+    "Rare": [],
+    "Very Rare": []
+}
+ALL_RACE_NAMES_SORTED = []
+
+if races and isinstance(races, list):
+    all_names = []
+    for race_info in races:
+        if isinstance(race_info, dict) and "name" in race_info and "rarity" in race_info:
+            name = race_info["name"]
+            rarity = race_info["rarity"]
+            if rarity in RACES_BY_RARITY:
+                RACES_BY_RARITY[rarity].append(name)
+            else:
+                st.warning(f"Race '{name}' has unknown rarity '{rarity}'.") # Handle unexpected rarity
+            all_names.append(name)
+        else:
+            st.warning(f"Skipping invalid race entry in races.json: {race_info}")
+
+    # Sort lists alphabetically
+    for rarity_key in RACES_BY_RARITY:
+        RACES_BY_RARITY[rarity_key].sort()
+    ALL_RACE_NAMES_SORTED = sorted(all_names)
+else:
+    st.error("Failed to load or process race data for UI.")
+    # Provide fallback race list if needed, or handle error state
+    ALL_RACE_NAMES_SORTED = list(NAME_GENERATOR_MAP.keys()).sort()
 
 # === UI ===
 st.title("🌸 Tivmir World Tools")
 
-# Initialize session state variables if they don't exist
-if 'npc_output' not in st.session_state:
-    st.session_state.npc_output = ""
-if 'name_output' not in st.session_state:
-    st.session_state.name_output = ""
-# Keep track of selected race for the name generator tab
-if 'name_race' not in st.session_state:
-     st.session_state.name_race = list(NAME_GENERATOR_MAP.keys())[0] # Default to first race
-
+# Initialize session state variables
+if 'npc_output' not in st.session_state: st.session_state.npc_output = ""
+if 'name_output' not in st.session_state: st.session_state.name_output = ""
+# Initialize state for rarity and race selection
+if 'selected_rarity' not in st.session_state: st.session_state.selected_rarity = "Common" # Default rarity
+if 'name_race' not in st.session_state: st.session_state.name_race = None # Will be set by second selectbox
 
 tabs = st.tabs(["🌿 NPC Generator", "🔤 Name Generator"])
 
-# --- NPC Generator Tab ---
+# --- NPC Generator Tab (Remains the same) ---
 with tabs[0]:
     st.header("🌿 NPC Generator")
     col1, col2 = st.columns([1, 1])
     with col1:
         if st.button("Generate NPC", key="npc_button"):
-             st.session_state.npc_output = generate_npc() # Call imported function
+             st.session_state.npc_output = generate_npc()
     with col2:
         if st.button("Clear Output", key="npc_clear"):
             st.session_state.npc_output = ""
 
-    # Display NPC output
-    if st.session_state.npc_output:
-        st.markdown("---")
+    if st.session_state.npc_output: st.markdown("---")
     with st.container(border=True):
-         if st.session_state.npc_output and "Error:" in st.session_state.npc_output:
-              st.error(st.session_state.npc_output)
-         elif st.session_state.npc_output:
-              st.markdown(st.session_state.npc_output)
-         else:
-              st.markdown("*Click 'Generate NPC' to create a character...*")
+         if st.session_state.npc_output and "Error:" in st.session_state.npc_output: st.error(st.session_state.npc_output)
+         elif st.session_state.npc_output: st.markdown(st.session_state.npc_output)
+         else: st.markdown("*Click 'Generate NPC' to create a character...*")
 
-# --- Refactored Name Generator Tab ---
+
+# --- Name Generator Tab with Rarity Selection ---
 with tabs[1]:
     st.header("🔤 Name Generator")
 
-    # Use the keys from the map as options
-    race_options = list(NAME_GENERATOR_MAP.keys())
-    # Use session state for the selectbox value persistence
+    # Define rarity order + Add "All" option
+    rarity_options = ["All"] + list(RACES_BY_RARITY.keys())
+
+    # Callback to reset race when rarity changes
+    def rarity_changed():
+        st.session_state.name_race = None # Reset race selection
+
+    # Rarity Selection
     st.selectbox(
-        "Choose a race:",
-        race_options,
-        key="name_race" # Use session state key
+        "Filter by Rarity:",
+        rarity_options,
+        key="selected_rarity",
+        on_change=rarity_changed # Call the reset function when rarity changes
     )
-    # Get the current selected race from session state
-    race = st.session_state.name_race
+    selected_rarity = st.session_state.selected_rarity
 
-    race_config = NAME_GENERATOR_MAP.get(race)
+    # Determine race options based on selected rarity
+    current_race_options = []
+    if selected_rarity == "All":
+        current_race_options = ALL_RACE_NAMES_SORTED
+    elif selected_rarity in RACES_BY_RARITY:
+        current_race_options = RACES_BY_RARITY[selected_rarity]
 
-    # Store widget values temporarily
-    selected_gender = "Any"
-    selected_element = None
-    selected_clan = None
-    kwargs_for_func = {} # Arguments to pass to the generator function
+    # Race Selection (conditional based on rarity having races)
+    if current_race_options:
+        # Set default index for race selectbox if resetting or first load
+        race_key = "name_race"
+        current_race_value = st.session_state.get(race_key, None)
+        default_index = 0
+        if current_race_value not in current_race_options:
+            st.session_state[race_key] = current_race_options[0] # Set to first in new list
+        else:
+            try:
+                default_index = current_race_options.index(current_race_value)
+            except ValueError: # Should not happen if value is in options
+                 st.session_state[race_key] = current_race_options[0]
 
-    if race_config:
-        # --- Display relevant widgets ---
-        if race_config.get("needs_gender"):
-            selected_gender = st.radio(
-                "Select Gender:", ["Any", "Male", "Female"],
-                key=f"{race}_gender_ng", # Unique key per race for name gen tab
-                horizontal=True
-            )
-            kwargs_for_func["gender"] = selected_gender
-
-        if race_config.get("needs_element"): # Special case for Genasi
-            selected_element = st.radio(
-                "Select Element:", ["Air", "Water", "Fire", "Earth"],
-                key=f"{race}_element_ng",
-                horizontal=True
-            )
-            # The actual function call is handled below for Genasi
-
-        if race_config.get("needs_clan"): # Special case for Tabaxi
-            tabaxi_data = name_data.get("tabaxi", {})
-            clan_list = tabaxi_data.get("clans", [])
-            if clan_list and isinstance(clan_list, list):
-                 clan_names = [c["name"] for c in clan_list if isinstance(c, dict) and "name" in c]
-                 if clan_names:
-                     selected_clan = st.selectbox("Choose a Tabaxi clan:", clan_names, key="tabaxi_clan_ng")
-                     kwargs_for_func["selected_clan"] = selected_clan # Pass clan name
-                 else: st.warning("No valid clan names found.")
-            else: st.warning("Tabaxi clan data not found or invalid.")
-
-        # --- Generate Button and Function Call ---
-        generate_button = st.button(f"Generate {race} Name", key=f"{race}_button_ng")
-
-        if generate_button:
-            generator_func = race_config["func"]
-
-            if race == "Genasi": # Handle Genasi separately
-                if selected_element == "Air": st.session_state.name_output = generate_air_genasi_name()
-                elif selected_element == "Water": st.session_state.name_output = generate_water_genasi_name()
-                elif selected_element == "Fire": st.session_state.name_output = generate_fire_genasi_name()
-                elif selected_element == "Earth": st.session_state.name_output = generate_earth_genasi_name()
-            elif race == "Tabaxi": # Handle Tabaxi separately
-                 if selected_clan:
-                     st.session_state.name_output = generator_func(selected_clan)
-                 else:
-                      st.warning("Please select a Tabaxi clan.")
-                      st.session_state.name_output = "" # Clear output if no clan
-            elif generator_func: # Handle all other standard races
-                try:
-                    st.session_state.name_output = generator_func(**kwargs_for_func)
-                except Exception as e:
-                    st.error(f"Error calling {generator_func.__name__}: {e}")
-                    st.session_state.name_output = "Error generating name."
-            else:
-                 st.warning(f"No generator function configured for {race}.")
-                 st.session_state.name_output = "" # Clear output
-
+        st.selectbox(
+             "Choose a race:",
+             current_race_options,
+             key=race_key, # Use session state key
+             index=default_index # Set default index
+         )
+        # Get the current selected race from session state AFTER the selectbox is drawn
+        race = st.session_state.name_race
     else:
-        st.write(f"Configuration missing for race: {race}") # Should not happen if map is complete
+        st.warning(f"No races found for rarity '{selected_rarity}'.")
+        race = None # No race selected
+
+    # --- Dynamic Widget Display and Generation Logic (using Dictionary Dispatch) ---
+    if race: # Only proceed if a race is selected
+        race_config = NAME_GENERATOR_MAP.get(race)
+
+        # Store widget values temporarily
+        selected_gender = "Any"
+        selected_element = None
+        selected_clan = None
+        kwargs_for_func = {} # Arguments to pass to the generator function
+
+        if race_config:
+            # --- Display relevant widgets ---
+            if race_config.get("needs_gender"):
+                selected_gender = st.radio(
+                    "Select Gender:", ["Any", "Male", "Female"],
+                    key=f"{race}_gender_ng", # Unique key per race for name gen tab
+                    horizontal=True
+                )
+                kwargs_for_func["gender"] = selected_gender
+
+            if race_config.get("needs_element"): # Special case for Genasi
+                selected_element = st.radio(
+                    "Select Element:", ["Air", "Water", "Fire", "Earth"],
+                    key=f"{race}_element_ng",
+                    horizontal=True
+                )
+                # Function call handled below
+
+            if race_config.get("needs_clan"): # Special case for Tabaxi
+                tabaxi_data = name_data.get("tabaxi", {})
+                clan_list = tabaxi_data.get("clans", [])
+                if clan_list and isinstance(clan_list, list):
+                     clan_names = [c["name"] for c in clan_list if isinstance(c, dict) and "name" in c]
+                     if clan_names:
+                         # Sort clan names alphabetically
+                         clan_names.sort()
+                         selected_clan = st.selectbox("Choose a Tabaxi clan:", clan_names, key="tabaxi_clan_ng")
+                         kwargs_for_func["selected_clan"] = selected_clan # Pass clan name
+                     else: st.warning("No valid clan names found.")
+                else: st.warning("Tabaxi clan data not found or invalid.")
+
+            # --- Generate Button and Function Call ---
+            generate_button = st.button(f"Generate {race} Name", key=f"{race}_button_ng")
+
+            if generate_button:
+                generator_func = race_config["func"]
+
+                if race == "Genasi": # Handle Genasi separately
+                    if selected_element == "Air": st.session_state.name_output = generate_air_genasi_name()
+                    elif selected_element == "Water": st.session_state.name_output = generate_water_genasi_name()
+                    elif selected_element == "Fire": st.session_state.name_output = generate_fire_genasi_name()
+                    elif selected_element == "Earth": st.session_state.name_output = generate_earth_genasi_name()
+                elif race == "Tabaxi": # Handle Tabaxi separately
+                     if selected_clan:
+                         st.session_state.name_output = generator_func(selected_clan)
+                     else:
+                          st.warning("Please select a Tabaxi clan.")
+                          st.session_state.name_output = "" # Clear output if no clan
+                elif generator_func: # Handle all other standard races
+                    try:
+                        st.session_state.name_output = generator_func(**kwargs_for_func)
+                    except Exception as e:
+                        st.error(f"Error calling {generator_func.__name__}: {e}")
+                        st.session_state.name_output = "Error generating name."
+                else:
+                     st.warning(f"No generator function configured for {race}.")
+                     st.session_state.name_output = "" # Clear output
+
+        else:
+            st.write(f"Configuration missing for race: {race}") # Should not happen if map is complete
+    else:
+        # Optionally display a message if no race is selected (e.g., rarity filter yields no results)
+        if selected_rarity != "All":
+             st.markdown("*Select a race from the list above.*")
+        else:
+             st.markdown("*Select a race.*") # Should only happen if initial load fails
 
 
     # Display Name Generator output (Remains the same)
