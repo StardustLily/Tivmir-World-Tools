@@ -1,5 +1,4 @@
 [
-  // Male Names
   { "text": "Arthur", "gender": "Male", "meaning": "Noble Strength, Steadfast" },
   { "text": "Thomas", "gender": "Male", "meaning": "Twin Soul, Paired Blade" },
   { "text": "William", "gender": "Male", "meaning": "Steadfast Guardian, Strong Willed" },
@@ -26,7 +25,6 @@
   { "text": "Vincent", "gender": "Male", "meaning": "Conquering, Prevailing" },
   { "text": "Walter", "gender": "Male", "meaning": "Army Ruler, Commander" },
 
-  // Female Names
   { "text": "Eleanor", "gender": "Female", "meaning": "Shining Light, Bright Star" },
   { "text": "Alice", "gender": "Female", "meaning": "Of Noble Spirit, True" },
   { "text": "Beatrice", "gender": "Female", "meaning": "Bringer of Joy, Blessed Voyager" },
@@ -47,13 +45,12 @@
   { "text": "Juliana", "gender": "Female", "meaning": "Youthful Spirit, Sky-Father's Child" },
   { "text": "Laura", "gender": "Female", "meaning": "Victor's Wreath, Laurel Crowned" },
   { "text": "Lucy", "gender": "Female", "meaning": "Bringer of Light, Born at Dawn" },
-  { "text": "Rosalind", "gender": "Female", "meaning": "Gentle Horse / Lovely Rose" }, // Combined meaning interpretation
+  { "text": "Rosalind", "gender": "Female", "meaning": "Gentle Horse / Lovely Rose" },
   { "text": "Sybil", "gender": "Female", "meaning": "Seeress, Oracle's Voice" },
   { "text": "Thea", "gender": "Female", "meaning": "Divine Spark, Heavenly" },
   { "text": "Ursula", "gender": "Female", "meaning": "Little She-Bear, Fierce Spirit" },
   { "text": "Winifred", "gender": "Female", "meaning": "Peace-Friend, Blessed Joy" },
 
-  // Unisex Names
   { "text": "Rowan", "gender": "Unisex", "meaning": "Of the Rowan Tree, Fiery Spirit" },
   { "text": "Morgan", "gender": "Unisex", "meaning": "Sea-Born, Circling Shore" },
   { "text": "Robin", "gender": "Unisex", "meaning": "Bright Honor, Songbird" },

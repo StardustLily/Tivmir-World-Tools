@@ -1,5 +1,4 @@
 [
-  // Occupational
   { "text": "Smith", "meaning": "Metalworker, Blacksmith" },
   { "text": "Miller", "meaning": "Grain Grinder" },
   { "text": "Taylor", "meaning": "Cloth Cutter, Tailor" },
@@ -17,7 +16,6 @@
   { "text": "Glover", "meaning": "Maker of Gloves" },
   { "text": "Thatcher", "meaning": "Roofer using Straw/Reeds" },
 
-  // Locational
   { "text": "Blackwood", "meaning": "From the Dark Forest" },
   { "text": "Greenwood", "meaning": "From the Verdant Forest" },
   { "text": "Hawthorne", "meaning": "Dweller by Hawthorn Trees" },
@@ -31,9 +29,8 @@
   { "text": "Fielding", "meaning": "From the Open Pasture" },
   { "text": "Heath", "meaning": "Dweller on the Heathland" },
   { "text": "Underwood", "meaning": "Dweller beneath the Forest Canopy" },
-  { "text": "Crowley", "meaning": "From the Crow's Wood / Bent Meadow" }, // Adapted Celtic
+  { "text": "Crowley", "meaning": "From the Crow's Wood / Bent Meadow" },
 
-  // Descriptive/Nickname
   { "text": "Swift", "meaning": "Quick, Fast Runner or Thinker" },
   { "text": "Brown", "meaning": "Brown-haired or Complexioned" },
   { "text": "White", "meaning": "Fair-haired or Complexioned" },
