@@ -1,0 +1,11 @@
+[
+  { "text": "weald", "starts_vowel": false, "ends_vowel": false, "meaning": "ancient grove", "gender": "Unisex" },
+  { "text": "laich", "starts_vowel": false, "ends_vowel": false, "meaning": "fey song", "gender": "Unisex" },
+  { "text": "thorn", "starts_vowel": false, "ends_vowel": false, "meaning": "prickly nature", "gender": "Unisex" },
+  { "text": "wyn", "starts_vowel": false, "ends_vowel": false, "meaning": "white birch", "gender": "Unisex" },
+  { "text": "fallow", "starts_vowel": false, "ends_vowel": true, "meaning": "autumn rest", "gender": "Unisex" },
+  { "text": "brook", "starts_vowel": false, "ends_vowel": false, "meaning": "gentle stream", "gender": "Unisex" },
+  { "text": "mire", "starts_vowel": false, "ends_vowel": true, "meaning": "boggy earth", "gender": "Unisex" },
+  { "text": "vyn", "starts_vowel": false, "ends_vowel": false, "meaning": "winter sleep", "gender": "Unisex" },
+  { "text": "dell", "starts_vowel": false, "ends_vowel": false, "meaning": "hidden valley", "gender": "Unisex" }
+]

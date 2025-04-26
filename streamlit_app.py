@@ -25,6 +25,7 @@ auran_gloss = load_json("auran_poetic_gloss.json")
 aquan_gloss = load_json("aquan_poetic_gloss.json")
 ignan_gloss = load_json("ignan_poetic_gloss.json")
 terran_gloss = load_json("terran_poetic_gloss.json")
+sylvan_gloss = load_json("sylvan_poetic_gloss.json")
 name_data = {
     "tabaxi": {
         "prefixes": load_json("tabaxi_prefixes.json"),
@@ -107,7 +108,12 @@ name_data = {
         "prefixes": load_json("water_genasi_prefixes.json"),
         "middles": load_json("water_genasi_middles.json"),
         "suffixes": load_json("water_genasi_suffixes.json"),
-        "gloss": aquan_gloss}
+        "gloss": aquan_gloss},
+    "sylvan": {
+        "prefixes": load_json("sylvan_prefixes.json"),
+        "middles": load_json("sylvan_middles.json"),
+        "suffixes": load_json("sylvan_suffixes.json"),
+        "gloss": sylvan_gloss}
 }
 
 # Emoji Icons (remains the same)
@@ -816,6 +822,18 @@ def generate_npc():
         else:
            npc_name = f"[{race_name} Name Data Missing] {race_name}"
 
+    elif race_name == "Eladrin":
+        race_key = "sylvan" # Use the Sylvan data key
+        if race_key in name_data:
+            # Use standard helper, gender="Any" for unisex names
+            name_data_result = _generate_structured_name_data(name_data[race_key], gender="Any")
+            if not name_data_result["error"] and name_data_result["name"]:
+                npc_name = name_data_result["name"] # Single P+M+S name result
+            else:
+                npc_name = f"[{race_name} Name Error] {race_name}"
+        else:
+           npc_name = f"[{race_name} Name Data Missing] {race_name}"
+
     # --- Add more elif blocks here for future races ---
 
     # --- Assemble NPC Output --- (Rest of the function remains the same)
@@ -1170,6 +1188,28 @@ def generate_water_genasi_name(): # Unisex
         f"\n\n➔ **{poetic_label}** {data['poetic']}"
     )
 
+# === Generate Eladrin Name Function ===
+def generate_eladrin_name(): # Unisex
+    """Generates an Eladrin name with meanings for the Name Generator tab."""
+    race_key = "sylvan" # Use the Sylvan data key
+    if race_key not in name_data: return "Error: Sylvan (Eladrin) name data not loaded."
+
+    # Use the standard helper; gender="Any" for unisex names
+    data = _generate_structured_name_data(name_data[race_key], gender="Any")
+
+    if data["error"]: return f"Error: {data['error']}"
+    if not data["name"]: return "Error: Name generation failed silently."
+
+    meaning_lines = [f"- **{p['text']}** = {p.get('meaning', 'N/A')}" for p in data["parts"]]
+    poetic_label = "Poetic Meaning:"
+
+    # Use a sparkle or leaf emoji?
+    return (
+        f"✨ **Name:** {data['name']}\n\n" + # Helper already provides combined name
+        "\n".join(meaning_lines) +
+        f"\n\n➔ **{poetic_label}** {data['poetic']}"
+    )
+
 # IMPORTANT: Also update generate_npc where it calls _generate_structured_name_data directly for Half-Elves/Half-Orcs
 # Example for Half-Elf (Elven style):
 # Replace:
@@ -1290,8 +1330,9 @@ with tabs[1]:
     st.header("🔤 Name Generator")
     race = st.selectbox(
         "Choose a race:",
-        ["Elf", "Tabaxi", "Human", "Orc", "Tiefling", "Drow", "Dragonborn",
-        "Aarakocra", "Owlin", "Tortle", "Triton", "Genasi"],
+        ["Elf", "Eladrin", "Tabaxi", "Human", "Orc", "Tiefling",
+        "Drow", "Dragonborn", "Aarakocra", "Owlin", "Tortle",
+        "Triton", "Genasi"],
         key="name_race"
     )
     if race == "Tabaxi":
@@ -1408,6 +1449,11 @@ with tabs[1]:
                 st.session_state.name_output = generate_fire_genasi_name()
             elif element == "Earth":
                 st.session_state.name_output = generate_earth_genasi_name()
+
+    elif race == "Eladrin":
+        # NO gender selection needed
+        if st.button("Generate Eladrin Name", key="eladrin_name_button"):
+             st.session_state.name_output = generate_eladrin_name()
 
     # Use elif for Elf now, not else, to be specific
     elif race == "Elf":
